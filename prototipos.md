@@ -19,6 +19,18 @@
 
 ---
 
+### Home Funcionário
+
+![Home Funcionário](docs/wireframe/homeFuncionario.png);
+
+---
+
+### Home Padrão
+
+![Home Padrão](docs/wireframe/homePadrao.png);
+
+---
+
 ### Funcionarios
 
 ![Funcionarios](docs/wireframe/funcionarios.png);
