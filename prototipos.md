@@ -9,72 +9,72 @@
 
 ### Login
 
-![Login](docs/wireframe/login.png);
+![Login](docs/wireframe/login.png)
 
 ---
 
 ### Home Admin
 
-![Home Admin](docs/wireframe/homeAdmin.png);
+![Home Admin](docs/wireframe/homeAdmin.png)
 
 ---
 
 ### Home Funcionário
 
-![Home Funcionário](docs/wireframe/homeFuncionario.png);
+![Home Funcionário](docs/wireframe/homeFuncionario.png)
 
 ---
 
 ### Home Padrão
 
-![Home Padrão](docs/wireframe/homePadrao.png);
+![Home Padrão](docs/wireframe/homePadrao.png)
 
 ---
 
 ### Funcionarios
 
-![Funcionarios](docs/wireframe/funcionarios.png);
+![Funcionarios](docs/wireframe/funcionarios.png)
 
 ---
 
 ### Cadastrar Funcionários
 
-![Cadastrar Funcionários](docs/wireframe/cadastrarFuncionario.png);
+![Cadastrar Funcionários](docs/wireframe/cadastrarFuncionario.png)
 
 ---
 
 ### Visualizar Detalhes e Editar Funcionário
 
-![Visualizar Detalhes e Editar Funcionário](docs/wireframe/detalhesEditarFuncionario.png);
+![Visualizar Detalhes e Editar Funcionário](docs/wireframe/detalhesEditarFuncionario.png)
 
 ---
 
 ### Contracheque
 
-![Contracheque](docs/wireframe/contracheque.png);
+![Contracheque](docs/wireframe/contracheque.png)
 
 ---
 
 ### Vagas
 
-![Vagas](docs/wireframe/vagas.png);
+![Vagas](docs/wireframe/vagas.png)
 
 ---
 
 ### Publicar vagas
 
-![Publicar vagas](docs/wireframe/publicarVagas.png);
+![Publicar vagas](docs/wireframe/publicarVagas.png)
 
 ---
 
 ### Folha de pagamento
 
-![Folha de pagamento](docs/wireframe/folhaPagamento.png);
+![Folha de pagamento](docs/wireframe/folhaPagamento.png)
 
 ---
 
 ### Confirmação
 
-![Confirmação](docs/wireframe/confirmacao.png);
+![Confirmação](docs/wireframe/confirmacao.png)
 
 ---
