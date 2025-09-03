@@ -9,4 +9,4 @@
 
 ### Login
 
-![Login](.docs/login.png);
+![Login](docs/login.png);
