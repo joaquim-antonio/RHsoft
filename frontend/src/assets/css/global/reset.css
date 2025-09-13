@@ -9,6 +9,11 @@ box-sizing:border-box
 }
 
 html, body {
-    height: 100%;
     font-family: var(--fonte-principal), sans-serif;
+}
+
+.content{
+    display: flex;
+    height: calc(100vh - 70px);
+    width: 100%;
 }

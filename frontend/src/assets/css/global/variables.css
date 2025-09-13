@@ -1,9 +1,15 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
+
 /*adiciona fonte principal Inter*/
-:root{
+:root {
     --cor-azul: #80C0D4;
-    --cor-azul-claro: #C7E9FF;
+    --cor-azul-secundaria: #C7E9FF;
     --cor-fundo: #FAFAFA;
     --cor-texto: #1a1a1a;
     --fonte-principal: 'inter';
+    --yellow: #ffd966;
+    --red: #ff5c5c;
+    --shadow: 0 8px 28px rgba(0, 0, 0, .08);
+    --radius: 12px;
+    --muted: #eeeeee;
 }
