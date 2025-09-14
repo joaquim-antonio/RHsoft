@@ -21,7 +21,7 @@ main{
 .search-box{
   display: flex;
   align-items: center;
-  margin-bottom:20px;
+  margin:20px;
   width: 100%;
 }
 
@@ -38,11 +38,6 @@ main{
 .search-box input:focus{
   border-color: var(--blue-strong);
   box-shadow:0 0 0 4px rgba(163,205,227,.25);
-}
-
-.search-box img{
-  width: 25px;
-  height: 25px;
 }
 
 /* Lupa no input */

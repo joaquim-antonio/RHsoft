@@ -12,8 +12,11 @@
   <header class="cabecalho" id="cabecalho">
     <h1 class="cabecalho_titulo"><a href="index.html">RHsoft</a></h1>
     <div class="profile">
-      <span>Perfil Admin</span>
-      <div class="profile-icon"></div>
+      <a href="login.html" class="profile">
+        <span>Perfil</span>
+        <i class="profile-icon fa-solid fa-circle-user fa-2x"></i>
+
+      </a>
     </div>
   </header>
 
@@ -21,37 +24,37 @@
   <div class="content">
     <!--barra lateral-->
     <aside class="aside">
-      <nav class="aside_options">
-        <h3>Geral</h3>
+      <nav>
+        <h3 class="aside_titles">Geral</h3>
         <ul>
-          <li class="options_items"><img class="options_images" src="assets/images/global/funcionario.png"
-              alt="funcionariosPages"><a href="paginaFuncionarios.html">Funcionarios</a></li>
-          <li class="options_items"><img class="options_images" src="assets/images/global/contracheque.png"
-              alt="ContrachequePages"><a href="#">Contracheque</a></li>
-          <li class="options_items"><img class="options_images" src="assets/images/global/vagas.png" alt="VagasPages"><a
-              href="#">Vagas</a></li>
-          <li class="options_items"><img class="options_images" src="assets/images/global/folha-pagamento.png"
-              alt="folha-pagamentoPages"><a href="#">Folha de Pagamento</a></li>
+          <li class="aside_items"><a href="funcionarios.html"><i
+                class="aside_icons fa-solid fa-user-tie"></i>Funcionarios</a></li>
+          <li class="aside_items"><a href="#"><i class="aside_icons fa-solid fa-money-check-dollar"></i>Contracheque</a>
+          </li>
+          <li class="aside_items"><a href="vagas.html"><i class="aside_icons fa-solid fa-receipt"></i>Vagas</a></li>
+          <li class="aside_items"><a href="#"><i class="aside_icons fa-solid fa-suitcase"></i>Folha de Pagamento</a>
+          </li>
         </ul>
       </nav>
-      <section class="aside_options">
+      <section>
         <h3>Suporte</h3>
         <ul>
-          <li class="options_items"><img class="options_images" src="assets/images/global/ajuda.png" alt=""><a
-              href="#">Ajuda</a></li>
-          <li class="options_items"><img class="options_images" src="assets/images/global/configuracoes.png" alt=""><a
-              href="#">Configurações</a></li>
+          <li class="aside_items"><a href="#"><i class="aside_icons fa-solid fa-circle-info"></i>Ajuda</a></li>
+          <li class="aside_items"><a href="#"><i class="aside_icons fa-solid fa-gear"></i>Configurações</a></li>
+
+
         </ul>
       </section>
       <div class="aside_themes">
-        <img class="options_items" src="assets/images/global/darktheme.png" alt="botao_darkmode">
-        <img class="options_items" src="assets/images/global/lighttheme.png" alt="botao_lightmode">
+        <i class="aside_icons aside_items fa-solid fa-moon"></i>
+        <i class="aside_icons aside_items fa-solid fa-sun"></i>
       </div>
     </aside>
     <!--conteúdo-->
     <main>
+      <h2>Funcionários</h2>
       <div class="search-box">
-        <img src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='18' height='18' viewBox='0 0 24 24' fill='none' stroke='%236b7280' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><circle cx='11' cy='11' r='8'/><line x1='21' y1='21' x2='16.65' y2='16.65'/></svg>" alt="">
+        <i class="aside_items fa-solid fa-magnifying-glass"></i>
         <input type="text" id="search" placeholder="Pesquisar funcionário...">
       </div>
       <table class="table" id="func-table">

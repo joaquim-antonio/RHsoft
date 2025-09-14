@@ -12,16 +12,12 @@
     background-color: var(--cor-fundo);
 }
 
-.aside_options{
-    margin: 10px;
-}
-
 .aside_themes{
     display: flex;
     justify-content: space-between;
 }
 
-.options_items{
+.aside_items{
     display: flex;
     align-items: center;
     padding: 5px;
@@ -31,13 +27,12 @@
     position:relative;
 }
 
-.options_items:hover{
+.aside_items:hover{
     transform:translateX(4px);
-    background-color: var(--cor-azul-claro);
 }
 
-.options_images{
-    margin: 5px;
+.aside_icons{
+    margin: 3px;
     width: 25px;
     height: 25px;
 }

@@ -6,19 +6,12 @@
     padding: 15px;
     background-color: var(--cor-azul);
 }
+
 .profile{
     display:flex;
     align-items:center;
     gap:10px;
     color:#0b2239;
-}
-
-.profile-icon{
-    width:40px;
-    height:40px;
-    background:#ffffff;
-    border-radius:50%;
-    box-shadow:var(--shadow);
 }
 
 .cabecalho_titulo{

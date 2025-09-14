@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="assets/css/pages/vagas/vagas.css">
+    <title>Document</title>
+</head>
+
+<body>
+    <!--cabecalho-->
+    <header class="cabecalho" id="cabecalho">
+        <h1 class="cabecalho_titulo"><a href="index.html">RHsoft</a></h1>
+        <div class="profile">
+            <a href="login.html" class="profile">
+                <span>Perfil</span>
+                <i class="profile-icon fa-solid fa-circle-user fa-2x"></i>
+            </a>
+        </div>
+    </header>
+    <!--div para flexbox-->
+    <div class="content">
+        <!--barra lateral-->
+        <aside class="aside">
+            <nav>
+                <h3 class="aside_titles">Geral</h3>
+                    <ul>
+                        <li class="aside_items"><a href="funcionarios.html"><i
+                                    class="aside_icons fa-solid fa-user-tie"></i>Funcionarios</a></li>
+                        <li class="aside_items"><a href="#"><i
+                                    class="aside_icons fa-solid fa-money-check-dollar"></i>Contracheque</a>
+                        </li>
+                        <li class="aside_items"><a href="vagas.html"><i
+                                    class="aside_icons fa-solid fa-receipt"></i>Vagas</a></li>
+                        <li class="aside_items"><a href="#"><i class="aside_icons fa-solid fa-suitcase"></i>Folha de
+                                Pagamento</a>
+                        </li>
+                    </ul>
+            </nav>
+            <section>
+                <h3>Suporte</h3>
+                <ul>
+                    <li class="aside_items"><a href="#"><i class="aside_icons fa-solid fa-circle-info"></i>Ajuda</a>
+                    </li>
+                    <li class="aside_items"><a href="#"><i class="aside_icons fa-solid fa-gear"></i>Configurações</a>
+                    </li>
+                </ul>
+            </section>
+            <div class="aside_themes">
+                <i class="aside_icons aside_items fa-solid fa-moon"></i>
+                <i class="aside_icons aside_items fa-solid fa-sun"></i>
+            </div>
+        </aside>
+        <!--conteúdo-->
+        <main>
+            <h2>Vagas</h2>
+            <div class="main_">
+                <div class="search-box">
+                    <i class="aside_items fa-solid fa-magnifying-glass"></i>
+                    <input type="text" id="search" placeholder="Pesquisar funcionário...">
+                </div>
+                <button><i class="fa-solid fa-square-plus fa-2x"></i></button> 
+            </div>
+            <div class="card">
+                <!--aqui serao inseridos os cards dinamicos-->
+            </div>
+            
+        </main>
+    </div>
+</body>
+
+</html>

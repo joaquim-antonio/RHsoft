@@ -1,0 +1,28 @@
+@import url(../../global/global.css);
+
+main{
+  width: 85%;
+  padding: 30px;
+  display: flex;
+  flex-direction: column;
+}
+
+.search-box{
+  display: flex;
+  align-items: center;
+  margin:20px;
+  width: 100%;
+}
+
+.search-box input{
+  width:360px;
+  padding:12px 14px 12px 42px;
+  border:1px solid var(--muted);
+  border-radius:999px;
+  background: var(--muted);
+  transition:all .2s ease;
+}
+
+
+
+
