@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RHsoft - Folha de Pagamento</title>
+    <link rel="stylesheet" href="./assets/css/pages/folhaPagamento/folhaPagamento.css">
+</head>
+
+<body>
+    <!--cabecalho-->
+    <header class="cabecalho" id="cabecalho">
+        <h1 class="cabecalho_titulo"><a href="index.html">RHsoft</a></h1>
+        <div class="profile">
+            <a href="login.html" class="profile">
+                <span>Perfil</span>
+                <i class="profile-icon fa-solid fa-circle-user fa-2x"></i>
+            </a>
+        </div>
+    </header>
+    <!--div pra flexbox-->
+    <div class="content">
+        <!--barra lateral-->
+        <aside class="aside">
+            <nav>
+                <h3 class="aside_titles">Geral</h3>
+                <ul>
+                    <li class="aside_items"><a href="funcionarios.html"><i
+                                class="aside_icons fa-solid fa-user-tie"></i>Funcionarios</a></li>
+                    <li class="aside_items"><a href="contracheque.html"><i
+                                class="aside_icons fa-solid fa-money-check-dollar"></i>Contracheque</a></li>
+                    <li class="aside_items"><a href="vagas.html"><i
+                                class="aside_icons fa-solid fa-receipt"></i>Vagas</a></li>
+                    <li class="aside_items"><a href="folhaPagamento.html"><i class="aside_icons fa-solid fa-suitcase"></i>Folha de
+                            Pagamento</a></li>
+                </ul>
+            </nav>
+            <section>
+                <h3>Suporte</h3>
+                <ul>
+                    <li class="aside_items"><a href="#"><i class="aside_icons fa-solid fa-circle-info"></i>Ajuda</a>
+                    </li>
+                    <li class="aside_items"><a href="#"><i class="aside_icons fa-solid fa-gear"></i>Configurações</a>
+                    </li>
+
+
+                </ul>
+            </section>
+            <div class="aside_themes">
+                <i class="aside_icons aside_items fa-solid fa-moon"></i>
+                <i class="aside_icons aside_items fa-solid fa-sun"></i>
+            </div>
+        </aside>
+
+        <!-- Conteudo -->
+        <main id="folhaPagamento">
+            <h1>Folha de pagamento</h1>
+            <div class="top">
+                <div class="periodo">
+                    <label for="periodo">Período:</label>
+                    <select id="periodo">
+                        <option>18 Ago - 25 Ago, 2025</option>
+                        <option>11 Ago - 17 Ago, 2025</option>
+                        <option>04 Ago - 10 Ago, 2025</option>
+                    </select>
+                </div>
+                <div class="exportar">
+                    <button class="btn">Exportar <i class="fa-solid fa-chevron-down"></i></button>
+                </div>
+            </div>
+
+            <!-- Cards resumo -->
+            <section class="resumo">
+                <div class="card">
+                    <h4>Regular</h4>
+                    <p class="valor">300 horas</p>
+                    <small><i class="fa-solid fa-arrow-up"></i> <strong id="porcetagem_horas">5%</strong> Nessa semana</small>
+                </div>
+                <div class="card">
+                    <h4>Extras</h4>
+                    <p class="valor">100 horas</p>
+                    <small><i class="fa-solid fa-arrow-up"></i> <strong id="porcetagem_extra">3%</strong> Nessa semana</small>
+                </div>
+                <div class="card">
+                    <h4>Totais</h4>
+                    <p class="valor">400 horas</p>
+                    <small><i class="fa-solid fa-arrow-up"></i> <strong id="porcetagem_total_horas">4%</strong> Nessa semana</small>
+                </div>
+                <div class="card">
+                    <h4>Total pago</h4>
+                    <p id="total_pago" class="valor">R$ 100.000</p>
+                    <small><i class="fa-solid fa-arrow-up"></i> <strong id="porcetagem_total_pago">1%</strong> Nessa semana</small>
+                </div>
+            </section>
+
+            <!-- Detalhes funcionário -->
+            <section class="detalhes">
+                <div class="detalhes_topo">
+                    <h3>Detalhes funcionário</h3>
+                    <div class="pesquisar">
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                        <input type="text" placeholder="Pesquisar">
+                    </div>
+                </div>
+
+
+                <div class="lista_funcionarios">
+                    <div class="funcionario">
+                        <p><strong>Wesley Junior</strong> 1705</p>
+                        <p>Cargo: Gerente</p>
+                        <p>Departamento: Finanças</p>
+                        <p>Horas trabalhadas: 80 horas</p>
+                        <p>Horas Extras: 20 horas</p>
+                        <p>Horas Totais: 100 horas</p>
+                        <button class="btn_adicionar"><i class="fa-solid fa-plus"></i> Adicionar horas</button>
+                    </div>
+                    <div class="funcionario">
+                        <p><strong>Wesley Junior</strong> 1705</p>
+                        <p>Cargo: Gerente</p>
+                        <p>Departamento: Finanças</p>
+                        <p>Horas trabalhadas: 80 horas</p>
+                        <p>Horas Extras: 20 horas</p>
+                        <p>Horas Totais: 100 horas</p>
+                        <button class="btn_adicionar"><i class="fa-solid fa-plus"></i> Adicionar horas</button>
+                    </div>
+                    <div class="funcionario">
+                        <p><strong>Wesley Junior</strong> 1705</p>
+                        <p>Cargo: Gerente</p>
+                        <p>Departamento: Finanças</p>
+                        <p>Horas trabalhadas: 80 horas</p>
+                        <p>Horas Extras: 20 horas</p>
+                        <p>Horas Totais: 100 horas</p>
+                        <button class="btn_adicionar"><i class="fa-solid fa-plus"></i> Adicionar horas</button>
+                    </div>
+                    <div class="funcionario">
+                        <p><strong>Wesley Junior</strong> 1705</p>
+                        <p>Cargo: Gerente</p>
+                        <p>Departamento: Finanças</p>
+                        <p>Horas trabalhadas: 80 horas</p>
+                        <p>Horas Extras: 20 horas</p>
+                        <p>Horas Totais: 100 horas</p>
+                        <button class="btn_adicionar"><i class="fa-solid fa-plus"></i> Adicionar horas</button>
+                    </div>
+                    <div class="funcionario">
+                        <p><strong>Wesley Junior</strong> 1705</p>
+                        <p>Cargo: Gerente</p>
+                        <p>Departamento: Finanças</p>
+                        <p>Horas trabalhadas: 80 horas</p>
+                        <p>Horas Extras: 20 horas</p>
+                        <p>Horas Totais: 100 horas</p>
+                        <button class="btn_adicionar"><i class="fa-solid fa-plus"></i> Adicionar horas</button>
+                    </div>
+                    <div class="funcionario">
+                        <p><strong>Wesley Junior</strong> 1705</p>
+                        <p>Cargo: Gerente</p>
+                        <p>Departamento: Finanças</p>
+                        <p>Horas trabalhadas: 80 horas</p>
+                        <p>Horas Extras: 20 horas</p>
+                        <p>Horas Totais: 100 horas</p>
+                        <button class="btn_adicionar"><i class="fa-solid fa-plus"></i> Adicionar horas</button>
+                    </div>
+                    <div class="funcionario">
+                        <p><strong>Wesley Junior</strong> 1705</p>
+                        <p>Cargo: Gerente</p>
+                        <p>Departamento: Finanças</p>
+                        <p>Horas trabalhadas: 80 horas</p>
+                        <p>Horas Extras: 20 horas</p>
+                        <p>Horas Totais: 100 horas</p>
+                        <button class="btn_adicionar"><i class="fa-solid fa-plus"></i> Adicionar horas</button>
+                    </div>
+                    <div class="funcionario">
+                        <p><strong>Wesley Junior</strong> 1705</p>
+                        <p>Cargo: Gerente</p>
+                        <p>Departamento: Finanças</p>
+                        <p>Horas trabalhadas: 80 horas</p>
+                        <p>Horas Extras: 20 horas</p>
+                        <p>Horas Totais: 100 horas</p>
+                        <button class="btn_adicionar"><i class="fa-solid fa-plus"></i> Adicionar horas</button>
+                    </div>
+                    <div class="funcionario">
+                        <p><strong>Wesley Junior</strong> 1705</p>
+                        <p>Cargo: Gerente</p>
+                        <p>Departamento: Finanças</p>
+                        <p>Horas trabalhadas: 80 horas</p>
+                        <p>Horas Extras: 20 horas</p>
+                        <p>Horas Totais: 100 horas</p>
+                        <button class="btn_adicionar"><i class="fa-solid fa-plus"></i> Adicionar horas</button>
+                    </div>
+                    <div class="funcionario">
+                        <p><strong>Wesley Junior</strong> 1705</p>
+                        <p>Cargo: Gerente</p>
+                        <p>Departamento: Finanças</p>
+                        <p>Horas trabalhadas: 80 horas</p>
+                        <p>Horas Extras: 20 horas</p>
+                        <p>Horas Totais: 100 horas</p>
+                        <button class="btn_adicionar"><i class="fa-solid fa-plus"></i> Adicionar horas</button>
+                    </div>
+                </div>
+            </section>
