@@ -51,8 +51,9 @@ main {
 }
 
 .card {
+    text-align: justify;
     display: flex;
-    flex-wrap: wrap;
+    flex-direction: column;
     min-width: 250px;
     margin: 20px;
     padding: 10px;
@@ -70,7 +71,6 @@ main {
 .card_titulo {
     width: 100%;
     display: flex;
-    flex-wrap: wrap;
     justify-content: space-between;
 }
 

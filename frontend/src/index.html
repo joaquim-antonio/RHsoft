@@ -6,7 +6,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>RHsoft - home</title>
     <link rel="stylesheet" href="assets/css/pages/index/index.css">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 
 <body>
@@ -57,37 +56,10 @@
         <!--dashboards-->
         <main>
             dashboards em cards criados dinamicamente com js usando de chart.js
-            exemplo:<br><br>
-            <div class="card">
-                <h3>Número de vendas (mensal)</h3>
-                <canvas id="meuGrafico"></canvas>
-            </div>
+            <br><br>
+            <img src="assets/images/pages/index/dashboard.png   " alt="">
         </main>
     </div>
-    <script>
-        const ctx = document.getElementById('meuGrafico').getContext('2d');
-        const meuGrafico = new Chart(ctx, {
-            type: 'bar', // tipos: bar, line, pie, doughnut, radar, polarArea
-            data: {
-                labels: ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun'],
-                datasets: [{
-                    label: 'Vendas (R$)',
-                    data: [1200, 1900, 3000, 2500, 2200, 3200],
-                    backgroundColor: 'rgba(75, 192, 192, 0.5)',
-                    borderColor: 'rgba(75, 192, 192, 1)',
-                    borderWidth: 1
-                }]
-            },
-            options: {
-                responsive: true,
-                scales: {
-                    y: {
-                        beginAtZero: true
-                    }
-                }
-            }
-        });
-    </script>
 </body>
 
 </html>
