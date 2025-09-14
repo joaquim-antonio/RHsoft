@@ -25,18 +25,16 @@
         <aside class="aside">
             <nav>
                 <h3 class="aside_titles">Geral</h3>
-                    <ul>
-                        <li class="aside_items"><a href="funcionarios.html"><i
-                                    class="aside_icons fa-solid fa-user-tie"></i>Funcionarios</a></li>
-                        <li class="aside_items"><a href="#"><i
-                                    class="aside_icons fa-solid fa-money-check-dollar"></i>Contracheque</a>
-                        </li>
-                        <li class="aside_items"><a href="vagas.html"><i
-                                    class="aside_icons fa-solid fa-receipt"></i>Vagas</a></li>
-                        <li class="aside_items"><a href="#"><i class="aside_icons fa-solid fa-suitcase"></i>Folha de
-                                Pagamento</a>
-                        </li>
-                    </ul>
+                <ul>
+                    <li class="aside_items"><a href="funcionarios.html"><i
+                                class="aside_icons fa-solid fa-user-tie"></i>Funcionarios</a></li>
+                    <li class="aside_items"><a href="contracheque.html"><i
+                                class="aside_icons fa-solid fa-money-check-dollar"></i>Contracheque</a></li>
+                    <li class="aside_items"><a href="vagas.html"><i
+                                class="aside_icons fa-solid fa-receipt"></i>Vagas</a></li>
+                    <li class="aside_items"><a href="#"><i class="aside_icons fa-solid fa-suitcase"></i>Folha de
+                            Pagamento</a></li>
+                </ul>
             </nav>
             <section>
                 <h3>Suporte</h3>
@@ -55,17 +53,56 @@
         <!--conteúdo-->
         <main>
             <h2>Vagas</h2>
-            <div class="main_">
+            <section class="main_top">
                 <div class="search-box">
                     <i class="aside_items fa-solid fa-magnifying-glass"></i>
                     <input type="text" id="search" placeholder="Pesquisar funcionário...">
                 </div>
-                <button><i class="fa-solid fa-square-plus fa-2x"></i></button> 
-            </div>
-            <div class="card">
+                <button class="btn" id="adicionar_vagas"><i class="fa-solid fa-square-plus fa-2x"></i></button>
+            </section>
+            <section class="main_cards">
                 <!--aqui serao inseridos os cards dinamicos-->
-            </div>
-            
+                <!--exemplos-->
+                <div class="card" id="card">
+                    <div class="card_titulo">
+                        <h3>(Nome da vaga)</h3>
+                        <p class="ativa">ativa</p>
+                    </div>
+                    <p>Departamento: Vendas</p>
+                    <p>Descrição da vaga: Lorem ipsum dolor sit amet consectetur adipisicing elit. Nulla illo beatae ut aperiam quidem vel repudiandae perspiciatis animi magnam eveniet consequuntur sed labore accusamus, architecto dolore aliquam reprehenderit quibusdam? Deserunt.</p>
+                </div>
+                <div class="card" id="card">
+                    <div class="card_titulo">
+                        <h3>(Nome da vaga)</h3>
+                        <p class="ativa">ativa</p>
+                    </div>
+                    <p>Departamento: Vendas</p>
+                    <p>Descrição da vaga: Lorem ipsum dolor sit amet consectetur adipisicing elit. Nulla illo beatae ut aperiam quidem vel repudiandae perspiciatis animi magnam eveniet consequuntur sed labore accusamus, architecto dolore aliquam reprehenderit quibusdam? Deserunt.</p>
+                </div>
+                <div class="card" id="card">
+                    <div class="card_titulo">
+                        <h3>(Nome da vaga)</h3>
+                        <p class="ativa">ativa</p>
+                    </div>
+                    <p>Departamento: Vendas</p>
+                    <p>Descrição da vaga: Lorem ipsum dolor sit amet consectetur adipisicing elit. Nulla illo beatae ut aperiam quidem vel repudiandae perspiciatis animi magnam eveniet consequuntur sed labore accusamus, architecto dolore aliquam reprehenderit quibusdam? Deserunt.</p>
+                </div><div class="card" id="card">
+                    <div class="card_titulo">
+                        <h3>(Nome da vaga)</h3>
+                        <p class="ativa">ativa</p>
+                    </div>
+                    <p>Departamento: Vendas</p>
+                    <p>Descrição da vaga: Lorem ipsum dolor sit amet consectetur adipisicing elit. Nulla illo beatae ut aperiam quidem vel repudiandae perspiciatis animi magnam eveniet consequuntur sed labore accusamus, architecto dolore aliquam reprehenderit quibusdam? Deserunt.</p>
+                </div><div class="card" id="card">
+                    <div class="card_titulo">
+                        <h3>(Nome da vaga)</h3>
+                        <p class="ativa">ativa</p>
+                    </div>
+                    <p>Departamento: Vendas</p>
+                    <p>Descrição da vaga: Lorem ipsum dolor sit amet consectetur adipisicing elit. Nulla illo beatae ut aperiam quidem vel repudiandae perspiciatis animi magnam eveniet consequuntur sed labore accusamus, architecto dolore aliquam reprehenderit quibusdam? Deserunt.</p>
+                </div>
+            </section>
+
         </main>
     </div>
 </body>

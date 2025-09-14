@@ -10,11 +10,12 @@
     border-right-width: 4px;
     border-right-color: var(--cor-azul);
     background-color: var(--cor-fundo);
+    min-width: max-content;
 }
 
 .aside_themes{
     display: flex;
-    justify-content: space-between;
+    justify-content: space-around;
 }
 
 .aside_items{

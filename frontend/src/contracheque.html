@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>RHsoft - Contracheque</title>
     <link rel="stylesheet" href="./assets/css/pages/contracheuque/contracheque.css">
 </head>
 
@@ -13,41 +13,43 @@
     <header class="cabecalho" id="cabecalho">
         <h1 class="cabecalho_titulo"><a href="index.html">RHsoft</a></h1>
         <div class="profile">
-            <span>Perfil Admin</span>
-            <div class="profile-icon"></div>
+            <a href="login.html" class="profile">
+                <span>Perfil</span>
+                <i class="profile-icon fa-solid fa-circle-user fa-2x"></i>
+            </a>
         </div>
     </header>
     <!--div pra flexbox-->
     <div class="content">
         <!--barra lateral-->
         <aside class="aside">
-            <nav class="aside_options">
-                <h3>Geral</h3>
+            <nav>
+                <h3 class="aside_titles">Geral</h3>
                 <ul>
-                    <li class="options_items"><img class="options_images" src="assets/images/global/funcionario.png"
-                            alt="funcionariosPages"><a href="paginaFuncionarios.html">Funcionarios</a></li>
-                    <li class="options_items selected_option"><img class="options_images"
-                            src="assets/images/global/contracheque.png" alt="ContrachequePages"><a
-                            href="#">Contracheque</a></li>
-                    <li class="options_items"><img class="options_images" src="assets/images/global/vagas.png"
-                            alt="VagasPages"><a href="#">Vagas</a></li>
-                    <li class="options_items"><img class="options_images" src="assets/images/global/folha-pagamento.png"
-                            alt="folha-pagamentoPages"><a href="#">Folha de Pagamento</a></li>
+                    <li class="aside_items"><a href="funcionarios.html"><i
+                                class="aside_icons fa-solid fa-user-tie"></i>Funcionarios</a></li>
+                    <li class="aside_items"><a href="contracheque.html"><i
+                                class="aside_icons fa-solid fa-money-check-dollar"></i>Contracheque</a></li>
+                    <li class="aside_items"><a href="vagas.html"><i
+                                class="aside_icons fa-solid fa-receipt"></i>Vagas</a></li>
+                    <li class="aside_items"><a href="#"><i class="aside_icons fa-solid fa-suitcase"></i>Folha de
+                            Pagamento</a></li>
                 </ul>
             </nav>
-            <section class="aside_options">
+            <section>
                 <h3>Suporte</h3>
                 <ul>
-                    <li class="options_items"><img class="options_images" src="assets/images/global/ajuda.png" alt=""><a
-                            href="#">Ajuda</a></li>
-                    <li class="options_items"><img class="options_images" src="assets/images/global/configuracoes.png"
-                            alt=""><a href="#">Configurações</a></li>
+                    <li class="aside_items"><a href="#"><i class="aside_icons fa-solid fa-circle-info"></i>Ajuda</a>
+                    </li>
+                    <li class="aside_items"><a href="#"><i class="aside_icons fa-solid fa-gear"></i>Configurações</a>
+                    </li>
+
+
                 </ul>
             </section>
             <div class="aside_themes">
-                <img class="options_items" src="assets/images/global/darktheme.png" alt="botao_darkmode">
-                <img class="options_items selected_option" src="assets/images/global/lighttheme.png"
-                    alt="botao_lightmode">
+                <i class="aside_icons aside_items fa-solid fa-moon"></i>
+                <i class="aside_icons aside_items fa-solid fa-sun"></i>
             </div>
         </aside>
 
@@ -61,7 +63,7 @@
                         <option>Jun, 2025</option>
                     </select>
                 </div>
-                <button id="exportar contracheque" class="btn">Exportar</button>
+                <button id="exportar_contracheque" class="btn">Exportar</button>
             </div>
 
             <!-- Dados pessoasi -->
