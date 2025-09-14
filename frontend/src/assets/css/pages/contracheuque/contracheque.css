@@ -14,6 +14,7 @@ main {
     grid-template-columns: 1fr 2fr 1fr;
     grid-template-rows: auto; 
     grid-template-areas:
+        "titulo . ."
         "top top top"
         "info salario codigos"
         "info salario mensagens"
@@ -55,6 +56,10 @@ main {
 
 .box.beneficios {
     grid-area: beneficios;
+}
+
+main h2{
+    grid-area: titulo;
 }
 
 .box.mensagens {
