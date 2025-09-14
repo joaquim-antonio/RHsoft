@@ -1,0 +1,136 @@
+@import url(../../global/global.css);
+
+.box {
+    background-color: #ffff;
+    border: 1px solid #cccccc;
+    border-radius: 8px;
+    padding: 20px;
+}
+
+.main-content {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+/*Grid*/
+main {
+    
+    display: grid;
+    grid-template-columns: 1fr 2fr 1fr;
+    grid-template-rows: auto; 
+    grid-template-areas:
+        "top top top"
+        "info salario codigos"
+        "info salario mensagens"
+        "calculos beneficios mensagens"
+        "status beneficios mensagens"
+        ". . acoes";
+    gap: 20px;
+    padding: 20px;
+    margin: 5vh;
+}
+
+.top {
+    grid-area: top;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+
+
+.box.info_pessoal {
+    grid-area: info;
+}
+
+.box.salario {
+    grid-area: salario;
+}
+
+.box.codigos {
+    grid-area: codigos;
+}
+
+.box.calculos {
+    grid-area: calculos;
+}
+
+.box.beneficios {
+    grid-area: beneficios;
+}
+
+.box.mensagens {
+    grid-area: mensagens;
+}
+
+.status_assinatura {
+    grid-area: assinatura;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.acoes {
+    grid-area: acoes;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+/*Fim grid*/
+
+.box h3 {
+    margin-top: 0;
+}
+
+.row {
+    display: flex;
+    justify-content: space-between;
+}
+
+.valor_verde {
+    color: green;
+}
+
+.valor_vermelho {
+    color: red;
+}
+
+.valor_azul {
+    color: blue;
+}
+
+.select_container{
+    border: 1px solid var(--cor-cinza);
+    border-radius: 8px; 
+    display: inline-block; 
+    transition: box-shadow 0.2s ease-in-out; 
+    overflow: hidden; 
+}
+
+.top select {
+    padding: 12px;
+    background-color: #fff;
+    border-radius: 10px;
+}
+
+.btn, .status_assinatura{
+    padding: 10px 20px;
+    border: 1px solid #333;
+    border-radius: 6px;
+    background: white;
+    transition: 0.2s;
+}
+
+.btn{
+    cursor: pointer;
+}
+
+.status_assinatura{
+    font-size: 11pt;
+}
+
+.btn:hover {
+    box-shadow: 10px 5px 5px var(--cor-azul);
+}
