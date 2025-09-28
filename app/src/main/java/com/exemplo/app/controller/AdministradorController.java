@@ -1,6 +1,6 @@
 package com.exemplo.app.controller;
 
-import com.exemplo.app.dto.AdministradorDTO;
+import com.exemplo.app.dto.AdministradorDto;
 import com.exemplo.app.mapper.AdministradorMapper;
 import com.exemplo.app.model.Administrador;
 import com.exemplo.app.model.FolhaPagamento;
@@ -27,31 +27,30 @@ public class AdministradorController {
     private final AdministradorService administradorService;
 
     @GetMapping("/{id}")
-    public ResponseEntity<AdministradorDTO> buscarPorId(@PathVariable Long id) {
+    public ResponseEntity<AdministradorDto> buscarPorId(@PathVariable Long id) {
         Administrador administrador = administradorService.buscarPorId(id);
-        AdministradorDTO dto = AdministradorMapper.toDTO(administrador);
+        AdministradorDto dto = AdministradorMapper.toDTO(administrador);
         return ResponseEntity.ok(dto);
     }
     
-    // MELHORIA: Adicionado endpoint para listar todos os administradores.
     @GetMapping
-    public ResponseEntity<List<AdministradorDTO>> listarTodos() {
+    public ResponseEntity<List<AdministradorDto>> listarTodos() {
         List<Administrador> administradores = administradorService.listarTodos();
         
-        List<AdministradorDTO> dtos = administradores.stream()
+        List<AdministradorDto> dtos = administradores.stream()
                 .map(AdministradorMapper::toDTO)
                 .collect(Collectors.toList());
         return ResponseEntity.ok(dtos);
     }
 
     @PostMapping
-    public ResponseEntity<FuncionarioDTO> contratarCandidato(@PathVariable Long candidatoId){
+    public ResponseEntity<FuncionarioDto> contratarCandidato(@PathVariable Long candidatoId){
         Funcionario novoFuncionario = administradorService.contratarFuncionario(candidatoId);
         return ResponseEntity.status(HttpStatus.CREATED).body(FuncionarioMapper.toDTO(novoFuncionario));
     }
 
     @PostMapping
-    public ResponseEntity<FolhaPagamentoDTO> fecharFolhaDePagamento(@PathVariable Long folhaPagamentoId) {
+    public ResponseEntity<FolhaPagamentoDto> fecharFolhaDePagamento(@PathVariable Long folhaPagamentoId) {
         FolhaPagamento folhaFechada = administradorService.fecharFolhaPagamento(folhaPagamentoId);
         return ResponseEntity.ok(FolhaPagamentoMapper.toDTO(folhaFechada));
     }
