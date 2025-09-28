@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RHsoft - Contracheque</title>
+    <link rel="stylesheet" href="./assets/css/pages/contracheuque/contracheque.css">
+</head>
+
+<body>
+    <!--cabecalho-->
+    <header class="cabecalho" id="cabecalho">
+        <h1 class="cabecalho_titulo"><a href="index.html">RHsoft</a></h1>
+        <div class="profile">
+            <a href="login.html" class="profile">
+                <span>Perfil</span>
+                <i class="profile-icon fa-solid fa-circle-user fa-2x"></i>
+            </a>
+        </div>
+    </header>
+    <!--div pra flexbox-->
+    <div class="content">
+        <!--barra lateral-->
+        <aside class="aside">
+            <nav>
+                <h3 class="aside_titles">Geral</h3>
+                <ul>
+                    <li class="aside_items"><a href="funcionarios.html"><i
+                                class="aside_icons fa-solid fa-user-tie"></i>Funcionarios</a></li>
+                    <li class="aside_items"><a href="contracheque.html"><i
+                                class="aside_icons fa-solid fa-money-check-dollar"></i>Contracheque</a></li>
+                    <li class="aside_items"><a href="vagas.html"><i
+                                class="aside_icons fa-solid fa-receipt"></i>Vagas</a></li>
+                    <li class="aside_items"><a href="folhaPagamento.html"><i class="aside_icons fa-solid fa-suitcase"></i>Folha de
+                            Pagamento</a></li>
+                </ul>
+            </nav>
+            <section>
+                <h3>Suporte</h3>
+                <ul>
+                    <li class="aside_items"><a href="#"><i class="aside_icons fa-solid fa-circle-info"></i>Ajuda</a>
+                    </li>
+                    <li class="aside_items"><a href="#"><i class="aside_icons fa-solid fa-gear"></i>Configurações</a>
+                    </li>
+
+
+                </ul>
+            </section>
+            <div class="aside_themes">
+                <i class="aside_icons aside_items fa-solid fa-moon"></i>
+                <i class="aside_icons aside_items fa-solid fa-sun"></i>
+            </div>
+        </aside>
+
+        <!-- Conteudo -->
+        <main id="contracheque">
+            <h2>Contracheque</h2>
+            <div class="top">
+                <div class="select_container">
+                    <select id="meses_contracheque" class="form-select w-auto">
+                        <option>Ago, 2025</option>
+                        <option>Jul, 2025</option>
+                        <option>Jun, 2025</option>
+                    </select>
+                </div>
+                <button id="exportar_contracheque" class="btn">Exportar</button>
+            </div>
+
+            <!-- Dados pessoais -->
+            <div class="box info_pessoal">
+                <p id="nome"><strong>Nome:</strong> Neymar Santos Júnior</p>
+                <p id="cargo"><strong>Cargo:</strong> Gerente</p>
+                <p id="departamento"><strong>Departamento:</strong> Financeiro</p>
+                <p id="cpf"><strong>CPF:</strong> 400.288.220-17</p>
+                <p id="data_nascimento"><strong>Data de nascimento:</strong> 01/05/1999</p>
+            </div>
+
+            <!-- Salario -->
+            <div class="box salario">
+                <h3>Salário</h3>
+                <div class="row"><span>Salário base</span><span id="salario_base" class="valor_verde">R$ 1600,80</span>
+                </div>
+                <div class="row"><span>Horas extras</span><span id="horas_extras_valor" class="valor_verde">R$
+                        250,90</span></div>
+                <div class="row"><span>Férias remunerada</span><span id="ferias_remuneradas_valor"
+                        class="valor_verde">R$ 190,45</span></div>
+                <div class="row"><span>INSS</span><span id="inss_desconto" class="valor_vermelho">R$ 190,45</span></div>
+                <div class="row"><span>IRRF</span><span id="irrf_desconto" class="valor_vermelho">R$ 190,45</span></div>
+                <div class="row"><span>FGTS</span><span id="fgts_desconto" class="valor_vermelho">R$ 190,45</span></div>
+                <div class="row"><strong>Total</strong><strong id="total_liquido" class="valor_azul">R$ 1500,50</strong>
+                </div>
+            </div>
+
+            <!-- Codigos -->
+            <div class="box codigos">
+                <h3>Código</h3>
+                <p id="codigo_contracheque" class="valor-azul">00076</p>
+                <h3>CBO</h3>
+                <p id="cbo_codigo" class="valor-azul">41105</p>
+            </div>
+
+            <!-- Calculos -->
+            <div class="box calculos">
+                <h3>Cálculos</h3>
+                <div class="row"><span>Base Calc. INSS</span><span id="base_inss" class="valor_vermelho">0,00</span>
+                </div>
+                <div class="row"><span>Base Calc. FGTS</span><span id="base_fgts" class="valor_vermelho">0,00</span>
+                </div>
+                <div class="row"><span>Base Calc. IRRF</span><span id="base_irrf" class="valor_vermelho">0,00</span>
+                </div>
+                <div class="row"><span>FGTS do mês</span><span id="base_fgts" class="valor_vermelho">0,00</span></div>
+                <div class="row"><span>Faixa IRRF</span><span id="base_irrf" class="valor_vermelho">0,00</span></div>
+            </div>
+
+            <!-- Beneficios -->
+            <div class="box beneficios">
+                <h3>Benefícios</h3>
+                <div class="row"><span>Vale transporte</span><span id="vale_transporte_valor" class="valor_verde">R$
+                        130</span></div>
+                <div class="row"><span>Vale alimentação</span><span id="vale_alimentacao_valor" class="valor_verde">R$
+                        130</span></div>
+                <div class="row"><span>Gym pass</span><span id="gym_pass_valor" class="valor_verde">R$ 130</span></div>
+            </div>
+
+            <!-- Mensagens -->
+            <div class="box mensagens">
+                <h3>Mensagens</h3>
+                <p id="mensagens_contracheque">(caixa de mensagens)</p>
+            </div>
+
+            <!-- Status -->
+            <div class="status_assinatura">
+                <p>Status: <span id="status_contracheque" class="valor_azul">Aguardando assinatura</span></p>
+            </div>
+
+            <!-- Ações -->
+            <div class="acoes">
+                <button id="assinar" class="btn">Assinar contracheque</button>
+                <button id="contatar_suporte" class="btn">Contatar suporte</button>
+            </div>
+        </main>
+</body>
+
+</html>

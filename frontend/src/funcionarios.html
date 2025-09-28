@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8">
+  <title>RHsoft - Funcionários</title>
+  <link rel="stylesheet" href="assets/css/pages/funcionarios/funcionarios.css">
+</head>
+
+<body>
+  <!--cabecalho-->
+  <header class="cabecalho" id="cabecalho">
+    <h1 class="cabecalho_titulo"><a href="index.html">RHsoft</a></h1>
+    <div class="profile">
+      <a href="login.html" class="profile">
+        <span>Perfil</span>
+        <i class="profile-icon fa-solid fa-circle-user fa-2x"></i>
+
+      </a>
+    </div>
+  </header>
+
+  <!--div para flexbox-->
+  <div class="content">
+    <!--barra lateral-->
+    <aside class="aside">
+      <nav>
+        <h3 class="aside_titles">Geral</h3>
+        <ul>
+          <li class="aside_items"><a href="funcionarios.html"><i
+                class="aside_icons fa-solid fa-user-tie"></i>Funcionarios</a></li>
+          <li class="aside_items"><a href="contracheque.html"><i
+                class="aside_icons fa-solid fa-money-check-dollar"></i>Contracheque</a></li>
+          <li class="aside_items"><a href="vagas.html"><i class="aside_icons fa-solid fa-receipt"></i>Vagas</a></li>
+          <li class="aside_items"><a href="folhaPagamento.html"><i class="aside_icons fa-solid fa-suitcase"></i>Folha de
+              Pagamento</a></li>
+        </ul>
+      </nav>
+      <section>
+        <h3>Suporte</h3>
+        <ul>
+          <li class="aside_items"><a href="#"><i class="aside_icons fa-solid fa-circle-info"></i>Ajuda</a></li>
+          <li class="aside_items"><a href="#"><i class="aside_icons fa-solid fa-gear"></i>Configurações</a></li>
+
+
+        </ul>
+      </section>
+      <div class="aside_themes">
+        <i class="aside_icons aside_items fa-solid fa-moon"></i>
+        <i class="aside_icons aside_items fa-solid fa-sun"></i>
+      </div>
+    </aside>
+    <!--conteúdo-->
+    <main>
+      <h2>Funcionários</h2>
+      <div class="search-box">
+        <i class="aside_items fa-solid fa-magnifying-glass"></i>
+        <input type="text" id="search" placeholder="Pesquisar funcionário...">
+      </div>
+      <table class="table" id="func-table">
+        <thead>
+          <tr>
+            <th>Nome</th>
+            <th>ID</th>
+            <th>Email</th>
+            <th>Departamento</th>
+            <th>Ações</th>
+          </tr>
+        </thead>
+        <tbody id="func-list">
+          <tr>
+          </tr>
+        </tbody>
+      </table>
+      <button class="btn btn-add" onclick="openAddModal()">+ Adicionar Funcionário</button>
+    </main>
+  </div>
+  <div class="list">
+
+  </div>
+  </div>
+
+  <!-- Modal Cadastro -->
+  <div class="modal" id="modalAdd">
+    <div class="modal-content">
+      <button class="icon-btn close" onclick="closeAddModal()" aria-label="Fechar">
+        <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true">
+          <path d="M6 6l12 12M18 6l-12 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+        </svg>
+      </button>
+      <h3>Cadastrar Funcionário</h3>
+
+      <div class="form-section">
+        <h4>Dados Pessoais</h4>
+        <div class="grid">
+          <input type="text" id="add-nome" placeholder="Nome">
+          <input type="text" id="add-sobrenome" placeholder="Sobrenome">
+          <input type="date" id="add-nascimento" placeholder="Data de nascimento">
+          <select id="add-genero">
+            <option value="">Gênero</option>
+            <option>Masculino</option>
+            <option>Feminino</option>
+            <option>Outro</option>
+          </select>
+          <input type="text" id="add-cpf" placeholder="CPF">
+        </div>
+      </div>
+
+      <div class="form-section">
+        <h4>Contato</h4>
+        <div class="grid">
+          <input type="email" id="add-email" placeholder="Email">
+          <input type="text" id="add-telefone" placeholder="Telefone">
+          <input type="text" id="add-cep" placeholder="CEP">
+          <input type="text" id="add-bairro" placeholder="Bairro">
+          <input type="text" id="add-rua" placeholder="Rua">
+        </div>
+      </div>
+
+      <div class="form-section">
+        <h4>Dados Empresariais</h4>
+        <div class="grid">
+          <input type="date" id="add-admissao" placeholder="Data de admissão">
+          <input type="text" id="add-departamento" placeholder="Departamento">
+          <input type="text" id="add-cargo" placeholder="Cargo">
+          <input type="number" id="add-salario" placeholder="Salário">
+        </div>
+      </div>
+
+      <div class="form-section status">
+        <label>Status:</label>
+        <select id="add-status">
+          <option>Ativo</option>
+          <option>Inativo</option>
+        </select>
+      </div>
+
+      <div class="modal-actions">
+        <button class="btn ghost" onclick="closeAddModal()">Cancelar</button>
+        <button class="btn btn-ok" onclick="addFuncionario()">Salvar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Edição -->
+  <div class="modal" id="modalEdit">
+    <div class="modal-content">
+      <button class="icon-btn close" onclick="closeEditModal()" aria-label="Fechar">
+        <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true">
+          <path d="M6 6l12 12M18 6l-12 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+        </svg>
+      </button>
+      <h3>Editar Funcionário</h3>
+
+      <div class="form-section">
+        <h4>Dados Pessoais</h4>
+        <div class="grid">
+          <input type="text" id="edit-nome" placeholder="Nome">
+          <input type="text" id="edit-sobrenome" placeholder="Sobrenome">
+          <input type="date" id="edit-nascimento" placeholder="Data de nascimento">
+          <select id="edit-genero">
+            <option value="">Gênero</option>
+            <option>Masculino</option>
+            <option>Feminino</option>
+            <option>Outro</option>
+          </select>
+          <input type="text" id="edit-cpf" placeholder="CPF">
+        </div>
+      </div>
+
+      <div class="form-section">
+        <h4>Contato</h4>
+        <div class="grid">
+          <input type="email" id="edit-email" placeholder="Email">
+          <input type="text" id="edit-telefone" placeholder="Telefone">
+          <input type="text" id="edit-cep" placeholder="CEP">
+          <input type="text" id="edit-bairro" placeholder="Bairro">
+          <input type="text" id="edit-rua" placeholder="Rua">
+        </div>
+      </div>
+
+      <div class="form-section">
+        <h4>Dados Empresariais</h4>
+        <div class="grid">
+          <input type="text" id="edit-registro" placeholder="Registro (ID)" readonly>
+          <input type="date" id="edit-admissao" placeholder="Data de admissão">
+          <input type="text" id="edit-departamento" placeholder="Departamento">
+          <input type="text" id="edit-cargo" placeholder="Cargo">
+          <input type="number" id="edit-salario" placeholder="Salário">
+        </div>
+      </div>
+
+      <div class="form-section status">
+        <label>Status:</label>
+        <select id="edit-status">
+          <option>Ativo</option>
+          <option>Inativo</option>
+        </select>
+      </div>
+
+      <div class="modal-actions">
+        <button class="btn ghost" onclick="closeEditModal()">Cancelar</button>
+        <button class="btn btn-ok" onclick="saveEdit()">Salvar</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="assets/js/pages/funcionarios/funcionarios.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,80 @@
+@import url(../../global/global.css);
+
+main {
+    width: 85%;
+    padding: 30px;
+    display: flex;
+    flex-direction: column;
+    overflow-y: scroll;
+    background-color: var(--cor-fundo);
+}
+
+.main_top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.main_cards {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+}
+
+.btn {
+    cursor: pointer;
+    margin: 3px;
+    width: 25px;
+    height: 25px;
+    transition: all .2s ease;
+    position: relative;
+}
+
+.btn:hover {
+    transform: translateX(4px);
+}
+
+.search-box {
+    display: flex;
+    align-items: center;
+    margin: 20px;
+    width: 100%;
+}
+
+.search-box input {
+    width: 360px;
+    padding: 12px 14px 12px 42px;
+    border: 1px solid var(--muted);
+    border-radius: 999px;
+    background: var(--muted);
+    transition: all .2s ease;
+}
+
+.card {
+    text-align: justify;
+    display: flex;
+    flex-direction: column;
+    min-width: 250px;
+    margin: 20px;
+    padding: 10px;
+    gap: 15px;
+    border: solid, var(--muted);
+    border-radius: 20px;
+    cursor: pointer;
+    transition: all .2s ease;
+    position:relative;
+}
+.card:hover{
+    transform:translateX(4px);
+}
+
+.card_titulo {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+}
+
+.ativa {
+    padding: 5px;
+    color: var(--verde);
+}

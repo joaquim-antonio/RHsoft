@@ -1,0 +1,9 @@
+@import url(../../global/global.css);
+
+main{
+  width: 85%;
+  padding: 30px;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+}
