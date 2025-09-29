@@ -22,7 +22,7 @@ public class Candidato extends Pessoa{
     private List<String> habilidades;
     private String formacao;
 
-    public CandidatoModel(String experiencia, List<String> habilidades, String formacao){
+    public Candidato(String experiencia, List<String> habilidades, String formacao){
         
     }
 

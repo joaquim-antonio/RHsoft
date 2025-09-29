@@ -1,7 +1,7 @@
 package com.exemplo.app.service;
 import java.util.List;
 
-import com.exemplo.app.model.CandidatoModel;
+import com.exemplo.app.model.Candidato;
 import com.exemplo.app.repository.candidatoRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.stereotype.candidatoRepository;
@@ -16,12 +16,21 @@ public class candidatoService{
     private final candidatoRepository candidatorepository;
 
 
-    public List<CandidatoModel> mostrarTodososCandidato(){
-        return(List<CandidatoModel>) canditadoRepository.findAll();
+    public List<Candidato> mostrarTodososCandidato(){
+        return(List<Candidato>) canditadoRepository.findAll();
     }
 
     public Optional<Candidato> buscarCandidatoPorID(Long id){
         return candidatorepository.findById(id);
+    }
+
+
+    public Candidato salvarCandidato(Candidato candidato){
+        return candidatoRepository.save(candidato);
+    }
+
+    public void excluirCandidato(Long id){
+        candidatoRepository.deleteById(id);
     }
 
 
