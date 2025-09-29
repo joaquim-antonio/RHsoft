@@ -16,7 +16,7 @@ import java.util.List;
 @NoArgsConstructor;
 @AllArgsConstructor;
 
-public class CandidatoModel{
+public class Candidato extends Pessoa{
 
     private String experiencia;
     private List<String> habilidades;
