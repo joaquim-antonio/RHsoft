@@ -20,7 +20,7 @@ import java.util.Optional;
 
 public class CandidatoController{
 
-    @autowired;
+    @Autowired
 
     private final CandidatoService candidatoservice;
 
@@ -34,7 +34,7 @@ public class CandidatoController{
 
 
      @GetMapping(path = "/{id}")
-    public ResponseEntityList<Candidato> buscarCandidatoPorId(@PathVariable Long id) {
+    public ResponseEntity<List<Candidato>> buscarCandidatoPorId(@PathVariable Long id) {
 
         Optional<Candidato> candidato = candidatoservice.buscarCandidatoPorId(id);
 
@@ -46,7 +46,7 @@ public class CandidatoController{
     }
 
     @PostMapping
-    public ResponseEntity<Candidato> adicionarCandidatos(@Valid RequestBody Candidato candidato){
+    public ResponseEntity<Candidato> adicionarCandidatos(@Valid @RequestBody Candidato candidato){
         Candidato novoCandidato = candidatoservice.salvarCandidato(candidato);
         return new ResponseEntity<>(novoCandidato, HttpStatus.CREATED);
     }
@@ -58,7 +58,7 @@ public class CandidatoController{
 
         try {
 
-            Candidato candidato = CandidatoService.atualizarCandidato(id, candidatoAtualizado);
+            Candidato candidato = candidatoservice.atualizarCandidato(id, candidatoAtualizado);
             return new ResponseEntity<>(candidato, HttpStatus.OK);
 
         } catch (IllegalArgumentException e) {
@@ -67,6 +67,12 @@ public class CandidatoController{
         }
     }
 
+    @DeleteMapping(path = "/{id}")
+    public ResponseEntity<Void> excluir(@PathVariable("id")Long id){
+        candidatoservice.excluirCandidato(id);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
 
     
     }
@@ -75,8 +81,8 @@ public class CandidatoController{
 
 
     
-    }
+    
     
 
 
-}
+

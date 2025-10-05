@@ -14,7 +14,7 @@ import lombok.AllArgsConstructor;
 @Service
 
 public class CandidatoService{
-    @Autowired;
+    @Autowired
 
     private final CandidatoRepository candidatorepository;
 
@@ -44,6 +44,8 @@ public class CandidatoService{
         candidato.setHabilidades(candidatoAtualizado.getHabilidades());
         return candidatorepository.save(candidato);
     }
+
+
 
 
 }
