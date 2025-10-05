@@ -11,8 +11,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 
 
 
@@ -53,7 +51,23 @@ public class CandidatoController{
         return new ResponseEntity<>(novoCandidato, HttpStatus.CREATED);
     }
 
-    
+
+
+    @PutMapping(path = "/{id}")
+    public ResponseEntity<?> atualizarCandidato(@PathVariable Long id, @RequestBody Candidato candidatoAtualizado) {
+
+        try {
+
+            Candidato candidato = CandidatoService.atualizarCandidato(id, candidatoAtualizado);
+            return new ResponseEntity<>(candidato, HttpStatus.OK);
+
+        } catch (IllegalArgumentException e) {
+
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+        }
+    }
+
+
     
     }
     

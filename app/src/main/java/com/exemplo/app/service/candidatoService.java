@@ -20,7 +20,7 @@ public class CandidatoService{
 
 
     public List<Candidato> mostrarTodososCandidato(){
-        return(List<Candidato>) canditadoRepository.findAll();
+        return(List<Candidato>) canditadorepository.findAll();
     }
 
     public Optional<Candidato> buscarCandidatoPorID(Long id){
