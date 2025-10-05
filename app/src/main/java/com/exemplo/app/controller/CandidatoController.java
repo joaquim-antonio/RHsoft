@@ -11,6 +11,9 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+
 
 
 @AllArgsConstructor
@@ -43,6 +46,17 @@ public class CandidatoController{
         return new ResponseEntity<>(candidato.get(), HttpStatus.OK);
 
     }
+
+    @PostMapping
+    public ResponseEntity<Candidato> adicionarCandidatos(@Valid RequestBody Candidato candidato){
+        Candidato novoCandidato = candidatoservice.salvarCandidato(candidato);
+        return new ResponseEntity<>(novoCandidato, HttpStatus.CREATED);
+    }
+
+    
+    
+    }
+    
 
 
 
