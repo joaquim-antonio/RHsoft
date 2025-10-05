@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Optional;
 
+
 @AllArgsConstructor
 @RestController
 @RequestMapping(path = "api/v1/Candidato")
@@ -21,6 +22,16 @@ public class CandidatoController{
     @autowired;
 
     private final CandidatoService candidatoservice;
+
+    @GetMapping(path = "/all")
+    public ResponseEntity<List<Candidato>> listarCandidatos(){
+        List<Candidato> candidatos = CandidatoService.listarTodosProdutos();
+        return new ResponseEntity<>(candidatos, HttpStatus.OK);
+    }
+
+    
+    }
+    
 
 
 }
