@@ -25,9 +25,26 @@ public class CandidatoController{
 
     @GetMapping(path = "/all")
     public ResponseEntity<List<Candidato>> listarCandidatos(){
-        List<Candidato> candidatos = CandidatoService.listarTodosProdutos();
+        List<Candidato> candidatos = candidatoservice.listarTodosCandidatos();
         return new ResponseEntity<>(candidatos, HttpStatus.OK);
     }
+
+
+
+
+     @GetMapping(path = "/{id}")
+    public ResponseEntityList<Candidato> buscarCandidatoPorId(@PathVariable Long id) {
+
+        Optional<Candidato> candidato = candidatoservice.buscarCandidatoPorId(id);
+
+        if (candidato.isEmpty())
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+
+        return new ResponseEntity<>(candidato.get(), HttpStatus.OK);
+
+    }
+
+
 
     
     }
