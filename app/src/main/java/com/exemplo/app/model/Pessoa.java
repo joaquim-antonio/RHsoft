@@ -45,16 +45,6 @@ public class Pessoa {
     @DateTimeFormat(pattern = "dd/MM/yyyy")
     private LocalDate dataNascimento;
 
-    public Pessoa(RequestPessoa requestPessoa){
-        this.cpf = requestPessoa.cpf();
-        this.nome = requestPessoa.nome();
-        this.sobrenome = requestPessoa.sobrenome();
-        this.endereco = requestPessoa.endereco();
-        this.telefone = requestPessoa.telefone();
-        this.dataNascimento = requestPessoa.dataNascimento();
-        this.sexo = requestPessoa.sexo();
-    }
-
     public String getNomeCompleto(){
         return nome + " " + sobrenome;
     }
