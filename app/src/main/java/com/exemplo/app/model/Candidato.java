@@ -18,13 +18,13 @@ import java.util.List;
 
 public class Candidato extends Pessoa{
 
-    private String experiencia;
-    private List<String> habilidades;
+    rivate List<String> habilidades;
     private String formacao;
 
     public Candidato (String experiencia, List<String> habilidades, String formacao){
         
-    }
+    }private String experiencia;
+    
 
     
     
