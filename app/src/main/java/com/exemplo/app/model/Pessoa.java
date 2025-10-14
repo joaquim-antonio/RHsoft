@@ -1,6 +1,5 @@
 package com.exemplo.app.model;
 
-import com.exemplo.app.dto.RequestPessoa;
 import com.exemplo.app.model.Enums.TipoGenero;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
@@ -32,7 +31,7 @@ public class Pessoa {
     private String sobrenome;
 
     @NotBlank
-    private String endereco;
+    private Endereco endereco;
 
     @NotBlank
     private String telefone;
