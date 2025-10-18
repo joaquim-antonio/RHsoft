@@ -27,6 +27,7 @@ public class Pessoa {
     @Id
     @Column(unique = true)
     @Pattern(regexp = "\\d{11}", message = "CPF deve conter 11 dígitos")
+    @Setter(AccessLevel.NONE)
     private String cpf;
 
     @NotBlank
@@ -44,6 +45,7 @@ public class Pessoa {
     @NotNull
     @Past
     @DateTimeFormat(pattern = "dd/MM/yyyy")
+    @Setter(AccessLevel.NONE)
     private LocalDate dataNascimento;
 
     public String getNomeCompleto(){

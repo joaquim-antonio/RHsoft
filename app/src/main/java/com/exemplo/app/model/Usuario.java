@@ -11,6 +11,7 @@ import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
+import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 
 // Autor: Pedro Lucas Soares Rezende
@@ -31,11 +32,13 @@ public class Usuario {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Setter(AccessLevel.NONE)
     private Long id;
 
     @NotBlank
     @Size(min = 3, max = 60)
     @Column(unique = true)
+    @Setter(AccessLevel.NONE)
     private String username;
 
     @NotBlank

@@ -12,6 +12,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
+import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -27,6 +28,7 @@ public class Pagamento {
     
     @Id
     @Column(name = "codigo", unique = true, nullable = false, updatable = false)
+    @Setter(AccessLevel.NONE)
     private String codigo;
 
     @NotBlank

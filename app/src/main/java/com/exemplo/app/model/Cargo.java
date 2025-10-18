@@ -10,6 +10,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -24,6 +25,7 @@ public class Cargo {
     @Id
     @Column (unique = true, nullable = false)
     @NotBlank
+    @Setter(AccessLevel.NONE)
     private String codigo;
 
     @NotBlank
