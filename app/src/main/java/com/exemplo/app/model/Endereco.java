@@ -1,10 +1,32 @@
 package com.exemplo.app.model;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.OneToOne;
+import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
+@Entity
+@Table(name = "endereco")
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class Endereco {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @NotNull
     @Positive
     private String numero;
 
@@ -54,5 +76,8 @@ public class Endereco {
 
         return sb.toString();
     }
+
+    @OneToOne (mappedBy = "endereco")
+    private Pessoa pessoa;
 
 }
