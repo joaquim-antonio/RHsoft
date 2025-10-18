@@ -4,14 +4,19 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 
+import com.exemplo.app.model.Enums.TipoItemPagamento;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -43,7 +48,7 @@ public class Pagamento {
     @Column(name = "valor_liquido", nullable = false, precision = 19, scale = 2)
     private BigDecimal valorLiquido;
 
-    @NotBlank
+    @NotNull
     private LocalDate vencimento;
 
     private String mensagens;
@@ -51,6 +56,27 @@ public class Pagamento {
     @NotBlank
     private String mesAnoReferencia;
 
+    @ManyToOne
+    @JoinColumn(name = "funcionario_id")
+    private Funcionario funcionario;
+
     @OneToMany(mappedBy = "pagamento", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ItemPagamento> itens;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "folha_pagamento_id")
+    private FolhaPagamento folhaPagamento;
+
+
+    public void calcularTotais(){
+        this.proventos = this.itens.stream()
+            .filter(item -> item.getTipo() == TipoItemPagamento.PROVENTO)
+            .map(ItemPagamento::getValor)
+            .reduce(BigDecimal.ZERO, BigDecimal::add);
+        this.descontos = this.itens.stream()
+            .filter(item -> item.getTipo() == TipoItemPagamento.DESCONTO)
+            .map(ItemPagamento::getValor)
+            .reduce(BigDecimal.ZERO, BigDecimal::add);
+            this.valorLiquido = this.proventos.subtract(this.descontos);
+    }
 }

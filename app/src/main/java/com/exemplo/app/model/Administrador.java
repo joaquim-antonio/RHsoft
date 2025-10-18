@@ -1,6 +1,7 @@
 package com.exemplo.app.model;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -19,4 +20,6 @@ public class Administrador extends Funcionario {
 
     private List<String> responsabilidades;
 
+    @OneToOne(mappedBy = "administrador")
+    private FolhaPagamento folhaPagamento;
 }

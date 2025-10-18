@@ -29,7 +29,6 @@ public class Endereco {
     private Long id;
 
     @NotNull
-    @Positive
     private String numero;
 
     @NotBlank

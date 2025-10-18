@@ -5,11 +5,14 @@ import java.time.LocalDate;
 import com.exemplo.app.model.Enums.StatusCandidatura;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
-import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -29,10 +32,18 @@ public class Candidatura {
     @Setter(AccessLevel.NONE)
     private Long id;
 
-    @NotBlank
+    @NotNull
     private LocalDate data;
 
-    @NotBlank
+    @NotNull
     private StatusCandidatura status;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "candidato_id")
+    private Candidato candidato;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "vaga_id")
+    private Vaga vaga;
 
 }

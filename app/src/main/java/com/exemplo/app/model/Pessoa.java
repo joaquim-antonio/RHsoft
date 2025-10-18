@@ -48,6 +48,12 @@ public class Pessoa {
     @Setter(AccessLevel.NONE)
     private LocalDate dataNascimento;
 
+    @NotNull
+    @Valid
+    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "endereco_id")
+    private Endereco endereco;
+
     public String getNomeCompleto(){
         return nome + " " + sobrenome;
     }
@@ -57,9 +63,5 @@ public class Pessoa {
         return Period.between(dataNascimento, hoje).getYears();
     }
 
-    @NotNull
-    @Valid
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "endereco_id")
-    private Endereco endereco;
+    
 }
