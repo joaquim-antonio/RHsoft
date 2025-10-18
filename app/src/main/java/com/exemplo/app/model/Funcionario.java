@@ -7,15 +7,16 @@ package com.exemplo.app.model;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.DecimalMin;
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -38,14 +39,7 @@ public class Funcionario {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-    @NotBlank
-    @Size(min = 3, max = 120)
-    private String nome;
-
-    @NotBlank
-    private Cargo cargo;
-
+    
     @NotNull
     @DecimalMin(value = "0.0", inclusive = false)
     private BigDecimal salario;
@@ -59,4 +53,8 @@ public class Funcionario {
 
     @OneToOne(mappedBy = "funcionario", cascade = CascadeType.ALL)
     private Usuario usuario;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "cargo_codigo")
+    private Cargo cargo;
 }
