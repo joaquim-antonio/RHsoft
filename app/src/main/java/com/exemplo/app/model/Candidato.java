@@ -2,6 +2,8 @@ package com.exemplo.app.model;
 
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.Inheritance;
+import jakarta.persistence.InheritanceType;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
@@ -18,9 +20,12 @@ import java.util.List;
 public class Candidato extends Pessoa{
 
     private List<String> habilidades;
+
     private String formacao;
+    
     private String experiencia;
 
+    
 }
 
 

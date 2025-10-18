@@ -2,9 +2,11 @@ package com.exemplo.app.model;
 
 import com.exemplo.app.model.Enums.TipoGenero;
 import jakarta.persistence.*;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Past;
+import jakarta.validation.constraints.Pattern;
 import lombok.*;
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -13,6 +15,7 @@ import java.time.Period;
 
 @Table
 @Entity
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
@@ -22,6 +25,8 @@ import java.time.Period;
 public class Pessoa {
 
     @Id
+    @Column(unique = true)
+    @Pattern(regexp = "\\d{11}", message = "CPF deve conter 11 dígitos")
     private String cpf;
 
     @NotBlank
@@ -29,9 +34,6 @@ public class Pessoa {
 
     @NotBlank
     private String sobrenome;
-
-    @NotBlank
-    private Endereco endereco;
 
     @NotBlank
     private String telefone;
@@ -52,4 +54,10 @@ public class Pessoa {
         LocalDate hoje = LocalDate.now();
         return Period.between(dataNascimento, hoje).getYears();
     }
+
+    @NotNull
+    @Valid
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "endereco_id")
+    private Endereco endereco;
 }

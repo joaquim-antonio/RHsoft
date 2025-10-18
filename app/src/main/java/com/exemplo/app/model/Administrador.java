@@ -1,6 +1,8 @@
 package com.exemplo.app.model;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.Inheritance;
+import jakarta.persistence.InheritanceType;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -19,7 +21,4 @@ public class Administrador extends Funcionario {
 
     private List<String> responsabilidades;
 
-    public Administrador(String nome, double salario, String cargo) {
-        super(nome, salario, cargo);
-    }
 }
