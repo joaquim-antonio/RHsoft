@@ -1,12 +1,8 @@
 package com.exemplo.app.repository;
 
-import com.example.sirius.model.Usuario;
+import org.springframework.data.repository.CrudRepository;
 
-public class UsuarioRepository {
+public interface UsuarioRepository extends CrudRepository<Usuario, Long>{
 
-    public Usuario save(Usuario u) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'save'");
-    }
-
-}
+    
+} 

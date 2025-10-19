@@ -13,8 +13,8 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.example.sirius.model.Usuario;
 import com.exemplo.app.model.Funcionario;
+import com.exemplo.app.model.Usuario;
 import com.exemplo.app.repository.FuncionarioRepository;
 import com.exemplo.app.repository.PessoaRepository;
 import com.exemplo.app.repository.UsuarioRepository;
@@ -43,6 +43,11 @@ public class UsuarioService {
         if(email != null && !email.isBlank()) spec = spec.and(likeIgnoreCase("email", email));
         if(ativo != null) spec = spec.and(equalsVal("ativo", ativo));
         return usuarioRepository.findAll(spec, pageable);
+    }
+
+    private Specification<Usuario> equalsVal(String string, Boolean ativo) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'equalsVal'");
     }
 
     public Usuario getIdUsuario(Long id){
