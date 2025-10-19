@@ -1,9 +1,14 @@
 package com.exemplo.app.repository;
 
-import org.springframework.data.repository.CrudRepository;
+
+import java.util.Optional;
+
+import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.exemplo.app.model.Departamento;
 
-public interface DepartamentoRepository extends CrudRepository<Departamento, String> {
+public interface DepartamentoRepository extends JpaRepository<Departamento, String> {
+
+    Optional<Departamento> findByNome(String nome);
 
 }

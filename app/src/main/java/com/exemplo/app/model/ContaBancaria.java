@@ -44,6 +44,10 @@ public class ContaBancaria {
     @JoinColumn(name= "funcionario_id")
     private Funcionario funcionario;
 
+    public void setFuncionario(Funcionario funcionario) {
+        this.funcionario = funcionario;
+    }
+
     public void atualizarChavePix(String novaChave){
         this.chavePix = novaChave;
     }

@@ -7,6 +7,4 @@ import com.exemplo.app.model.ItemPagamento;
 public interface ItemPagamentoRepository extends CrudRepository<ItemPagamento, Long>{
 
     
-} ItemPagamentoRepository {
-    
-}
+} 

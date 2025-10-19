@@ -1,7 +1,8 @@
 package com.exemplo.app.repository;
 
-import com.exemplo.app.model.Pessoa;
-import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface PessoaRepository extends CrudRepository<Pessoa, String> {
+import com.exemplo.app.model.Pessoa;
+
+public interface PessoaRepository extends JpaRepository<Pessoa, String> {
 }

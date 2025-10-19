@@ -3,7 +3,6 @@ package com.exemplo.app.service;
 import com.exemplo.app.model.Pessoa;
 import com.exemplo.app.repository.PessoaRepository;
 import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

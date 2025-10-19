@@ -7,11 +7,9 @@ import org.springframework.stereotype.Service;
 
 import com.exemplo.app.model.Administrador;
 import com.exemplo.app.model.Candidato;
-import com.exemplo.app.model.FolhaPagamento;
 import com.exemplo.app.model.Funcionario;
 import com.exemplo.app.repository.AdministradorRepository;
 import com.exemplo.app.repository.CandidatoRepository;
-import com.exemplo.app.repository.FolhaPagamentoRepository;
 import com.exemplo.app.repository.FuncionarioRepository;
 
 import lombok.AllArgsConstructor;

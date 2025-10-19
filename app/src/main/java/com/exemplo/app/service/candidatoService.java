@@ -12,37 +12,36 @@ import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
 @Service
-
 public class CandidatoService{
     @Autowired
 
-    private final CandidatoRepository candidatorepository;
+    private final CandidatoRepository candidatoRepository;
 
 
     public List<Candidato> mostrarTodososCandidato(){
-        return(List<Candidato>) canditadorepository.findAll();
+        return(List<Candidato>) canditadoRepository.findAll();
     }
 
     public Optional<Candidato> buscarCandidatoPorID(Long id){
-        return candidatorepository.findById(id);
+        return candidatoRepository.findById(id);
     }
 
 
     public Candidato salvarCandidato(Candidato candidato){
-        return candidatorepository.save(candidato);
+        return candidatoRepository.save(candidato);
     }
 
     public void excluirCandidato(Long id){
-        candidatorepository.deleteById(id);
+        candidatoRepository.deleteById(id);
     }
 
     public Candidato atualizarCandidato(Long id, Candidato candidatoAtualizado){
-        Candidato candidato = candidatorepository.findById(id);
+        Candidato candidato = candidatoRepository.findById(id);
         orElseThrow(() => IllegalArgumentException(String format("Candidato não encontrado com ID= %d",id) ));
         candidato.setExperiencia(candidatoAtualizado.getExperiencia());
         candidato.setFormacao(candidatoAtualizado.getformacao());
         candidato.setHabilidades(candidatoAtualizado.getHabilidades());
-        return candidatorepository.save(candidato);
+        return candidatoRepository.save(candidato);
     }
 
 

@@ -1,14 +1,14 @@
 package com.exemplo.app.repository;
 
-import java.util.List;
+
+import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.exemplo.app.model.Funcionario;
 
-public class FuncionarioRepository {
+public interface FuncionarioRepository extends JpaRepository<Funcionario, String> {
 
-    public List<Funcionario> findAll() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'findAll'");
-    }
+    boolean existsByCargoCodigo(String codigo);
 
-}
+    boolean existsByDepartamentoCodigo(String codigo);
+    
+} 
