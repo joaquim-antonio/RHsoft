@@ -57,7 +57,7 @@ public class DepartamentoService {
 
         departamentoExistente.setNome(departamentoNovo.getNome());
         departamentoExistente.setDescricao(departamentoNovo.getDescricao());
-        // adicione outros campos se houver
+
 
         return departamentoRepository.save(departamentoExistente);
     }

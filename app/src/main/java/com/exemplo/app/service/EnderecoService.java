@@ -9,9 +9,7 @@ import com.exemplo.app.repository.EnderecoRepository;
 import com.exemplo.app.repository.PessoaRepository;
 
 import jakarta.persistence.EntityNotFoundException;
-import lombok.AllArgsConstructor;
 
-@AllArgsConstructor
 @Service
 public class EnderecoService {
     

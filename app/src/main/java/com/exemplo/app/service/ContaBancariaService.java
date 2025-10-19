@@ -9,9 +9,7 @@ import com.exemplo.app.repository.FuncionarioRepository;
 import com.exemplo.app.repository.ContaBancariaRepository;
 
 import jakarta.persistence.EntityNotFoundException;
-import lombok.AllArgsConstructor;
 
-@AllArgsConstructor
 @Service
 public class ContaBancariaService {
 

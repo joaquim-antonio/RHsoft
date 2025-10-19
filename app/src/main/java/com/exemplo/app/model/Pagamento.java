@@ -30,7 +30,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Pagamento {
-    
+
     @Id
     @Column(name = "codigo", unique = true, nullable = false, updatable = false)
     @Setter(AccessLevel.NONE)
@@ -67,16 +67,23 @@ public class Pagamento {
     @JoinColumn(name = "folha_pagamento_id")
     private FolhaPagamento folhaPagamento;
 
+    public void calcularTotais() {
 
-    public void calcularTotais(){
+        if (this.itens == null || this.itens.isEmpty()) {
+            this.proventos = BigDecimal.ZERO;
+            this.descontos = BigDecimal.ZERO;
+            this.valorLiquido = BigDecimal.ZERO;
+            return;
+        }
+
         this.proventos = this.itens.stream()
-            .filter(item -> item.getTipo() == TipoItemPagamento.PROVENTO)
-            .map(ItemPagamento::getValor)
-            .reduce(BigDecimal.ZERO, BigDecimal::add);
+                .filter(item -> item.getTipo() == TipoItemPagamento.PROVENTO)
+                .map(ItemPagamento::getValor)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
         this.descontos = this.itens.stream()
-            .filter(item -> item.getTipo() == TipoItemPagamento.DESCONTO)
-            .map(ItemPagamento::getValor)
-            .reduce(BigDecimal.ZERO, BigDecimal::add);
-            this.valorLiquido = this.proventos.subtract(this.descontos);
+                .filter(item -> item.getTipo() == TipoItemPagamento.DESCONTO)
+                .map(ItemPagamento::getValor)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+        this.valorLiquido = this.proventos.subtract(this.descontos);
     }
 }

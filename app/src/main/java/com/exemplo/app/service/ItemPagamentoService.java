@@ -9,9 +9,7 @@ import com.exemplo.app.repository.ItemPagamentoRepository;
 import com.exemplo.app.repository.PagamentoRepository;
 
 import jakarta.persistence.EntityNotFoundException;
-import lombok.AllArgsConstructor;
 
-@AllArgsConstructor
 @Service
 public class ItemPagamentoService {
 

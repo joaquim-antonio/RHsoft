@@ -14,9 +14,7 @@ import com.exemplo.app.repository.DepartamentoRepository;
 import com.exemplo.app.repository.VagaRepository;
 
 import jakarta.persistence.EntityNotFoundException;
-import lombok.AllArgsConstructor;
 
-@AllArgsConstructor
 @Service
 public class VagaService {
 
