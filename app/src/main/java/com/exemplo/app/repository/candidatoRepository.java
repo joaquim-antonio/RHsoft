@@ -1,7 +1,8 @@
 package com.exemplo.app.repository;
 import com.exemplo.app.model.Candidato;
-import com.exemplo.app.model.Pessoa;
+import org.springframework.data.jpa.repository.JpaRepository;
 
-public class CandidatoRepository extends Pessoa<Candidato, Long> {
+
+public interface CandidatoRepository extends JpaRepository<Candidato, String> {
     
 }

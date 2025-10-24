@@ -1,7 +1,9 @@
 package com.exemplo.app.model;
-
+import java.util.ArrayList;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
@@ -9,7 +11,13 @@ import lombok.Getter;
 import lombok.Setter;
 import java.util.List;
 
-@Table(name = "candidatos")
+
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.ElementCollection;
+import jakarta.persistence.MappedSuperclass;
+
+@MappedSuperclass
+@Table(name = "Candidatos")
 @Entity
 @Getter
 @Setter
@@ -17,11 +25,17 @@ import java.util.List;
 @AllArgsConstructor
 public class Candidato extends Pessoa{
 
-    private List<String> habilidades;
+    @ElementCollection
+    @CollectionTable(name = "candidato_habilidades", joinColumns = @JoinColumn(name ="candidato_id"))
+    private List<String> habilidades = new ArrayList<>();
 
-    private String formacao;
+    @ElementCollection
+    @CollectionTable(name = "candidato_formacao", joinColumns = @JoinColumn(name ="candidato_id"))
+    private List<String> formacao = new ArrayList<>();
     
-    private String experiencia;
+    @ElementCollection
+    @CollectionTable(name = "candidato_experiências", joinColumns = @JoinColumn(name ="candidato_id"))
+    private List <String> experiencias = new ArrayList<>();
 
     
 }

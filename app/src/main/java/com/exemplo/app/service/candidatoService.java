@@ -13,8 +13,8 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 @Service
 public class CandidatoService{
+    
     @Autowired
-
     private final CandidatoRepository candidatoRepository;
 
 
