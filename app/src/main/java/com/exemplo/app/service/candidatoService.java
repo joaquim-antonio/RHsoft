@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.exemplo.app.model.Candidato;
+import com.exemplo.app.model.Usuario;
 import com.exemplo.app.repository.CandidatoRepository;
 
 import lombok.AllArgsConstructor;
@@ -19,11 +20,11 @@ public class CandidatoService{
 
 
     public List<Candidato> mostrarTodososCandidato(){
-        return(List<Candidato>) canditadoRepository.findAll();
+        return(List<Candidato>) candidatoRepository.findAll();
     }
 
     public Optional<Candidato> buscarCandidatoPorID(Long id){
-        return candidatoRepository.findById(id);
+        return candidatoRepository.findByid(id);
     }
 
 
@@ -31,16 +32,21 @@ public class CandidatoService{
         return candidatoRepository.save(candidato);
     }
 
-    public void excluirCandidato(Long id){
-        candidatoRepository.deleteById(id);
-    }
+    
 
     public Candidato atualizarCandidato(Long id, Candidato candidatoAtualizado){
-        Candidato candidato = candidatoRepository.findById(id);
-        orElseThrow(() => IllegalArgumentException(String format("Candidato não encontrado com ID= %d",id) ));
-        candidato.setExperiencia(candidatoAtualizado.getExperiencia());
-        candidato.setFormacao(candidatoAtualizado.getformacao());
-        candidato.setHabilidades(candidatoAtualizado.getHabilidades());
+        Candidato candidato = candidatoRepository.findByid(id).orElseThrow(() -> new IllegalArgumentException(String.format("Usuario não Encontrado com o CPF %s", id)));
+
+        if(candidato.getExperiencias() != null)
+            candidato.setExperiencias(candidatoAtualizado.getExperiencias());
+
+        if (candidato.getFormacao() != null)
+            candidato.setFormacao(candidatoAtualizado.getFormacao());
+
+        if (candidato.getHabilidades() != null)
+            candidato.setHabilidades(candidatoAtualizado.getHabilidades());
+
+
         return candidatoRepository.save(candidato);
     }
 
