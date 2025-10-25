@@ -1,9 +1,11 @@
 package com.exemplo.app.model;
 import java.util.ArrayList;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -41,6 +43,9 @@ public class Candidato extends Pessoa{
     @ElementCollection
     @CollectionTable(name = "candidato_experiências", joinColumns = @JoinColumn(name ="candidato_id"))
     private List <String> experiencias = new ArrayList<>();
+
+    @OneToMany(mappedBy = "candidato", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Candidatura> candidatura;
 
     
 }

@@ -28,7 +28,7 @@ public class DepartamentoService {
         return departamentoRepository.findAll();
     }
 
-    public Departamento buscarDepartamentoPorCodigo(String codigo) {
+    public Departamento buscarDepartamentoPorCodigo(Long codigo) {
         return departamentoRepository.findById(codigo)
             .orElseThrow(() -> new EntityNotFoundException("Departamento não encontrado"));
     }
@@ -39,14 +39,22 @@ public class DepartamentoService {
         if (departamentoExistente.isPresent()) {
             throw new IllegalArgumentException("Departamento com este nome já existe");
         }
-        if (departamentoRepository.existsById(departamento.getCodigo())) {
+        if (departamentoRepository.existsByCodigo(departamento.getCodigo())) {
             throw new IllegalArgumentException("Código de departamento já existente");
         }
-        return departamentoRepository.save(departamento);
+        return departamentoRepository.saveAndFlush(departamento);
+    }
+
+    public Departamento registrarDepartamento(Departamento departamento) {
+        Optional<Departamento> departamentoExistente = departamentoRepository.findByNome(departamento.getNome());
+        if (departamentoExistente.isPresent()) {
+            return departamentoExistente.get();
+        }else
+            return departamentoRepository.save(departamento);
     }
 
     // PUT
-    public Departamento atualizarDepartamento(String codigo, Departamento departamentoNovo) {
+    public Departamento atualizarDepartamento(Long codigo, Departamento departamentoNovo) {
         Departamento departamentoExistente = buscarDepartamentoPorCodigo(codigo);
 
         Optional<Departamento> outroDepartamentoComMesmoNome = departamentoRepository.findByNome(departamentoNovo.getNome());
@@ -63,7 +71,7 @@ public class DepartamentoService {
     }
 
     // DELETE
-    public void deletarDepartamento(String codigo) {
+    public void deletarDepartamento(Long codigo) {
         Departamento departamentoExcluir = buscarDepartamentoPorCodigo(codigo);
 
         boolean departamentoEmUso = funcionarioRepository.existsByDepartamentoCodigo(codigo);

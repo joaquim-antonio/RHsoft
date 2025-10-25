@@ -41,8 +41,15 @@ public class ContaBancaria {
     private String chavePix;
 
     @OneToOne
-    @JoinColumn(name= "funcionario_id")
+    @JoinColumn(name = "funcionario_id")
     private Funcionario funcionario;
+
+    public ContaBancaria(@NotBlank String agencia, String numero, String nomeBanco, String chavePix) {
+        this.agencia = agencia;
+        this.numero = numero;
+        this.nomeBanco = nomeBanco;
+        this.chavePix = chavePix;
+    }
 
     public void setFuncionario(Funcionario funcionario) {
         this.funcionario = funcionario;

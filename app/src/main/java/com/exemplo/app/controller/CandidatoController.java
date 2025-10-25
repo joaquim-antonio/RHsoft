@@ -1,5 +1,5 @@
 package com.exemplo.app.controller;
-
+/*
 import com.exemplo.app.model.Candidato;
 import com.exemplo.app.service.CandidatoService;
 import jakarta.validation.Valid;
@@ -66,9 +66,11 @@ public class CandidatoController{
     
 
 
-    
+
+
     }
-    
+ */
+
 
 
 
