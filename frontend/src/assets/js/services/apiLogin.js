@@ -35,6 +35,37 @@ import {api} from './apiLogin.js';
         }
     }
 
+    //CADASTRO
 
+    
+    
 
+    export async function register(CSSFontPaletteValuesRule,funcionario){
+        try{
 
+            const res = await api.post('/auth/register', (funcionario));
+            alert('Funcionario registrado com sucesso!');
+            return res.data;
+        }catch(err){
+            console.error('Erro ao registrar:', err.response?.data || err.message);
+            alert('Erro ao registrar funcionario.');
+        }
+    }
+
+    //GET
+
+   
+
+    export async function listarPessoas(){
+        try{
+
+            const {data} = await api.get('/api/v1/pessoa');
+            console.table(data);
+            return data;
+        }catch(err){
+            console.error('Erro ao listar o povo:', err.response?.data || err.message);
+            
+        }
+    }
+
+    
