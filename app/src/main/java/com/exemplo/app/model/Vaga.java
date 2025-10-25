@@ -1,6 +1,7 @@
 package com.exemplo.app.model;
 
 import java.time.LocalDate;
+import java.util.List;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
@@ -45,7 +46,7 @@ public class Vaga {
 
     @NotNull
     @ManyToOne
-    @JoinColumn(name = "departamento_id")
+    @JoinColumn(name = "cargo_id")
     private Cargo cargo;
 
     @NotNull
@@ -54,6 +55,6 @@ public class Vaga {
     private Departamento departamento;
 
     @OneToMany(mappedBy = "vaga", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Candidatura candidatura;
+    private List<Candidatura> candidatura;
 
 }

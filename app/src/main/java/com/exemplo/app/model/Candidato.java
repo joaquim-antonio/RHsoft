@@ -1,7 +1,9 @@
 package com.exemplo.app.model;
 
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
@@ -9,7 +11,6 @@ import lombok.Getter;
 import lombok.Setter;
 import java.util.List;
 
-@Table(name = "candidatos")
 @Entity
 @Getter
 @Setter
@@ -22,6 +23,9 @@ public class Candidato extends Pessoa{
     private String formacao;
     
     private String experiencia;
+
+    @OneToMany(mappedBy = "candidato", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Candidatura> candidatura;
 
     
 }

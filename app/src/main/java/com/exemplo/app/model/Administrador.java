@@ -10,15 +10,12 @@ import lombok.Setter;
 
 import java.util.List;
 
-@Table(name = "administradores_rh")
 @Entity
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 public class Administrador extends Funcionario {
-
-    private List<String> responsabilidades;
 
     @OneToOne(mappedBy = "administrador")
     private FolhaPagamento folhaPagamento;

@@ -26,8 +26,8 @@ public class CargoService {
         return cargoRepository.findAll();
     }
 
-    public Cargo buscarCargoPorCodigo(String codigo) {
-        return cargoRepository.findById(codigo)
+    public Cargo buscarCargoPorCodigo(Long codigo) {
+        return cargoRepository.findByCodigo(codigo)
             .orElseThrow(() -> new EntityNotFoundException("Cargo não encontrado com o código: " + codigo));
     }
 
@@ -38,15 +38,20 @@ public class CargoService {
             throw new IllegalArgumentException("Cargo com nome '" + cargo.getNome() + "' já existe.");
         }
 
-        if (cargoRepository.existsById(cargo.getCodigo())) {
-            throw new IllegalArgumentException("Código de cargo '" + cargo.getCodigo() + "' já existe.");
-        }
-
         return cargoRepository.save(cargo);
     }
 
+    public Cargo registrarCargo(Cargo cargo) {
+
+        Optional<Cargo> cargoExistente = cargoRepository.findByNome(cargo.getNome());
+        if (cargoExistente.isPresent()) {
+            return cargoExistente.get();
+        }else
+            return cargoRepository.saveAndFlush(cargo);
+    }
+
     // PUT
-    public Cargo atualizarCargo(String codigo, Cargo cargoAtualizado) {
+    public Cargo atualizarCargo(Long codigo, Cargo cargoAtualizado) {
         Cargo cargoExistente = buscarCargoPorCodigo(codigo);
 
         Optional<Cargo> outroCargoComMesmoNome = cargoRepository.findByNome(cargoAtualizado.getNome());
@@ -61,7 +66,7 @@ public class CargoService {
     }
 
     // DELETE
-    public void deletarCargo(String codigo) {
+    public void deletarCargo(Long codigo) {
         Cargo cargoExcluido = buscarCargoPorCodigo(codigo);
 
         boolean cargoEmUso = funcionarioRepository.existsByCargoCodigo(codigo);

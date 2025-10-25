@@ -1,5 +1,6 @@
 package com.exemplo.app.service;
 
+import com.exemplo.app.model.Departamento;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -9,6 +10,8 @@ import com.exemplo.app.repository.FuncionarioRepository;
 import com.exemplo.app.repository.ContaBancariaRepository;
 
 import jakarta.persistence.EntityNotFoundException;
+
+import java.util.Optional;
 
 @Service
 public class ContaBancariaService {
@@ -44,6 +47,14 @@ public class ContaBancariaService {
         funcionario.setContaBancaria(conta);
 
         return contaBancariaRepository.save(conta);
+    }
+
+    public ContaBancaria registrarConta(ContaBancaria conta) {
+        Optional<ContaBancaria> contaExistente = contaBancariaRepository.findById(conta.getId());
+        if (contaExistente.isPresent()) {
+            return contaExistente.get();
+        }else
+            return contaBancariaRepository.saveAndFlush(conta);
     }
 
     // PUT - substitui toda a conta

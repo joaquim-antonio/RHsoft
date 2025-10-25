@@ -1,9 +1,6 @@
 package com.exemplo.app.model;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -20,9 +17,9 @@ import lombok.Setter;
 public class Departamento {
     
     @Id
-    @Column (unique = true, nullable = false)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Setter(AccessLevel.NONE)
-    private String codigo;
+    private Long codigo;
 
     @NotBlank
     private String nome;

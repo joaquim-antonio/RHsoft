@@ -36,7 +36,7 @@ public class VagaService {
             .orElseThrow(() -> new EntityNotFoundException());
     }
 
-    public Vaga criarVaga(Vaga vaga, String cargoCodigo, String departamentoCodigo){
+    public Vaga criarVaga(Vaga vaga, String cargoCodigo, Long departamentoCodigo){
         if (vaga.getDataLimite().isBefore(LocalDate.now())){
             throw new IllegalArgumentException("Data inválida");
         }

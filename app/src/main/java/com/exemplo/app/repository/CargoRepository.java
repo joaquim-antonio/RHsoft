@@ -8,6 +8,8 @@ import com.exemplo.app.model.Cargo;
 public interface CargoRepository extends JpaRepository<Cargo, String>{
 
     Optional<Cargo> findByNome(String nome);
+
+    Optional<Cargo> findByCodigo(Long codigo);
  
     boolean existsByNome(String nome);
 
