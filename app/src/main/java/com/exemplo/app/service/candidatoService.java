@@ -6,7 +6,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.exemplo.app.model.Candidato;
-import com.exemplo.app.model.Usuario;
 import com.exemplo.app.repository.CandidatoRepository;
 
 import lombok.AllArgsConstructor;
@@ -19,11 +18,11 @@ public class CandidatoService{
     private final CandidatoRepository candidatoRepository;
 
 
-    public List<Candidato> mostrarTodososCandidato(){
+    public List<Candidato> listarTodosOsCandidatos(){
         return(List<Candidato>) candidatoRepository.findAll();
     }
 
-    public Optional<Candidato> buscarCandidatoPorID(Long id){
+    public Optional<Candidato> buscarCandidatoPorId(Long id){
         return candidatoRepository.findByid(id);
     }
 
@@ -32,10 +31,15 @@ public class CandidatoService{
         return candidatoRepository.save(candidato);
     }
 
+
+    public List<Candidato> listarTodososCandidatos(){
+        return candidatoRepository.findAll();
+    }
+
     
 
     public Candidato atualizarCandidato(Long id, Candidato candidatoAtualizado){
-        Candidato candidato = candidatoRepository.findByid(id).orElseThrow(() -> new IllegalArgumentException(String.format("Usuario não Encontrado com o CPF %s", id)));
+        Candidato candidato = candidatoRepository.findByid(id).orElseThrow(() -> new IllegalArgumentException(String.format("Candidato não Encontrado com o CPF %s", id)));
 
         if(candidato.getExperiencias() != null)
             candidato.setExperiencias(candidatoAtualizado.getExperiencias());

@@ -26,7 +26,7 @@ public class CandidatoController{
 
     @GetMapping(path = "/all")
     public ResponseEntity<List<Candidato>> listarCandidatos(){
-        List<Candidato> candidatos = candidatoservice.listarTodosCandidatos();
+        List<Candidato> candidatos = candidatoservice.listarTodosOsCandidatos();
         return new ResponseEntity<>(candidatos, HttpStatus.OK);
     }
 
@@ -36,12 +36,8 @@ public class CandidatoController{
      @GetMapping(path = "/{id}")
     public ResponseEntity<List<Candidato>> buscarCandidatoPorId(@PathVariable Long id) {
 
-        Optional<Candidato> candidato = candidatoservice.buscarCandidatoPorId(id);
-
-        if (candidato.isEmpty())
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-
-        return new ResponseEntity<>(candidato.get(), HttpStatus.OK);
+        Optional<Candidato> candidatos = candidatoservice.buscarCandidatoPorId(id);
+        return new ResponseEntity<>(candidato, HttpStatus.OK);
 
     }
 
@@ -67,11 +63,7 @@ public class CandidatoController{
         }
     }
 
-    @DeleteMapping(path = "/{id}")
-    public ResponseEntity<Void> excluir(@PathVariable("id")Long id){
-        candidatoservice.excluirCandidato(id);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-    }
+    
 
 
     
