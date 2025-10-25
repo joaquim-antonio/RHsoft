@@ -79,3 +79,24 @@ import {api} from './apiLogin.js';
             console.error('Erro ao criar pessoa', err.response?.data || err.message);
         }
     }
+
+        //REQUISIÇÃO PUT: Atualizar Pessoa;
+    export async function atualizarPessoa(cpf, pessoaAtualizada){
+        try{
+            const{data} = await api.put('/api/v1/pessoa/${cpi}', pessoaAtualizada);
+            alert('Pessoa atualizada!');
+            return data;
+        }catch(err){
+            console.error('Erro ao atualizar Pessoa', err.response?.data || err.messsage);
+        }
+    }
+
+    //DELETE
+    export async function excluirPessoa(cpf){
+        try{
+            await api.delete(`/api/v1/pessoa/${cpf}`);
+            alert('Pessoa Excluida com sucesso!');
+        }catch(err){
+            console.error('Erro ao excluir Pessoa', err.response?.data || err.message)
+        }
+    }
