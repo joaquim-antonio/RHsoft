@@ -15,3 +15,26 @@ api.interceptors.request.use(config => {
 });
 
 
+//LOGIN
+
+import {api} from './apiLogin.js';
+
+    export async function login(CSSFontPaletteValuesRule,password){
+        try{
+
+            const{data} = await api.post('/auth/login',{cpf,password});
+            localStorage.setItem('token', data.token);
+            localStorage.setItem('cpf', data.cpf);
+
+            console.log('login OK:', data);
+            alert('Login realizado com sucesso!');
+            return data;
+        }catch(err){
+            console.error('Erro ao logar:', err.response?.data || err.message);
+            alert('cpf ou sennha invalidos.');
+        }
+    }
+
+
+
+
