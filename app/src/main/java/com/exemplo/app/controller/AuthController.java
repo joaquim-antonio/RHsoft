@@ -7,7 +7,7 @@ import com.exemplo.app.dto.RegisterFuncionarioDTO;
 import com.exemplo.app.infra.security.TokenService;
 import com.exemplo.app.model.*;
 import com.exemplo.app.model.Enums.TipoGenero;
-import com.exemplo.app.repository.FuncionarioRepository;
+import com.exemplo.app.repository.FuncionarioRepositorY;
 import com.exemplo.app.service.CargoService;
 import com.exemplo.app.service.ContaBancariaService;
 import com.exemplo.app.service.DepartamentoService;
