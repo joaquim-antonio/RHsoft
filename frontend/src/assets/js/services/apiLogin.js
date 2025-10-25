@@ -68,4 +68,14 @@ import {api} from './apiLogin.js';
         }
     }
 
-    
+
+    //POST(Pessoa)
+    export async function criarPessoa(pessoa){
+        try{
+            const{data} = await api.post('api/v1/pessoa', pessoa);
+            alert('pessoa criada com sucesso!');
+            return data;
+        }catch(err){
+            console.error('Erro ao criar pessoa', err.response?.data || err.message);
+        }
+    }
