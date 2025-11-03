@@ -1,17 +1,16 @@
 package com.exemplo.app.service;
 
-import com.exemplo.app.model.Departamento;
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.exemplo.app.model.ContaBancaria;
 import com.exemplo.app.model.Funcionario;
-import com.exemplo.app.repository.FuncionarioRepository;
 import com.exemplo.app.repository.ContaBancariaRepository;
+import com.exemplo.app.repository.FuncionarioRepository;
 
 import jakarta.persistence.EntityNotFoundException;
-
-import java.util.Optional;
 
 @Service
 public class ContaBancariaService {
