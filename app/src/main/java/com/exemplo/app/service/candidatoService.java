@@ -1,4 +1,5 @@
 package com.exemplo.app.service;
+
 import java.util.List;
 import java.util.Optional;
 
@@ -12,49 +13,37 @@ import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
 @Service
-public class CandidatoService{
-    
+public class CandidatoService {
+
     @Autowired
     private final CandidatoRepository candidatoRepository;
 
-
-    public List<Candidato> listarTodosOsCandidatos(){
-        return(List<Candidato>) candidatoRepository.findAll();
-    }
-
-    public Optional<Candidato> buscarCandidatoPorId(Long id){
-        return candidatoRepository.findByid(id);
-    }
-
-
-    public Candidato salvarCandidato(Candidato candidato){
-        return candidatoRepository.save(candidato);
-    }
-
-
-    public List<Candidato> listarTodososCandidatos(){
+    public List<Candidato> listarTodosOsCandidatos() {
         return candidatoRepository.findAll();
     }
 
+    public Optional<Candidato> buscarCandidatoPorId(String cpf) {
+        return candidatoRepository.findById(cpf); 
+    }
+
+    public Candidato salvarCandidato(Candidato candidato) {
+        return candidatoRepository.save(candidato);
+    }
     
+    public Candidato atualizarCandidato(String cpf, Candidato candidatoAtualizado) {
+        Candidato candidato = candidatoRepository.findById(cpf)
+                .orElseThrow(() -> new IllegalArgumentException(
+                        String.format("Candidato não encontrado com o CPF %s", cpf)));
 
-    public Candidato atualizarCandidato(Long id, Candidato candidatoAtualizado){
-        Candidato candidato = candidatoRepository.findByid(id).orElseThrow(() -> new IllegalArgumentException(String.format("Candidato não Encontrado com o CPF %s", id)));
-
-        if(candidato.getExperiencias() != null)
+        if (candidatoAtualizado.getExperiencias() != null)
             candidato.setExperiencias(candidatoAtualizado.getExperiencias());
 
-        if (candidato.getFormacao() != null)
+        if (candidatoAtualizado.getFormacao() != null)
             candidato.setFormacao(candidatoAtualizado.getFormacao());
 
-        if (candidato.getHabilidades() != null)
+        if (candidatoAtualizado.getHabilidades() != null)
             candidato.setHabilidades(candidatoAtualizado.getHabilidades());
-
 
         return candidatoRepository.save(candidato);
     }
-
-
-
-
 }
