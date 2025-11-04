@@ -9,6 +9,8 @@ import com.exemplo.app.model.Enums.TipoGenero;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.ForeignKey;
 import jakarta.persistence.Id;
 import jakarta.persistence.Inheritance;
@@ -54,6 +56,7 @@ public class Pessoa {
     private String telefone;
 
     @NotNull
+    @Enumerated(EnumType.STRING)
     private TipoGenero sexo;
 
     @NotNull
