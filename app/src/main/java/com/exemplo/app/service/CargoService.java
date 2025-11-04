@@ -51,7 +51,12 @@ public class CargoService {
             Cargo novoCargo = new Cargo();
             //Atualizar para Dto posteriomente
             novoCargo.setNome(cargo.getNome());
-            novoCargo.setRole(role);
+            if (role == null){
+                novoCargo.setRole(Role.USER); // Apenas teste
+            } else{
+                novoCargo.setRole(role);
+            }
+            
             return cargoRepository.saveAndFlush(novoCargo);
         }
     }
