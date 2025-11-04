@@ -10,6 +10,7 @@ import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
+import jakarta.persistence.ForeignKey;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
@@ -57,14 +58,14 @@ public class Pagamento {
     private String mesAnoReferencia;
 
     @ManyToOne
-    @JoinColumn(name = "funcionario_id")
+    @JoinColumn(name = "funcionario_id", foreignKey=@ForeignKey(name = "fk_pagamento_funcionario"))
     private Funcionario funcionario;
 
     @OneToMany(mappedBy = "pagamento", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ItemPagamento> itens;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "folha_pagamento_id")
+    @JoinColumn(name = "folha_pagamento_id", foreignKey=@ForeignKey(name = "fk_pagamento_folhapagamento"))
     private FolhaPagamento folhaPagamento;
 
     public void calcularTotais() {

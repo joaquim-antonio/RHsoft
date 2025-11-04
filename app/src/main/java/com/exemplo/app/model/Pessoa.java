@@ -9,6 +9,7 @@ import com.exemplo.app.model.Enums.TipoGenero;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.ForeignKey;
 import jakarta.persistence.Id;
 import jakarta.persistence.Inheritance;
 import jakarta.persistence.InheritanceType;
@@ -63,7 +64,7 @@ public class Pessoa {
     @NotNull
     @Valid
     @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinColumn(name = "endereco_id")
+    @JoinColumn(name = "endereco_id", foreignKey=@ForeignKey(name = "fk_pessoa_endereco"))
     private Endereco endereco;
 
 }
