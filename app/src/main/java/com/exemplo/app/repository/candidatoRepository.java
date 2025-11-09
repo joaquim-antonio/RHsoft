@@ -6,4 +6,7 @@ import com.exemplo.app.model.Candidato;
 
 public interface CandidatoRepository extends JpaRepository<Candidato, String> {
 
+
+   
+    
 }

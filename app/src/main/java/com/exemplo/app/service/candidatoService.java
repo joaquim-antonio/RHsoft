@@ -22,7 +22,7 @@ public class CandidatoService {
         return candidatoRepository.findAll();
     }
 
-    public Optional<Candidato> buscarCandidatoPorId(String cpf) {
+    public Optional<Candidato> buscarCandidatoPorCpf(String cpf) {
         return candidatoRepository.findById(cpf); 
     }
 
@@ -43,6 +43,8 @@ public class CandidatoService {
 
         if (candidatoAtualizado.getHabilidades() != null)
             candidato.setHabilidades(candidatoAtualizado.getHabilidades());
+
+        
 
         return candidatoRepository.save(candidato);
     }

@@ -1,5 +1,5 @@
 package com.exemplo.app.controller;
-/*
+
 import com.exemplo.app.model.Candidato;
 import com.exemplo.app.service.CandidatoService;
 import jakarta.validation.Valid;
@@ -21,7 +21,6 @@ import java.util.Optional;
 public class CandidatoController{
 
     @Autowired
-
     private final CandidatoService candidatoservice;
 
     @GetMapping(path = "/all")
@@ -33,13 +32,17 @@ public class CandidatoController{
 
 
 
-     @GetMapping(path = "/{id}")
-    public ResponseEntity<List<Candidato>> buscarCandidatoPorId(@PathVariable Long id) {
+     @GetMapping("/{cpf}")
+public ResponseEntity<?> buscarCandidatoPorCpf(@PathVariable String cpf) {
+    Optional<Candidato> candidato = candidatoservice.buscarCandidatoPorCpf(cpf);
 
-        Optional<Candidato> candidatos = candidatoservice.buscarCandidatoPorId(id);
-        return new ResponseEntity<>(candidato, HttpStatus.OK);
-
+    if (candidato.isPresent()) {
+        return ResponseEntity.ok(candidato.get());
+    } else {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                             .body(String.format("Candidato não encontrado com o CPF %s", cpf));
     }
+}
 
     @PostMapping
     public ResponseEntity<Candidato> adicionarCandidatos(@Valid @RequestBody Candidato candidato){
@@ -50,11 +53,11 @@ public class CandidatoController{
 
 
     @PutMapping(path = "/{id}")
-    public ResponseEntity<?> atualizarCandidato(@PathVariable Long id, @RequestBody Candidato candidatoAtualizado) {
+    public ResponseEntity<?> atualizarCandidato(@PathVariable String cpf, @RequestBody Candidato candidatoAtualizado) {
 
         try {
 
-            Candidato candidato = candidatoservice.atualizarCandidato(id, candidatoAtualizado);
+            Candidato candidato = candidatoservice.atualizarCandidato(cpf, candidatoAtualizado);
             return new ResponseEntity<>(candidato, HttpStatus.OK);
 
         } catch (IllegalArgumentException e) {
@@ -69,7 +72,7 @@ public class CandidatoController{
 
 
     }
- */
+ 
 
 
 
