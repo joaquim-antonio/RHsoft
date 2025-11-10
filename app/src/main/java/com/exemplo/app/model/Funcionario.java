@@ -10,8 +10,6 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-// import com.exemplo.app.model.Enums.Role;
-
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.DiscriminatorValue;
 import jakarta.persistence.Entity;
@@ -69,8 +67,12 @@ public class Funcionario extends Pessoa implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-    //     if(cargo.getRole() == Role.ADMIN) return List.of(new SimpleGrantedAuthority("ROLE_ADMIN"), new SimpleGrantedAuthority("ROLE_USER"));
-    //     else return List.of(new SimpleGrantedAuthority("ROLE_USER"));
+        if (this instanceof Administrador){
+            return List.of(new SimpleGrantedAuthority("ROLE_ADMIN"), new SimpleGrantedAuthority("ROLE_USER"));
+        }
+        else{
+            return List.of(new SimpleGrantedAuthority("ROLE_USER"));
+        }
     }
 
     @Override

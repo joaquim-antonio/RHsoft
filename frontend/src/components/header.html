@@ -1,0 +1,36 @@
+<nav class="navbar navbar-custom">
+    <div class="container-fluid">
+        <div class="navbar-brand d-flex align-items-center fw-bold text-black h-100">
+            <a href="homepage.html">
+                <img src="../assets/images/global/logo.png" alt="logo" style="height: 60px;">
+            </a>
+        </div>
+        <div class="d-flex align-items-center">
+            <div class="user-info me-3">
+                <span id="nomeUserHeader" class="text-black">User</span>
+                <div class="user-avatar">
+                    <img src="#" alt="User Avatar"
+                        style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;">
+                </div>
+            </div>
+            <button class="menu-toggle" id="menuToggleBtn" data-bs-toggle="dropdown" aria-expanded="false"
+                title="Opções do usuário">
+                <i class="fas fa-ellipsis-v"></i>
+            </button>
+
+            <ul class="dropdown-menu dropdown-menu-end" id="userMenuDropdown" aria-labelledby="menuToggleBtn">
+
+                <li>
+                    <a href="perfil-beneficiario.html" class="dropdown-item">
+                        <i class="fas fa-user-circle me-2"></i>Visualizar dados
+                    </a>
+                </li>
+                <li>
+                    <a href="#" class="dropdown-item" id="logoutBtn">
+                        <i class="fas fa-sign-out-alt me-2"></i>Fazer logout
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
