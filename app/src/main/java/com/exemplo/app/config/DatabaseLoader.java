@@ -2,7 +2,6 @@ package com.exemplo.app.config;
 
 import java.io.InputStream;
 import java.util.List;
-import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
@@ -11,7 +10,6 @@ import org.springframework.stereotype.Component;
 
 import com.exemplo.app.dto.CboOcupacaoDTO;
 import com.exemplo.app.model.Cargo;
-import com.exemplo.app.model.Enums.Role;
 import com.exemplo.app.repository.CargoRepository;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -25,14 +23,6 @@ public class DatabaseLoader implements CommandLineRunner {
     @Autowired
     private ObjectMapper objectMapper;
 
-    // Cargos de admin
-    private static final Set<String> TITULOS_ADMIN = Set.of(
-            "Administrador",
-            "Analista de Recursos Humanos",
-            "Gerente de Recursos Humanos",
-            "Gerente Administrativo"
-
-    );
 
     @Override
     public void run(String... args) throws Exception {
@@ -61,11 +51,8 @@ public class DatabaseLoader implements CommandLineRunner {
                 continue;
             }
 
-            Role role = TITULOS_ADMIN.contains(titulo) ? Role.ADMIN : Role.USER;
-
             Cargo cargo = new Cargo();
             cargo.setNome(titulo);
-            cargo.setRole(role);
 
             cargoRepository.save(cargo);
         }
