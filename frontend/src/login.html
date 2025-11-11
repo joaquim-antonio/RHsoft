@@ -1,162 +1,105 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link
-      href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/css/bootstrap.min.css"
-      rel="stylesheet"
-    />
 
-    <link
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
-      rel="stylesheet"
-    />
-    <link rel="stylesheet" href="./assets/css/pages/Login/login.css" />
-    <link
-      rel="icon"
-      type="image/x-icon"
-      href="./assets/images/global/logo.png"
-    />
-    <title>RhSoft - Login</title>
-  </head>
-  <body>
-    <div
-      class="container-fluid vh-100 d-flex justify-content-center align-items-center login-wrapper"
-    >
-      <!-- Decoração de fundo -->
-      <div class="background-decoration"></div>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/css/bootstrap.min.css" rel="stylesheet" />
 
-      <div class="row w-100 justify-content-center">
-        <div class="col-11 col-sm-10 col-md-8 col-lg-5 col-xl-4">
-          <div class="card login-card shadow-lg border-0">
-            <div class="card-body p-4 p-md-5">
-              <div
-                class="d-flex justify-content-center align-items-center gap-3 mb-4"
-              >
-                <img
-                  src="./assets/images/global/logo.png"
-                  alt="RhSoft Logo"
-                  class="logo"
-                  width="50"
-                  height="50"
-                />
-                <h1 class="h2 fw-bold mb-0 text-primary-custom">RhSoft</h1>
-              </div>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet" />
+  <link rel="stylesheet" href="./assets/css/pages/Login/login.css" />
+  <link rel="icon" type="image/x-icon" href="./assets/images/global/logo.png" />
+  <title>RhSoft - Login</title>
+</head>
 
-              <div class="text-center mb-4">
-                <h2 class="h4 fw-bold text-primary-custom mb-2">Bem-vindo!</h2>
-                <p class="text-muted small">
-                  Entre com seus dados para acessar
-                </p>
-              </div>
+<body>
+  <div class="container-fluid vh-100 d-flex justify-content-center align-items-center login-wrapper">
+    <!-- Decoração de fundo -->
+    <div class="background-decoration"></div>
 
-              <!-- Formulário de login -->
-              <form id="loginForm" class="needs-validation" novalidate>
-                <!-- Campo CPF -->
-                <div class="mb-3">
-                  <label
-                    for="cpfInput"
-                    class="form-label fw-bold small text-uppercase"
-                  >
-                    <i class="fas fa-id-card me-2 text-primary-custom"></i>CPF
-                  </label>
-                  <input
-                    type="text"
-                    class="form-control form-control-custom"
-                    id="cpfInput"
-                    placeholder="000.000.000-00"
-                    required
-                    aria-label="CPF"
-                    maxlength="14"
-                  />
-                  <div class="invalid-feedback d-block" id="cpfFeedback"></div>
-                  <small class="text-success d-none" id="cpfSuccess">
-                    <i class="fas fa-check-circle me-1"></i>CPF válido
-                  </small>
-                </div>
-
-                <!-- Campo Senha -->
-                <div class="mb-3">
-                  <label
-                    for="passwordInput"
-                    class="form-label fw-bold small text-uppercase"
-                  >
-                    <i class="fas fa-lock me-2 text-primary-custom"></i>Senha
-                  </label>
-                  <div class="position-relative">
-                    <input
-                      type="password"
-                      class="form-control form-control-custom"
-                      id="passwordInput"
-                      placeholder="Digite sua senha"
-                      required
-                      aria-label="Senha"
-                      autocomplete="current-password"
-                    />
-                    <button
-                      type="button"
-                      class="btn btn-link position-absolute end-0 top-50 translate-middle-y text-primary-custom password-toggle"
-                      id="togglePassword"
-                      aria-label="Mostrar/ocultar senha"
-                      tabindex="0"
-                    >
-                      <i class="fas fa-eye"></i>
-                    </button>
-                  </div>
-                </div>
-
-                <!-- Mensagem de erro -->
-                <div
-                  id="errorMessage"
-                  class="alert alert-danger d-none d-flex align-items-center gap-2"
-                  role="alert"
-                >
-                  <i class="fas fa-exclamation-circle flex-shrink-0"></i>
-                  <span id="errorText"></span>
-                </div>
-
-                <!-- Botão de login -->
-                <button
-                  class="btn btn-primary btn-custom w-100 fw-bold py-2 mb-3"
-                  type="submit"
-                  id="loginButton"
-                >
-                  <span class="btn-text">Entrar</span>
-                  <i
-                    class="fas fa-spinner fa-spin ms-2 d-none"
-                    id="btnSpinner"
-                  ></i>
-                </button>
-
-                <!-- Divisor -->
-                <div
-                  class="d-flex align-items-center gap-2 my-4 text-muted small"
-                >
-                  <div class="flex-grow-1 border-top"></div>
-                  <span>OU</span>
-                  <div class="flex-grow-1 border-top"></div>
-                </div>
-
-                <!-- Link de cadastro -->
-                <div class="text-center mb-3">
-                  <p class="small text-muted mb-2">Novo por aqui?</p>
-                  <a
-                    href="#"
-                    class="text-decoration-none fw-bold text-primary-custom link-hover"
-                  >
-                    Cadastre-se como candidato
-                  </a>
-                </div>
-              </form>
+    <div class="row w-100 justify-content-center">
+      <div class="col-11 col-sm-10 col-md-8 col-lg-5 col-xl-4">
+        <div class="card login-card shadow-lg border-0">
+          <div class="card-body p-4 p-md-5">
+            <div class="d-flex justify-content-center align-items-center gap-3 mb-4">
+              <img src="./assets/images/global/logo.png" alt="RhSoft Logo" class="logo" width="50" height="50" />
+              <h1 class="h2 fw-bold mb-0 text-primary-custom">RhSoft</h1>
             </div>
+
+            <div class="text-center mb-4">
+              <h2 class="h4 fw-bold text-primary-custom mb-2">Bem-vindo!</h2>
+              <p class="text-muted small">
+                Entre com seus dados para acessar
+              </p>
+            </div>
+
+            <!-- Formulário de login -->
+            <form id="loginForm" class="needs-validation" novalidate>
+              <!-- Campo CPF -->
+              <div class="mb-3">
+                <label for="cpfInput" class="form-label fw-bold small text-uppercase">
+                  <i class="fas fa-id-card me-2 text-primary-custom"></i>CPF
+                </label>
+                <input type="text" class="form-control form-control-custom" id="cpfInput" placeholder="000.000.000-00"
+                  required aria-label="CPF" maxlength="14" />
+                <div class="invalid-feedback d-block" id="cpfFeedback"></div>
+                <small class="text-success d-none" id="cpfSuccess">
+                  <i class="fas fa-check-circle me-1"></i>CPF válido
+                </small>
+              </div>
+
+              <!-- Campo Senha -->
+              <div class="mb-3">
+                <label for="passwordInput" class="form-label fw-bold small text-uppercase">
+                  <i class="fas fa-lock me-2 text-primary-custom"></i>Senha
+                </label>
+                <div class="position-relative">
+                  <input type="password" class="form-control form-control-custom" id="passwordInput"
+                    placeholder="Digite sua senha" required aria-label="Senha" autocomplete="current-password" />
+                  <button type="button"
+                    class="btn btn-link position-absolute end-0 top-50 translate-middle-y text-primary-custom password-toggle"
+                    id="togglePassword" aria-label="Mostrar/ocultar senha" tabindex="0">
+                    <i class="fas fa-eye"></i>
+                  </button>
+                </div>
+              </div>
+
+              <!-- Mensagem de erro -->
+              <div id="errorMessage" class="alert alert-danger d-none d-flex align-items-center gap-2" role="alert">
+                <i class="fas fa-exclamation-circle flex-shrink-0"></i>
+                <span id="errorText"></span>
+              </div>
+
+              <!-- Botão de login -->
+              <button class="btn btn-primary btn-custom w-100 fw-bold py-2 mb-3" type="submit" id="loginButton">
+                <span class="btn-text">Entrar</span>
+                <i class="fas fa-spinner fa-spin ms-2 d-none" id="btnSpinner"></i>
+              </button>
+
+              <!-- Divisor -->
+              <div class="d-flex align-items-center gap-2 my-4 text-muted small">
+                <div class="flex-grow-1 border-top"></div>
+                <span>OU</span>
+                <div class="flex-grow-1 border-top"></div>
+              </div>
+
+              <!-- Link de cadastro -->
+              <div class="text-center mb-3">
+                <p class="small text-muted mb-2">Novo por aqui?</p>
+                <a href="#" class="text-decoration-none fw-bold text-primary-custom link-hover">
+                  Cadastre-se como candidato
+                </a>
+              </div>
+            </form>
           </div>
         </div>
       </div>
     </div>
+  </div>
 
-    <!-- Scripts -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/js/bootstrap.bundle.min.js"></script>
-    <!-- <script src="login.js"></script> -->
-  </body>
+  <!-- Scripts -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/js/bootstrap.bundle.min.js"></script>
+  <script src="./assets/js/login.js"></script>
+</body>
+
 </html>
