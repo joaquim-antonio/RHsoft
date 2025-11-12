@@ -2,6 +2,7 @@ package com.exemplo.app.model;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.ForeignKey;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -18,14 +19,15 @@ import lombok.Setter;
 @Entity
 @Table(name = "contaBancaria")
 @Getter
-@Setter(AccessLevel.PRIVATE)
+@Setter
 @AllArgsConstructor
+@Builder
 @NoArgsConstructor
 public class ContaBancaria {
     
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Setter(AccessLevel.NONE)
+    @Setter
     private Long id;
 
     @NotBlank
@@ -41,7 +43,7 @@ public class ContaBancaria {
     private String chavePix;
 
     @OneToOne
-    @JoinColumn(name = "funcionario_id")
+    @JoinColumn(name = "funcionario_id", foreignKey=@ForeignKey(name = "fk_contabancaria_funcionario"))
     private Funcionario funcionario;
 
     public ContaBancaria(@NotBlank String agencia, String numero, String nomeBanco, String chavePix) {
