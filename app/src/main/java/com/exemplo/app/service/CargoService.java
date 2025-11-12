@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.exemplo.app.model.Cargo;
+import com.exemplo.app.model.Enums.Role;
 import com.exemplo.app.repository.CargoRepository;
 import com.exemplo.app.repository.FuncionarioRepository;
 
@@ -41,7 +42,7 @@ public class CargoService {
         return cargoRepository.save(cargo);
     }
 
-    public Cargo registrarCargo(Cargo cargo) {
+    public Cargo registrarCargo(Cargo cargo, Role role) {
 
         Optional<Cargo> cargoExistente = cargoRepository.findByNome(cargo.getNome());
         if (cargoExistente.isPresent()) {
@@ -50,6 +51,7 @@ public class CargoService {
             Cargo novoCargo = new Cargo();
             //Atualizar para Dto posteriomente
             novoCargo.setNome(cargo.getNome());
+            novoCargo.setRole(role);
             return cargoRepository.saveAndFlush(novoCargo);
         }
     }

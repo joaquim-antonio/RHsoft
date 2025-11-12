@@ -7,6 +7,7 @@ import com.exemplo.app.model.Cargo;
 import com.exemplo.app.model.ContaBancaria;
 import com.exemplo.app.model.Departamento;
 import com.exemplo.app.model.Endereco;
+import com.exemplo.app.model.Enums.Role;
 
 public record RegisterFuncionarioDTO(
     String cpf, // CPF
@@ -21,6 +22,7 @@ public record RegisterFuncionarioDTO(
     LocalDate dataAdmissao,
     Double horasTrabalhadas,
     Cargo cargo,
+    Role role, // Provissorio
     ContaBancaria contaBancaria,
     Departamento departamento
 ) {}

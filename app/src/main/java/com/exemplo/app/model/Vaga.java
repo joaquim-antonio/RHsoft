@@ -5,7 +5,6 @@ import java.util.List;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
-import jakarta.persistence.ForeignKey;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -47,12 +46,12 @@ public class Vaga {
 
     @NotNull
     @ManyToOne
-    @JoinColumn(name = "cargo_id", foreignKey=@ForeignKey(name = "fk_vaga_cargo"))
+    @JoinColumn(name = "cargo_id")
     private Cargo cargo;
 
     @NotNull
     @ManyToOne
-    @JoinColumn(name = "departamento_id", foreignKey=@ForeignKey(name = "fk_vaga_departamento"))
+    @JoinColumn(name = "departamento_id")
     private Departamento departamento;
 
     @OneToMany(mappedBy = "vaga", cascade = CascadeType.ALL, orphanRemoval = true)

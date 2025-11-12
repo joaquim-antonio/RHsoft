@@ -6,7 +6,6 @@ import com.exemplo.app.model.Enums.StatusCandidatura;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
-import jakarta.persistence.ForeignKey;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -40,11 +39,11 @@ public class Candidatura {
     private StatusCandidatura status;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "candidato_id", foreignKey=@ForeignKey(name = "fk_candidatura_candidato"))
+    @JoinColumn(name = "candidato_id")
     private Candidato candidato;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "vaga_id", foreignKey=@ForeignKey(name = "fk_candidatura_vaga"))
+    @JoinColumn(name = "vaga_id")
     private Vaga vaga;
 
 }

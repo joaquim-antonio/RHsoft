@@ -9,7 +9,6 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
-import jakarta.persistence.ForeignKey;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -50,7 +49,7 @@ public class ItemPagamento {
     private BigDecimal valor;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "codigo", nullable = false, foreignKey=@ForeignKey(name = "fk_itempagamento_pagamento"))
+    @JoinColumn(name = "codigo", nullable = false)
     private Pagamento pagamento;
 
 }
