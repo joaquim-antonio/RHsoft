@@ -1,15 +1,30 @@
 /*adiciona fonte principal Inter*/
 :root {
     --cor-azul: #80C0D4;
+    --cor-azul-escuro: #305c69;
     --cor-azul-secundaria: #C7E9FF;
     --cor-fundo: #FAFAFA;
     --cor-texto: #1a1a1a;
     --cor-cinza: #ccc;
     --fonte-principal: 'inter';
+
+    --gradient-start: #667eea;
+    --gradient-end: #764ba2;
+
     --amarelo: #ffd966;
     --verde: #70ff66;
     --vermelho: #ff5c5c;
+
     --shadow: 0 8px 28px rgba(0, 0, 0, .08);
+    --shadow-lg: 0 20px 60px rgba(0, 0, 0, .15);
     --radius: 12px;
     --muted: #eeeeee;
+    --conteudo: #f8f9fa;
+
+    --fonte-principal: "Segoe UI", Tahoma, Geneva, Verdana, sans-serrif;
+    --font-size-base: 16px;
+    --line-height-base: 1.5;
+    --fw-normal: 400;
+    --fw-semibold: 600;
+    --fw-bold: 700;
 }

@@ -32,7 +32,7 @@ public class Candidato extends Pessoa{
     private List<String> formacao = new ArrayList<>();
     
     @ElementCollection
-    @CollectionTable(name = "candidato_experiências", joinColumns = @JoinColumn(name ="candidato_id"))
+    @CollectionTable(name = "candidato_experiencias", joinColumns = @JoinColumn(name ="candidato_id"))
     private List <String> experiencias = new ArrayList<>();
 
     @OneToMany(mappedBy = "candidato", cascade = CascadeType.ALL, orphanRemoval = true)

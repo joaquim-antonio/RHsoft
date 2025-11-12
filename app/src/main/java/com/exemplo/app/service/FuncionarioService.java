@@ -86,7 +86,7 @@ public class FuncionarioService implements UserDetailsService {
         newConta.setFuncionario(newFuncionario);
 
         //criando cargo
-        newFuncionario.setCargo(cargoService.registrarCargo(body.cargo(), body.role()));
+        newFuncionario.setCargo(cargoService.registrarCargo(body.cargo()));
 
         //adicionar departamento
         newFuncionario.setDepartamento(deptoService.registrarDepartamento(body.departamento()));

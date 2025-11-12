@@ -1,0 +1,91 @@
+@import url("https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css");
+@import url("https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap");
+@import url("reset.css");
+@import url("variables.css");
+
+body {
+  background-color: var(--conteudo) !important;
+}
+
+.navbar-custom {
+  background-color: var(--cor-azul);
+  height: 97px;
+}
+
+.menu-toggle {
+  transition: background-color 0.2s ease;
+}
+
+.menu-toggle:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.sidebar {
+  min-height: calc(100vh - 97px);
+}
+
+.sidebar-section {
+  margin-bottom: 1.5rem;
+}
+
+.sidebar-title {
+  color: var(--cor-azul-escuro);
+}
+
+.sidebar-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 1rem;
+  color: #555;
+  text-decoration: none;
+  font-size: 0.9rem;
+  border-left: 3px solid transparent;
+  transition: all 0.2s ease;
+}
+
+.sidebar-item:hover {
+  background: #f8f9fa;
+  border-left-color: #3498db;
+  color: #555;
+}
+
+.sidebar-item i {
+  width: 16px;
+  text-align: center;
+  color: #7f8c8d;
+}
+
+.sidebar-icons:hover {
+  cursor: pointer;
+  color: var(--cor-azul-escuro);
+}
+
+
+/* Modoescuro */
+body.dark-mode {
+    background-color: #2c2c2c !important;
+    color: #e0e0e0 !important;
+}
+
+body.dark-mode .sidebar{
+    background-color: #4b4b4b !important;
+    border-color: #333;
+}
+
+body.dark-mode .sidebar-title{
+    color: var(--cor-azul-secundaria);
+}
+
+body.dark-mode .sidebar-item{
+    color: #ccc;
+}
+
+body.dark-mode .sidebar-item:hover{
+    background-color: #333;
+    color: #fff;
+}
+
+body.dark-mode .sidebar-item i{
+    color: #aaa;
+}
