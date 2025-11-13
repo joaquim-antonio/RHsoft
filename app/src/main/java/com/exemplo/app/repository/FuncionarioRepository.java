@@ -12,4 +12,6 @@ public interface FuncionarioRepository extends CrudRepository<Funcionario, Strin
     boolean existsByCargoCodigo(Long codigo);
 
     boolean existsByDepartamentoCodigo(Long codigo);
+
+    
 } 

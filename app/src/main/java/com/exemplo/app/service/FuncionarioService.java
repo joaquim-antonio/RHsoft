@@ -1,5 +1,8 @@
 package com.exemplo.app.service;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -22,6 +25,11 @@ import jakarta.transaction.Transactional;
 @Service
 public class FuncionarioService implements UserDetailsService {
 
+
+
+
+
+
     @Autowired
     FuncionarioRepository repository;
 
@@ -30,6 +38,21 @@ public class FuncionarioService implements UserDetailsService {
 
     @Autowired
     CargoService cargoService;
+
+
+    @Autowired
+    private FuncionarioRepository funcionarioRepository;
+
+
+
+    
+    public List<Funcionario> listarTodosFuncionarios(){
+        List<Funcionario> funcionarios = new ArrayList<>();
+        funcionarioRepository.findAll().forEach(funcionarios::add);
+        return funcionarios;
+    }
+
+
 
     @Override
     public UserDetails loadUserByUsername(String cpf) throws UsernameNotFoundException {
