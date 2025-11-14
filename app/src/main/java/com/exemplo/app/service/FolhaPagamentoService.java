@@ -94,6 +94,40 @@ public BigDecimal incluirAcrescimo(
 
 
 
+public BigDecimal calculoDeBeneficios(
+        Funcionario funcionario,
+        TipoAcrescimo tipo,
+        TipoPericulosidade nivelPericulosidade,
+        BigDecimal valorAlimentacao) {
+
+   
+    BigDecimal salarioBaseCalculado = CalcularSalariosDeFuncionarios(funcionario);
+
+    
+    BigDecimal descontoVT = salarioBaseCalculado
+            .multiply(new BigDecimal("0.06"))
+            .setScale(2, RoundingMode.HALF_UP); 
+
+    
+    if (valorAlimentacao == null) {
+        valorAlimentacao = BigDecimal.ZERO; 
+    }
+
+    
+    BigDecimal adicional = BigDecimal.ZERO;
+
+    boolean temAcrescimo = (tipo != null && tipo != TipoAcrescimo.NENHUM);
+    if (temAcrescimo) {
+        adicional = incluirAcrescimo(funcionario, tipo, nivelPericulosidade);
+    }
+
+    return salarioBaseCalculado
+            .add(adicional)
+            .subtract(descontoVT)
+            .add(valorAlimentacao)
+            .setScale(2, RoundingMode.HALF_UP);
+}
+
 
 
 
