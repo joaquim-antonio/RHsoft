@@ -10,11 +10,11 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import com.exemplo.app.model.Enums.Role;
-
 import jakarta.persistence.CascadeType;
+import jakarta.persistence.DiscriminatorValue;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
+import jakarta.persistence.ForeignKey;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
@@ -31,6 +31,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@DiscriminatorValue("FUNCIONARIO")
 public class Funcionario extends Pessoa implements UserDetails {
     
     @NotNull
@@ -49,7 +50,7 @@ public class Funcionario extends Pessoa implements UserDetails {
 
     //@NotNull
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "cargo_codigo")
+    @JoinColumn(name = "cargo_codigo", foreignKey=@ForeignKey(name = "fk_funcionario_cargo"))
     private Cargo cargo;
 
     //@NotNull
@@ -58,7 +59,7 @@ public class Funcionario extends Pessoa implements UserDetails {
 
     //@NotNull
     @ManyToOne
-    @JoinColumn(name = "departamento_id")
+    @JoinColumn(name = "departamento_id", foreignKey=@ForeignKey(name = "fk_funcionario_departamento"))
     private Departamento departamento;
 
     @OneToMany(mappedBy = "funcionario", cascade = CascadeType.ALL, orphanRemoval = true)
@@ -66,8 +67,12 @@ public class Funcionario extends Pessoa implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        if(cargo.getRole() == Role.ADMIN) return List.of(new SimpleGrantedAuthority("ROLE_ADMIN"), new SimpleGrantedAuthority("ROLE_USER"));
-        else return List.of(new SimpleGrantedAuthority("ROLE_USER"));
+        if (this instanceof Administrador){
+            return List.of(new SimpleGrantedAuthority("ROLE_ADMIN"), new SimpleGrantedAuthority("ROLE_USER"));
+        }
+        else{
+            return List.of(new SimpleGrantedAuthority("ROLE_USER"));
+        }
     }
 
     @Override

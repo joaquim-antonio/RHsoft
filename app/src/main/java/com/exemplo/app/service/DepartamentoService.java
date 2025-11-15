@@ -18,10 +18,10 @@ import lombok.AllArgsConstructor;
 public class DepartamentoService {
 
     @Autowired
-    private DepartamentoRepository departamentoRepository;
+    final private DepartamentoRepository departamentoRepository;
 
     @Autowired
-    private FuncionarioRepository funcionarioRepository;
+    final private FuncionarioRepository funcionarioRepository;
 
     // GET
     public List<Departamento> listarTodosDepartamentos() {
