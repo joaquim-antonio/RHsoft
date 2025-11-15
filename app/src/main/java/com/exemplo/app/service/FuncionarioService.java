@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -16,22 +14,22 @@ import com.exemplo.app.model.ContaBancaria;
 import com.exemplo.app.model.Endereco;
 import com.exemplo.app.model.Enums.TipoGenero;
 import com.exemplo.app.model.Funcionario;
+import com.exemplo.app.model.Pessoa;
+import com.exemplo.app.model.Candidato;
 import com.exemplo.app.model.Usuario;
 import com.exemplo.app.repository.FuncionarioRepository;
+import com.exemplo.app.repository.PessoaRepository;
 
 import jakarta.transaction.Transactional;
 
-//chamada automaticamente pelo spring security ao tentarmos acessar qualquer endpoint
 @Service
-public class FuncionarioService implements UserDetailsService {
-
-
-
-
-
+public class FuncionarioService {
 
     @Autowired
     FuncionarioRepository repository;
+
+    @Autowired
+    PessoaRepository pessoaRepository;
 
     @Autowired
     DepartamentoService deptoService;
@@ -39,30 +37,22 @@ public class FuncionarioService implements UserDetailsService {
     @Autowired
     CargoService cargoService;
 
-
     @Autowired
     private FuncionarioRepository funcionarioRepository;
 
-
-
-    
-    public List<Funcionario> listarTodosFuncionarios(){
+    public List<Funcionario> listarTodosFuncionarios() {
         List<Funcionario> funcionarios = new ArrayList<>();
         funcionarioRepository.findAll().forEach(funcionarios::add);
         return funcionarios;
     }
 
-
-
-    @Override
-    public UserDetails loadUserByUsername(String cpf) throws UsernameNotFoundException {
-        return this.repository.findByCpf(cpf);
-    }
-
+    /**
+     * Registra um NOVO funcionário
+     */
     @Transactional
     public Funcionario register(RegisterFuncionarioDTO body) {
         // Validação
-        if (repository.findByCpf(body.cpf()) != null) {
+        if (pessoaRepository.existsById(body.cpf())) {
             throw new CpfAlreadyExistsException("CPF já cadastrado");
         }
 
@@ -91,30 +81,74 @@ public class FuncionarioService implements UserDetailsService {
         newEndereco.setEstado(body.endereco().getEstado());
         newFuncionario.setEndereco(newEndereco);
 
-        //criando usuario
+        // criando usuario
         Usuario newUser = new Usuario();
         newUser.setPasswordHash(new BCryptPasswordEncoder().encode(body.password()));
         newUser.setStatus(true);
         newFuncionario.setUsuario(newUser);
-        newUser.setFuncionario(newFuncionario);
+        newUser.setPessoa(newFuncionario);
 
-        //criando conta bancaria
+        // criando conta bancaria
         ContaBancaria newConta = new ContaBancaria(
-            body.contaBancaria().getAgencia(),
-            body.contaBancaria().getNumero(),
-            body.contaBancaria().getNomeBanco(),
-            body.contaBancaria().getChavePix()
-            );
+                body.contaBancaria().getAgencia(),
+                body.contaBancaria().getNumero(),
+                body.contaBancaria().getNomeBanco(),
+                body.contaBancaria().getChavePix());
         newFuncionario.setContaBancaria(newConta);
         newConta.setFuncionario(newFuncionario);
 
-        //criando cargo
+        // criando cargo
         newFuncionario.setCargo(cargoService.registrarCargo(body.cargo()));
 
-        //adicionar departamento
+        // adicionar departamento
         newFuncionario.setDepartamento(deptoService.registrarDepartamento(body.departamento()));
 
-        //JPA salva no db
+        // JPA salva no db
         return this.repository.save(newFuncionario);
+    }
+
+    /**
+     * Converte um Candidato existente em um Funcionario.
+     */
+    @Transactional
+    public Funcionario contratarCandidato(String cpf, RegisterFuncionarioDTO dadosContratacao) {
+        Pessoa pessoa = pessoaRepository.findById(cpf)
+                .orElseThrow(() -> new UsernameNotFoundException("Candidato não encontrado com CPF: " + cpf));
+
+        if (!(pessoa instanceof Candidato)) {
+            throw new IllegalStateException(
+                    "Esta pessoa não é um Candidato e não pode ser contratada por este método.");
+        }
+
+        Funcionario novoFuncionario = new Funcionario();
+
+        novoFuncionario.setCpf(pessoa.getCpf());
+        novoFuncionario.setNome(pessoa.getNome());
+        novoFuncionario.setSobrenome(pessoa.getSobrenome());
+        novoFuncionario.setTelefone(pessoa.getTelefone());
+        novoFuncionario.setSexo(pessoa.getSexo());
+        novoFuncionario.setDataNascimento(pessoa.getDataNascimento());
+        novoFuncionario.setEndereco(pessoa.getEndereco());
+        novoFuncionario.setUsuario(pessoa.getUsuario()); // Reutiliza o login!
+
+        novoFuncionario.setSalario(dadosContratacao.salario());
+        novoFuncionario.setDataAdmissao(dadosContratacao.dataAdmissao());
+        novoFuncionario.setHorasTrabalhadas(dadosContratacao.horasTrabalhadas());
+        novoFuncionario.setHorasExtras(0.00);
+
+        novoFuncionario.setCargo(cargoService.registrarCargo(dadosContratacao.cargo()));
+        novoFuncionario.setDepartamento(deptoService.registrarDepartamento(dadosContratacao.departamento()));
+
+        ContaBancaria newConta = new ContaBancaria(
+                dadosContratacao.contaBancaria().getAgencia(),
+                dadosContratacao.contaBancaria().getNumero(),
+                dadosContratacao.contaBancaria().getNomeBanco(),
+                dadosContratacao.contaBancaria().getChavePix());
+        novoFuncionario.setContaBancaria(newConta);
+        newConta.setFuncionario(novoFuncionario);
+
+        pessoaRepository.delete(pessoa);
+
+        return pessoaRepository.save(novoFuncionario);
     }
 }

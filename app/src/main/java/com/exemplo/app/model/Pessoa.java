@@ -1,8 +1,14 @@
 package com.exemplo.app.model;
 
 import java.time.LocalDate;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import com.exemplo.app.model.Enums.TipoGenero;
 
@@ -39,7 +45,7 @@ import lombok.ToString;
 @Setter
 @ToString
 @EqualsAndHashCode(of = "cpf")
-public class Pessoa {
+public class Pessoa implements UserDetails {
 
     @Id
     @Column(unique = true)
@@ -69,5 +75,54 @@ public class Pessoa {
     @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "endereco_id", foreignKey=@ForeignKey(name = "fk_pessoa_endereco"))
     private Endereco endereco;
+
+    @OneToOne(mappedBy = "pessoa", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Usuario usuario;
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        // MODIFICADO: Lógica de papéis
+        if (this instanceof Administrador) {
+            return List.of(new SimpleGrantedAuthority("ROLE_ADMIN"), new SimpleGrantedAuthority("ROLE_USER"));
+        } else if (this instanceof Funcionario) {
+            return List.of(new SimpleGrantedAuthority("ROLE_USER"));
+        } else if (this instanceof Candidato) {
+            return List.of(new SimpleGrantedAuthority("ROLE_CANDIDATO"));
+        }
+        return Collections.emptyList(); // Nenhum papel
+    }
+
+    @Override
+    public String getPassword() {
+        if (this.usuario != null) {
+            return this.usuario.getPasswordHash();
+        }
+        return null; 
+    }
+
+    @Override
+    public String getUsername() {
+        return getCpf(); 
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true; 
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return this.usuario != null && this.usuario.isStatus();
+    }
 
 }
