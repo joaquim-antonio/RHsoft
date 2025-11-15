@@ -1,6 +1,6 @@
-package com.exemplo.app.model.Enums;
+// package com.exemplo.app.model.Enums;
 
-public enum Role {
-    ADMIN,
-    USER
-}
+// public enum Role {
+//     ADMIN,
+//     USER
+// }

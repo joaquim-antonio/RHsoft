@@ -81,7 +81,6 @@ public class Pessoa implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        // MODIFICADO: Lógica de papéis
         if (this instanceof Administrador) {
             return List.of(new SimpleGrantedAuthority("ROLE_ADMIN"), new SimpleGrantedAuthority("ROLE_USER"));
         } else if (this instanceof Funcionario) {

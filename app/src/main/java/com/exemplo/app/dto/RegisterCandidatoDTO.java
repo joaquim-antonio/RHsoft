@@ -12,7 +12,7 @@ public record RegisterCandidatoDTO(
     String nome,
     String sobrenome,
     String telefone,
-    TipoGenero sexo,
+    String sexo,
     LocalDate dataNascimento,
     Endereco endereco
 ) {}
