@@ -182,6 +182,48 @@ public BigDecimal calcularValeTransporte(BigDecimal salarioBase) {
 
 
 
+    public BigDecimal calcularSalarioLiquido(
+        Funcionario funcionario,
+        TipoAcrescimo tipo,
+        TipoPericulosidade nivelPericulosidade,
+        BigDecimal valorAlimentacao) {
+
+    
+    BigDecimal salarioBase = CalcularSalariosDeFuncionarios(funcionario);
+
+    
+    BigDecimal adicional = BigDecimal.ZERO;
+    if (tipo != null && tipo != TipoAcrescimo.NENHUM) {
+        adicional = incluirAcrescimo(funcionario, tipo, nivelPericulosidade);
+    }
+
+   
+    BigDecimal salarioBruto = salarioBase.add(adicional);
+
+    
+    BigDecimal vt = calcularValeTransporte(salarioBase);
+    BigDecimal inss = calcularINSS(salarioBruto);
+    BigDecimal irrf = calcularIRRF(salarioBruto.subtract(inss));
+    BigDecimal fgts = calcularFGTS(salarioBruto); 
+
+ 
+    if (valorAlimentacao == null) valorAlimentacao = BigDecimal.ZERO;
+
+    
+    BigDecimal salarioLiquido = salarioBruto
+            .subtract(inss)
+            .subtract(irrf)
+            .subtract(vt)
+            .add(valorAlimentacao)
+            .setScale(2, RoundingMode.HALF_UP);
+
+    return salarioLiquido;
+}
+
+
+
+
+
 
 
 
