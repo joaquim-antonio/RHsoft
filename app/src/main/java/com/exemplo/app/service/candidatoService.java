@@ -22,14 +22,14 @@ public class CandidatoService {
         return candidatoRepository.findAll();
     }
 
-    public Optional<Candidato> buscarCandidatoPorId(String cpf) {
-        return candidatoRepository.findById(cpf); 
+    public Optional<Candidato> buscarCandidatoPorCpf(String cpf) {
+        return candidatoRepository.findById(cpf);
     }
 
     public Candidato salvarCandidato(Candidato candidato) {
         return candidatoRepository.save(candidato);
     }
-    
+
     public Candidato atualizarCandidato(String cpf, Candidato candidatoAtualizado) {
         Candidato candidato = candidatoRepository.findById(cpf)
                 .orElseThrow(() -> new IllegalArgumentException(

@@ -1,6 +1,7 @@
 package com.exemplo.app.model;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.ForeignKey;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -37,6 +38,5 @@ public class Usuario{
     private boolean status = true;
 
     @OneToOne
-    @JoinColumn(name = "funcionario_id")
-    private Funcionario funcionario;
+ @JoinColumn(name = "funcionario_id", foreignKey=@ForeignKey(name = "fk_usuario_funcionario"))    private Funcionario funcionario;
 }
