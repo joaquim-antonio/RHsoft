@@ -1,16 +1,14 @@
 package com.exemplo.app.service;
 
-import java.util.List;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import com.exemplo.app.model.Enums.TipoAcrescimo;
-import com.exemplo.app.model.Enums.TipoPericulosidade;
-
-
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.exemplo.app.model.Enums.TipoAcrescimo;
+import com.exemplo.app.model.Enums.TipoPericulosidade;
 import com.exemplo.app.model.Funcionario;
 import com.exemplo.app.repository.FolhaPagamentoRepository;
 import com.exemplo.app.repository.FuncionarioRepository;
@@ -32,7 +30,6 @@ private FolhaPagamentoRepository folhaPagamentoRepository;
 public void gerarFolhaDePagamento(){
     List<Funcionario> funcionarios = funcionarioService.listarTodosFuncionarios();
 }
-    
 
 public BigDecimal CalcularSalariosDeFuncionarios(Funcionario funcionario ){
 
@@ -46,7 +43,6 @@ public BigDecimal CalcularSalariosDeFuncionarios(Funcionario funcionario ){
     return salario;
     
 }
-
 
 public BigDecimal incluirAcrescimo(
         Funcionario funcionario,
@@ -93,40 +89,99 @@ public BigDecimal incluirAcrescimo(
 }
 
 
+public BigDecimal calcularValeTransporte(BigDecimal salarioBase) {
+        return salarioBase.multiply(new BigDecimal("0.06"))
+                .setScale(2, RoundingMode.HALF_UP);
+    }
 
-public BigDecimal calculoDeBeneficios(
-        Funcionario funcionario,
-        TipoAcrescimo tipo,
-        TipoPericulosidade nivelPericulosidade,
-        BigDecimal valorAlimentacao) {
 
-   
-    BigDecimal salarioBaseCalculado = CalcularSalariosDeFuncionarios(funcionario);
-
-    
-    BigDecimal descontoVT = salarioBaseCalculado
-            .multiply(new BigDecimal("0.06"))
-            .setScale(2, RoundingMode.HALF_UP); 
-
-    
-    if (valorAlimentacao == null) {
-        valorAlimentacao = BigDecimal.ZERO; 
+    public BigDecimal calcularFGTS(BigDecimal salarioBruto) {
+        return salarioBruto.multiply(new BigDecimal("0.08"))
+                .setScale(2, RoundingMode.HALF_UP);
     }
 
     
-    BigDecimal adicional = BigDecimal.ZERO;
+    public BigDecimal calcularINSS(BigDecimal salario) {
 
-    boolean temAcrescimo = (tipo != null && tipo != TipoAcrescimo.NENHUM);
-    if (temAcrescimo) {
-        adicional = incluirAcrescimo(funcionario, tipo, nivelPericulosidade);
+        if (salario.compareTo(new BigDecimal("1412.00")) <= 0) {
+            return salario.multiply(new BigDecimal("0.075"));
+        }
+        if (salario.compareTo(new BigDecimal("2666.68")) <= 0) {
+            return salario.multiply(new BigDecimal("0.09"))
+                    .subtract(new BigDecimal("21.18"));
+        }
+        if (salario.compareTo(new BigDecimal("4000.03")) <= 0) {
+            return salario.multiply(new BigDecimal("0.12"))
+                    .subtract(new BigDecimal("101.18"));
+        }
+        if (salario.compareTo(new BigDecimal("7786.02")) <= 0) {
+            return salario.multiply(new BigDecimal("0.14"))
+                    .subtract(new BigDecimal("181.18"));
+        }
+
+        return new BigDecimal("908.86");
     }
 
-    return salarioBaseCalculado
-            .add(adicional)
-            .subtract(descontoVT)
-            .add(valorAlimentacao)
-            .setScale(2, RoundingMode.HALF_UP);
-}
+    
+    public BigDecimal calcularIRRF(BigDecimal base) {
+
+        if (base.compareTo(new BigDecimal("2259.20")) <= 0) {
+            return BigDecimal.ZERO;
+        }
+        if (base.compareTo(new BigDecimal("2826.65")) <= 0) {
+            return base.multiply(new BigDecimal("0.075"))
+                    .subtract(new BigDecimal("169.44"));
+        }
+        if (base.compareTo(new BigDecimal("3751.05")) <= 0) {
+            return base.multiply(new BigDecimal("0.15"))
+                    .subtract(new BigDecimal("381.44"));
+        }
+        if (base.compareTo(new BigDecimal("4664.68")) <= 0) {
+            return base.multiply(new BigDecimal("0.225"))
+                    .subtract(new BigDecimal("662.77"));
+        }
+
+        return base.multiply(new BigDecimal("0.275"))
+                .subtract(new BigDecimal("896.00"));
+    }
+
+
+    
+    public BigDecimal calculoDeBeneficios(
+            Funcionario funcionario,
+            TipoAcrescimo tipo,
+            TipoPericulosidade nivelPericulosidade,
+            BigDecimal valorAlimentacao) {
+
+        BigDecimal salarioBaseCalculado = CalcularSalariosDeFuncionarios(funcionario);
+
+        BigDecimal vt = calcularValeTransporte(salarioBaseCalculado);
+
+        if (valorAlimentacao == null) valorAlimentacao = BigDecimal.ZERO;
+
+        BigDecimal adicional = BigDecimal.ZERO;
+        if (tipo != null && tipo != TipoAcrescimo.NENHUM) {
+            adicional = incluirAcrescimo(funcionario, tipo, nivelPericulosidade);
+        }
+
+        
+        BigDecimal salarioBruto = salarioBaseCalculado.add(adicional);
+
+        
+        BigDecimal inss = calcularINSS(salarioBruto);
+        BigDecimal irrf = calcularIRRF(salarioBruto.subtract(inss));
+        BigDecimal fgts = calcularFGTS(salarioBruto);
+
+        return salarioBruto
+                .subtract(inss)
+                .subtract(irrf)
+                .subtract(vt)
+                .add(valorAlimentacao)
+                .setScale(2, RoundingMode.HALF_UP);
+    }
+
+
+
 
 
 
