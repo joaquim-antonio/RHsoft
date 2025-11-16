@@ -9,6 +9,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.exemplo.app.dto.EditarPagamentoDto;
 import com.exemplo.app.model.Administrador;
 import com.exemplo.app.model.Enums.StatusPagamento;
 import com.exemplo.app.model.Enums.TipoAcrescimo;
@@ -18,6 +19,9 @@ import com.exemplo.app.model.Funcionario;
 import com.exemplo.app.model.Pagamento;
 import com.exemplo.app.repository.FolhaPagamentoRepository;
 import com.exemplo.app.repository.FuncionarioRepository;
+import com.exemplo.app.repository.PagamentoRepository;
+
+import jakarta.transaction.Transactional;
 
 
 @Service
@@ -31,6 +35,9 @@ private FuncionarioRepository funcionarioRepository;
 
 @Autowired
 private FolhaPagamentoRepository folhaPagamentoRepository;
+
+@Autowired
+private PagamentoRepository pagamentoRepository;
 
 
 public void gerarFolhaDePagamento(){
@@ -284,7 +291,7 @@ public FolhaPagamento reabrirFolha(Long idFolha) {
         throw new RuntimeException("A folha já está aberta.");
     }
 
-    // Regras especiais para CONSOLIDADA
+    
     if (folha.getStatus() == StatusPagamento.CONSOLIDADA) {
 
         long dias = ChronoUnit.DAYS.between(folha.getDataFechamento(), LocalDate.now());
@@ -298,6 +305,71 @@ public FolhaPagamento reabrirFolha(Long idFolha) {
 
     return folhaPagamentoRepository.save(folha);
 }
+
+
+
+@Transactional
+public Pagamento editarPagamento(EditarPagamentoDto dto) {
+
+    Pagamento pagamento = pagamentoRepository.findById(dto.getPagamentoId())
+            .orElseThrow(() -> new RuntimeException("Pagamento não encontrado"));
+
+    FolhaPagamento folha = pagamento.getFolhaPagamento();
+
+    if (folha.getStatus() != StatusPagamento.ABERTO) {
+        throw new RuntimeException("Só é possível editar pagamentos em folhas ABERTAS.");
+    }
+
+    Funcionario funcionario = pagamento.getFuncionario();
+
+    
+    BigDecimal salarioBase = CalcularSalariosDeFuncionarios(funcionario);
+
+    
+    BigDecimal adicionalAuto = incluirAcrescimo(
+            funcionario, 
+            funcionario.getTipoAcrescimo(), 
+            funcionario.getNivelPericulosidade()
+    );
+
+
+    BigDecimal horasExtras = dto.getHorasExtras() != null 
+            ? dto.getHorasExtras() 
+            : BigDecimal.ZERO;
+
+    BigDecimal adicionalManual = dto.getAdicionalManual() != null
+            ? dto.getAdicionalManual()
+            : BigDecimal.ZERO;
+
+
+    BigDecimal salarioBruto = salarioBase
+            .add(adicionalAuto)
+            .add(horasExtras)
+            .add(adicionalManual);
+
+    BigDecimal inss = calcularINSS(salarioBruto);
+    BigDecimal irrf = calcularIRRF(salarioBruto.subtract(inss));
+    BigDecimal vt = calcularValeTransporte(salarioBase);
+    BigDecimal fgts = calcularFGTS(salarioBruto); 
+
+    BigDecimal salarioLiquido = salarioBruto
+            .subtract(inss)
+            .subtract(irrf)
+            .subtract(vt)
+            .add(funcionario.getValeAlimentacao())
+            .setScale(2, RoundingMode.HALF_UP);
+
+    // 7. salvar alterações no pagamento
+    pagamento.setHorasExtras(horasExtras);
+    pagamento.setAdicionalManual(adicionalManual);
+    pagamento.setSalarioBaseCalculado(salarioBase);
+    pagamento.setValorLiquido(salarioLiquido);
+
+    return pagamentoRepository.save(pagamento);
+}
+
+
+
 
 
 
