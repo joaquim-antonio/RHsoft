@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RhSoft - Cadastro de Candidato</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="assets/css/pages/registroCandidato.css">
+</head>
+
+<body>
+
+    <div class="background container-fluid d-flex align-items-center justify-content-center min-vh-100 py-4">
+        <div class="row w-100 justify-content-center align-items-center">
+            <div class="col-11 col-md-9 col-lg-7">
+
+                <div class="card register-card shadow-sm border-0 rounded-4">
+                    <div class="card-body p-4 p-md-5">
+
+                        <div class="text-center mb-5">
+                            <div class="mb-3">
+                                <img src="assets/images/global/logo.png" alt="RhSoft Logo" style="height: 60px;">
+                            </div>
+                            <h1 class="h2 fw-bold text-dark">Cadastro de Candidato</h1>
+                            <p class="text-muted small mt-2">Preencha seus dados para acessar as vagas disponíveis</p>
+                        </div>
+
+                        <form id="registerForm" class="needs-validation" novalidate>
+
+                            <div class="section-card card border-0 bg-white mb-4">
+                                <div class="card-header bg-primary bg-opacity-10 border-0 rounded-top-3">
+                                    <div class="d-flex align-items-center">
+                                        <span class="badge bg-primary rounded-circle me-2"
+                                            style="width: 32px; height: 32px; display: flex; align-items: center; justify-content: center;">1</span>
+                                        <h5 class="mb-0 text-primary fw-bold">Dados Pessoais</h5>
+                                    </div>
+                                </div>
+                                <div class="card-body pt-4">
+                                    <div class="row g-3">
+                                        <div class="col-md-6">
+                                            <label for="nome" class="form-label fw-medium">Nome <span
+                                                    class="text-danger">*</span></label>
+                                            <input type="text" class="form-control form-control-lg" id="nome"
+                                                placeholder="Seu nome" required>
+                                            <div class="invalid-feedback">O nome é obrigatório.</div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label for="sobrenome" class="form-label fw-medium">Sobrenome <span
+                                                    class="text-danger">*</span></label>
+                                            <input type="text" class="form-control form-control-lg" id="sobrenome"
+                                                placeholder="Seu sobrenome" required>
+                                            <div class="invalid-feedback">O sobrenome é obrigatório.</div>
+                                        </div>
+                                        <div class="col-md-5">
+                                            <label for="cpf" class="form-label fw-medium">CPF <span
+                                                    class="text-danger">*</span></label>
+                                            <input type="text" class="form-control form-control-lg" id="cpf"
+                                                placeholder="000.000.000-00" maxlength="14" required>
+                                            <div class="invalid-feedback d-block" id="cpfFeedback"></div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <label for="dataNascimento" class="form-label fw-medium">Data de Nascimento
+                                                <span class="text-danger">*</span></label>
+                                            <input type="date" class="form-control form-control-lg" id="dataNascimento"
+                                                required>
+                                            <div class="invalid-feedback">Data obrigatória.</div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <label for="sexo" class="form-label fw-medium">Sexo <span
+                                                    class="text-danger">*</span></label>
+                                            <select class="form-select form-select-lg" id="sexo" required>
+                                                <option value="" disabled selected>Selecione...</option>
+                                                <option value="MASCULINO">Masculino</option>
+                                                <option value="FEMININO">Feminino</option>
+                                                <option value="OUTRO">Outro</option>
+                                            </select>
+                                            <div class="invalid-feedback">Selecione o sexo.</div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label for="telefone" class="form-label fw-medium">Telefone <span
+                                                    class="text-danger">*</span></label>
+                                            <input type="text" class="form-control form-control-lg" id="telefone"
+                                                placeholder="(XX) 9XXXX-XXXX" required>
+                                            <div class="invalid-feedback">Telefone obrigatório.</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="section-card card border-0 bg-white mb-4">
+                                <div class="card-header bg-info bg-opacity-10 border-0 rounded-top-3">
+                                    <div class="d-flex align-items-center">
+                                        <span class="badge bg-info rounded-circle me-2"
+                                            style="width: 32px; height: 32px; display: flex; align-items: center; justify-content: center;">2</span>
+                                        <h5 class="mb-0 text-info fw-bold">Endereço</h5>
+                                    </div>
+                                </div>
+                                <div class="card-body pt-4">
+                                    <div class="row g-3">
+                                        <div class="col-md-4">
+                                            <label for="cep" class="form-label fw-medium">CEP <span
+                                                    class="text-danger">*</span></label>
+                                            <input type="text" class="form-control form-control-lg" id="cep"
+                                                placeholder="00000-000" maxlength="9" required>
+                                            <div class="invalid-feedback">CEP obrigatório.</div>
+                                        </div>
+                                        <div class="col-md-8">
+                                            <label for="logradouro" class="form-label fw-medium">Logradouro (Ex: Rua,
+                                                Av.) <span class="text-danger">*</span></label>
+                                            <input type="text" class="form-control form-control-lg" id="logradouro"
+                                                placeholder="Tipo de logradouro" required>
+                                            <div class="invalid-feedback">Obrigatório.</div>
+                                        </div>
+                                        <div class="col-md-9">
+                                            <label for="rua" class="form-label fw-medium">Nome da Rua <span
+                                                    class="text-danger">*</span></label>
+                                            <input type="text" class="form-control form-control-lg" id="rua"
+                                                placeholder="Nome completo da rua" required>
+                                            <div class="invalid-feedback">Obrigatório.</div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <label for="numero" class="form-label fw-medium">Número <span
+                                                    class="text-danger">*</span></label>
+                                            <input type="text" class="form-control form-control-lg" id="numero"
+                                                placeholder="Ex: 123" required>
+                                            <div class="invalid-feedback">Obrigatório.</div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label for="bairro" class="form-label fw-medium">Bairro <span
+                                                    class="text-danger">*</span></label>
+                                            <input type="text" class="form-control form-control-lg" id="bairro"
+                                                placeholder="Nome do bairro" required>
+                                            <div class="invalid-feedback">Obrigatório.</div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label for="complemento" class="form-label fw-medium">Complemento</label>
+                                            <input type="text" class="form-control form-control-lg" id="complemento"
+                                                placeholder="Apto, sala, etc. (opcional)">
+                                        </div>
+                                        <div class="col-md-8">
+                                            <label for="cidade" class="form-label fw-medium">Cidade <span
+                                                    class="text-danger">*</span></label>
+                                            <input type="text" class="form-control form-control-lg" id="cidade"
+                                                placeholder="Nome da cidade" required>
+                                            <div class="invalid-feedback">Obrigatório.</div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <label for="estado" class="form-label fw-medium">Estado (UF) <span
+                                                    class="text-danger">*</span></label>
+                                            <input type="text" class="form-control form-control-lg" id="estado"
+                                                placeholder="Ex: SP" maxlength="2" required>
+                                            <div class="invalid-feedback">Obrigatório.</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="section-card card border-0 bg-white mb-4">
+                                <div class="card-header bg-success bg-opacity-10 border-0 rounded-top-3">
+                                    <div class="d-flex align-items-center">
+                                        <span class="badge bg-success rounded-circle me-2"
+                                            style="width: 32px; height: 32px; display: flex; align-items: center; justify-content: center;">3</span>
+                                        <h5 class="mb-0 text-success fw-bold">Segurança</h5>
+                                    </div>
+                                </div>
+                                <div class="card-body pt-4">
+                                    <div class="alert alert-info alert-dismissible fade show" role="alert">
+                                        <i class="fas fa-info-circle me-2"></i>
+                                        <strong>Dica:</strong> Use uma senha com pelo menos 8 caracteres, incluindo
+                                        letras e números.
+                                        <button type="button" class="btn-close" data-bs-dismiss="alert"
+                                            aria-label="Close"></button>
+                                    </div>
+                                    <div class="row g-3">
+                                        <div class="col-md-6">
+                                            <label for="password" class="form-label fw-medium">Senha <span
+                                                    class="text-danger">*</span></label>
+                                            <input type="password" class="form-control form-control-lg" id="password"
+                                                placeholder="Mínimo 8 caracteres" required>
+                                            <div class="invalid-feedback">A senha é obrigatória.</div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label for="confirmPassword" class="form-label fw-medium">Confirme a Senha
+                                                <span class="text-danger">*</span></label>
+                                            <input type="password" class="form-control form-control-lg"
+                                                id="confirmPassword" placeholder="Repita a senha" required>
+                                            <div class="invalid-feedback d-block" id="passwordFeedback"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div id="formMessage" class="alert alert-dismissible fade mb-4" role="alert">
+                                <span id="formMessageText"></span>
+                                <button type="button" class="btn-close" data-bs-dismiss="alert"
+                                    aria-label="Close"></button>
+                            </div>
+
+                            <button class="btn btn-primary btn-lg w-100 fw-bold py-3 rounded-3 mb-3" type="submit"
+                                id="registerButton">
+                                <span class="btn-text">
+                                    <i class="fas fa-check-circle me-2"></i>Finalizar Cadastro
+                                </span>
+                                <i class="fas fa-spinner fa-spin ms-2 d-none" id="btnSpinner"></i>
+                            </button>
+
+                            <div class="text-center pt-3 border-top">
+                                <p class="small text-muted mb-2">Já tem uma conta?</p>
+                                <a href="login.html" class="text-decoration-none fw-bold text-primary">
+                                    <i class="fas fa-arrow-right me-1"></i>Fazer Login
+                                </a>
+                            </div>
+
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/js/bootstrap.bundle.min.js"></script>
+    <script src="assets/js/pages/registroCandidato.js"></script>
+</body>
+
+</html>
