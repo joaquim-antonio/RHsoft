@@ -53,6 +53,12 @@ public class FolhaPagamento {
     @OneToMany(mappedBy = "folhaPagamento", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Pagamento> pagamentos = new ArrayList<>();
 
+    @Column(precision = 10, scale = 2)
+    private BigDecimal horasExtras;   
+
+    @Column(precision = 10, scale = 2)
+    private BigDecimal adicionalManual;
+
     @NotNull
     @OneToOne
     @JoinColumn(name = "adminitrador_id", foreignKey=@ForeignKey(name = "fk_folhapagamento_administrador"))
