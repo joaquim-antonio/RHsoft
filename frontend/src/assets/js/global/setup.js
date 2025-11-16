@@ -1,5 +1,5 @@
 const API_URL = "http://localhost:8080";
-const loginPageURL = "/frontend/src/login.html";
+const loginPageURL = "/frontend/src/login.html"; 
 
 /*
 Carrega os componetes header e sidebar
@@ -10,7 +10,7 @@ async function loadComponents(params) {
 
   if (headerHolder) {
     try {
-      const response = await fetch("/frontend/src/components/header.html");
+      const response = await fetch("/frontend/src/components/header.html"); 
       const headerHtml = await response.text();
       headerHolder.innerHTML = headerHtml;
 
@@ -24,7 +24,7 @@ async function loadComponents(params) {
 
   if (sidebarHolder) {
     try {
-      const response = await fetch("/frontend/src/components/sidebar.html");
+      const response = await fetch("/frontend/src/components/sidebar.html"); 
       const sidebarHtml = await response.text();
       sidebarHolder.innerHTML = sidebarHtml;
     } catch (error) {
@@ -46,8 +46,9 @@ function setupHeaderMenu() {
 
   logoutBtn.addEventListener("click", (event) => {
     event.preventDefault();
-    localStorage.removeItem("token");
-    // window.location.href = loginPageURL;
+    localStorage.removeItem("authToken"); 
+    localStorage.removeItem("userCpf"); 
+    window.location.href = loginPageURL;
   });
 }
 
@@ -55,10 +56,10 @@ function setupHeaderMenu() {
  * Busca o nome do funcionario e o exibe no header.
  */
 async function loadHeaderUserName() {
-  const token = localStorage.getItem("token");
+  const token = localStorage.getItem("authToken"); 
   if (!token) {
     console.warn("Token não encontrado para o header.");
-    // window.location.href = loginPageURL;
+    // window.location.href = loginPageURL; 
     return;
   }
 
@@ -79,16 +80,15 @@ async function loadHeaderUserName() {
     }
 
     if (response.ok) {
-      const user = await response.json();
-      console.log(user);
-      const pessoa = user.pessoa || {};
+      const pessoa = await response.json(); 
       const nomeCompleto = `${pessoa.nome || ""} ${
         pessoa.sobrenome || ""
       }`.trim();
       nomeUsuarioElement.textContent = nomeCompleto || "Usuário";
+
     } else if (response.status === 401 || response.status === 403) {
-      localStorage.removeItem("token");
-      // window.location.href = loginPageURL;
+      localStorage.removeItem("authToken");
+      // window.location.href = loginPageURL; //Fazer logout
     } else {
       nomeUsuarioElement.textContent = "Visitante";
     }
@@ -107,27 +107,30 @@ function setupThemeToggle() {
   const body = document.body;
 
   if (!moonIcon || !sunIcon) {
-    console.error("Elementos de tema não encontrados");
+    setTimeout(setupThemeToggle, 120);
     return;
   }
 
-  function enableDarkMode() {
-    body.classList.add("dark-mode");
-    localStorage.setItem("theme", "dark");
-  }
-  function disableDarkMode() {
-    body.classList.remove("dark-mode");
-    localStorage.setItem("theme", "light");
+  function applyTheme(theme) {
+    if (theme === 'dark') {
+      body.classList.add("dark-mode");
+    } else {
+      body.classList.remove("dark-mode");
+    }
+    localStorage.setItem("theme", theme);
   }
 
-  moonIcon.addEventListener("click", enableDarkMode);
-  sunIcon.addEventListener("click", disableDarkMode);
+  moonIcon.addEventListener("click", () => applyTheme('dark'));
+  sunIcon.addEventListener("click", () => applyTheme('light'));
 
-  const currentTheme = localStorage.getItem("theme");
-  if (currentTheme === "dark") {
-    enableDarkMode();
-  } else {
-    disableDarkMode();
+  const currentTheme = localStorage.getItem("theme") || 'light';
+  applyTheme(currentTheme);
+
+  if (typeof initializeDashboard === 'function') {
+    initializeDashboard();
+    if (typeof observeThemeChanges === 'function') {
+      observeThemeChanges();
+    }
   }
 }
 

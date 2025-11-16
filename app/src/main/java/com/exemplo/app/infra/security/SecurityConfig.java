@@ -29,9 +29,9 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        
-        configuration.setAllowedOrigins(Arrays.asList("http://127.0.0.1:5501")); 
-        
+
+        configuration.setAllowedOrigins(Arrays.asList("http://127.0.0.1:5501"));
+
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(Arrays.asList("*"));
         configuration.setAllowCredentials(true);
@@ -41,27 +41,30 @@ public class SecurityConfig {
     }
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity)throws Exception{
+    public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
         return httpSecurity
                 .csrf(csrf -> csrf.disable())
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .headers(headers -> headers.frameOptions(frameOptions -> frameOptions.disable()))
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .authorizeHttpRequests(authorize  -> authorize
+                .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers("/h2-console/**").permitAll()
                         .requestMatchers(HttpMethod.POST, "/auth/login").permitAll()
                         .requestMatchers(HttpMethod.POST, "/auth/register-candidato").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/v1/vagas/**")
-                            .hasAnyRole("CANDIDATO", "USER", "ADMIN")
-                        .requestMatchers(HttpMethod.POST, "/auth/register-funcionario").hasRole("ADMIN")
-                        .anyRequest().hasAnyRole("USER", "ADMIN")
-                )
+                        .hasAnyRole("CANDIDATO", "USER", "ADMIN")
+                        .requestMatchers(HttpMethod.GET, "/user/me").authenticated()
+                        .requestMatchers(HttpMethod.GET, "/api/v1/dashboard/**")
+                        .hasAnyRole("USER", "ADMIN")
+                        .requestMatchers(HttpMethod.POST, "/auth/register-funcionario").permitAll() // teste
+                        .anyRequest().hasAnyRole("USER", "ADMIN"))
                 .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
     }
 
     @Bean
-    public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration)
+            throws Exception {
         return authenticationConfiguration.getAuthenticationManager();
     }
 
