@@ -2,14 +2,20 @@ package com.exemplo.app.service;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.exemplo.app.model.Administrador;
+import com.exemplo.app.model.Enums.StatusPagamento;
 import com.exemplo.app.model.Enums.TipoAcrescimo;
 import com.exemplo.app.model.Enums.TipoPericulosidade;
+import com.exemplo.app.model.FolhaPagamento;
 import com.exemplo.app.model.Funcionario;
+import com.exemplo.app.model.Pagamento;
 import com.exemplo.app.repository.FolhaPagamentoRepository;
 import com.exemplo.app.repository.FuncionarioRepository;
 
@@ -218,6 +224,79 @@ public BigDecimal calcularValeTransporte(BigDecimal salarioBase) {
             .setScale(2, RoundingMode.HALF_UP);
 
     return salarioLiquido;
+}
+
+
+
+public FolhaPagamento abrirFolha(Administrador admin) {
+
+    FolhaPagamento folha = new FolhaPagamento();
+    folha.setStatus(StatusPagamento.ABERTO);
+    folha.setAdministrador(admin);
+    folha.setTotalLiquido(BigDecimal.ZERO);
+
+    return folhaPagamentoRepository.save(folha);
+}
+
+
+public FolhaPagamento fecharFolha(Long idFolha) {
+
+    FolhaPagamento folha = folhaPagamentoRepository.findById(idFolha)
+            .orElseThrow(() -> new RuntimeException("Folha não encontrada"));
+
+    if (folha.getStatus() != StatusPagamento.ABERTO) {
+        throw new RuntimeException("Só é possível fechar uma folha ABERTA.");
+    }
+
+    BigDecimal total = folha.getPagamentos().stream()
+            .map(Pagamento::getValorLiquido)
+            .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+    folha.setTotalLiquido(total);
+    folha.setDataFechamento(LocalDate.now());
+    folha.setStatus(StatusPagamento.FECHADA);
+
+    return folhaPagamentoRepository.save(folha);
+}
+
+
+public FolhaPagamento consolidarFolha(Long idFolha) {
+
+    FolhaPagamento folha = folhaPagamentoRepository.findById(idFolha)
+            .orElseThrow(() -> new RuntimeException("Folha não encontrada"));
+
+    if (folha.getStatus() != StatusPagamento.FECHADA) {
+        throw new RuntimeException("A folha precisa estar FECHADA para ser consolidada.");
+    }
+
+    folha.setStatus(StatusPagamento.CONSOLIDADA);
+
+    return folhaPagamentoRepository.save(folha);
+}
+
+
+public FolhaPagamento reabrirFolha(Long idFolha) {
+
+    FolhaPagamento folha = folhaPagamentoRepository.findById(idFolha)
+            .orElseThrow(() -> new RuntimeException("Folha não encontrada"));
+
+    if (folha.getStatus() == StatusPagamento.ABERTO) {
+        throw new RuntimeException("A folha já está aberta.");
+    }
+
+    // Regras especiais para CONSOLIDADA
+    if (folha.getStatus() == StatusPagamento.CONSOLIDADA) {
+
+        long dias = ChronoUnit.DAYS.between(folha.getDataFechamento(), LocalDate.now());
+
+        if (dias > 5) {
+            throw new RuntimeException("Folha consolidada não pode ser reaberta após 5 dias do fechamento.");
+        }
+    }
+
+    folha.setStatus(StatusPagamento.ABERTO);
+
+    return folhaPagamentoRepository.save(folha);
 }
 
 
