@@ -23,7 +23,7 @@ import lombok.Setter;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class Usuario{
+public class Usuario {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -38,5 +38,6 @@ public class Usuario{
     private boolean status = true;
 
     @OneToOne
- @JoinColumn(name = "funcionario_id", foreignKey=@ForeignKey(name = "fk_usuario_funcionario"))    private Funcionario funcionario;
+    @JoinColumn(name = "pessoa_cpf", foreignKey=@ForeignKey(name = "fk_usuario_pessoa"))
+    private Pessoa pessoa;
 }

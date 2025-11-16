@@ -1,0 +1,106 @@
+
+.widget-card {
+    background-color: #ffffff;
+    color: #000000;
+    border-radius: 12px;
+    padding: 1rem;
+    font-size: 0.9rem;
+    font-weight: 500;
+    border: 1px solid #eee;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+    transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.widget-card.agenda {
+    font-size: 0.8rem;
+}
+
+
+
+.chart-wrapper {
+    position: relative;
+    height: 350px;
+    width: 100%;
+    transition: background-color 0.3s ease;
+}
+
+.chart-wrapper.donut {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 250px;
+    height: 100%;
+}
+
+.chart-center-text {
+    position: absolute;
+    top: 45%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    color: #333;
+    transition: color 0.3s ease;
+    z-index: 10;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: auto;
+    white-space: nowrap;
+}
+
+
+.chartjs-tooltip {
+    border-radius: 8px !important;
+}
+
+body.dark-mode .widget-card {
+    background-color: #4b4b4b;
+    color: #e0e0e0;
+    border: 1px solid #555;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+}
+
+body.dark-mode .chart-center-text {
+    color: #ffffff;
+}
+
+body.dark-mode .chart-wrapper {
+    background-color: transparent;
+}
+
+
+.chart-title {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 1rem;
+    transition: color 0.3s ease;
+}
+
+body.dark-mode .chart-title {
+    color: #ffffff;
+}
+
+
+body.dark-mode .text-muted {
+    color: #b0b0b0 !important;
+}
+
+
+@media (max-width: 768px) {
+    .chart-wrapper {
+        height: 250px;
+    }
+
+    .widget-card {
+        padding: 0.75rem;
+        font-size: 0.85rem;
+    }
+}
+
+@media (prefers-color-scheme: dark) {
+    body:not(.dark-mode) .widget-card {
+        background-color: #f5f5f5;
+    }
+}

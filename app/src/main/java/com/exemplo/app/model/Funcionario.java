@@ -3,12 +3,7 @@ package com.exemplo.app.model;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
-
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.DiscriminatorValue;
@@ -32,7 +27,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 @DiscriminatorValue("FUNCIONARIO")
-public class Funcionario extends Pessoa implements UserDetails {
+public class Funcionario extends Pessoa{
     
     @NotNull
     @DecimalMin(value = "0.0", inclusive = false)
@@ -44,9 +39,6 @@ public class Funcionario extends Pessoa implements UserDetails {
     private Double horasTrabalhadas;
 
     private Double horasExtras;
-
-    @OneToOne(mappedBy = "funcionario", cascade = CascadeType.ALL)
-    private Usuario usuario;
 
     //@NotNull
     @ManyToOne(fetch = FetchType.EAGER)
@@ -64,44 +56,4 @@ public class Funcionario extends Pessoa implements UserDetails {
 
     @OneToMany(mappedBy = "funcionario", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Pagamento> pagamentos = new ArrayList<>();
-
-    @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        if (this instanceof Administrador){
-            return List.of(new SimpleGrantedAuthority("ROLE_ADMIN"), new SimpleGrantedAuthority("ROLE_USER"));
-        }
-        else{
-            return List.of(new SimpleGrantedAuthority("ROLE_USER"));
-        }
-    }
-
-    @Override
-    public String getPassword() {
-        return usuario.getPasswordHash();
-    }
-
-    @Override
-    public String getUsername() {
-        return getCpf();
-    }
-
-    @Override
-    public boolean isAccountNonExpired() {
-        return true;
-    }
-
-    @Override
-    public boolean isAccountNonLocked() {
-        return true;
-    }
-
-    @Override
-    public boolean isCredentialsNonExpired() {
-        return true;
-    }
-
-    @Override
-    public boolean isEnabled() {
-        return true;
-    }
 }

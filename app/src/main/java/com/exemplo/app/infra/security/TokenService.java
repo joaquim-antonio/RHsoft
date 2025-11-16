@@ -4,6 +4,8 @@ import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 
+import com.exemplo.app.model.Pessoa;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -11,7 +13,6 @@ import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTCreationException;
 import com.auth0.jwt.exceptions.JWTVerificationException;
-import com.exemplo.app.model.Funcionario;
 
 @Service
 public class TokenService {
@@ -19,13 +20,13 @@ public class TokenService {
     @Value("${api.security.token.secret}")
     private String secret;
 
-    public String generateToken(Funcionario funcionario) {
+    public String generateToken(Pessoa pessoa) {
         // Lógica para gerar token JWT
         try{
             Algorithm algorithm = Algorithm.HMAC256(secret);
             String token = JWT.create()
                     .withIssuer("rhsoft")
-                    .withSubject(funcionario.getCpf())
+                    .withSubject(pessoa.getCpf())
                     //.withClaim("login", user.getLogin())
                     .withExpiresAt(this.generateExpirationDate())
                     .sign(algorithm);
