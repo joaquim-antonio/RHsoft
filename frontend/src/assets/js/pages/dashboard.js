@@ -1,5 +1,12 @@
 
 function initializeDashboard() {
+    // Destruir gráficos existentes antes de recriar
+    ['funcionariosChart', 'departamentosChart', 'balancoChart'].forEach(id => {
+        const chartInstance = Chart.getChart(id);
+        if (chartInstance) {
+            chartInstance.destroy();
+        }
+    });
     
 
     const isDarkMode = document.body.classList.contains('dark-mode');
@@ -182,3 +189,24 @@ function initializeDashboard() {
     });
     
 } 
+
+function observeThemeChanges() {
+    const observer = new MutationObserver((mutationsList, observer) => {
+        for (const mutation of mutationsList) {
+            if (mutation.type === 'attributes' && mutation.attributeName === 'class') {
+                // O tema mudou, reinicializa o dashboard para redesenhar os gráficos
+                // Destruir gráficos existentes antes de recriar
+                ['funcionariosChart', 'departamentosChart', 'balancoChart'].forEach(id => {
+                    const chartInstance = Chart.getChart(id);
+                    if (chartInstance) {
+                        chartInstance.destroy();
+                    }
+                });
+                initializeDashboard();
+            }
+        }
+    });
+
+    // Observa mudanças na classe do body (onde 'dark-mode' é adicionado/removido)
+    observer.observe(document.body, { attributes: true });
+}
