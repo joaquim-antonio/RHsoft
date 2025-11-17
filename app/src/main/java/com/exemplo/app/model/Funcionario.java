@@ -5,6 +5,9 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.exemplo.app.model.Enums.TipoAcrescimo;
+import com.exemplo.app.model.Enums.TipoPericulosidade;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.DiscriminatorValue;
 import jakarta.persistence.Entity;
@@ -39,6 +42,10 @@ public class Funcionario extends Pessoa{
     private Double horasTrabalhadas;
 
     private Double horasExtras;
+
+    private TipoPericulosidade tipoPericulosidade;
+
+    private TipoAcrescimo tipoAcrescimo;
 
     //@NotNull
     @ManyToOne(fetch = FetchType.EAGER)

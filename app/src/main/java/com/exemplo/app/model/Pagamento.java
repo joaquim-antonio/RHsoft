@@ -56,6 +56,18 @@ public class Pagamento {
 
     private String mensagens;
 
+    @Column(name = "salario_base", nullable = false, precision = 19, scale = 2)
+    private BigDecimal salarioBaseCalculado;
+
+    @Column(name = "adicional_pagamento", nullable = false, precision = 19, scale = 2)
+    private BigDecimal adicionalPagamento;
+
+    @Column(name = "vale_alimentacao", nullable = false, precision = 19, scale = 2)
+    private BigDecimal valeAlimentacao;
+
+    @Column(name = "horas_extras", nullable = false, precision = 19, scale = 2)
+    private BigDecimal horasExtras;
+
     @NotBlank
     private String mesAnoReferencia;
 

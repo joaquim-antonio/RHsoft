@@ -73,28 +73,18 @@ public BigDecimal incluirAcrescimo(
 
    
     switch (tipo) {
-        case INSALUBRIDADE:
-            percentual = insalubridadePercentual;
-            break;
+        case INSALUBRIDADE -> percentual = insalubridadePercentual;
 
-        case PERICULOSIDADE:
-            switch (nivelPericulosidade) {
-                case BAIXO:
-                    percentual = new BigDecimal("10");
-                    break;
-                case MEDIO:
-                    percentual = new BigDecimal("20");
-                    break;
-                case ALTO:
-                    percentual = new BigDecimal("40");
-                    break;
-                default:
-                    percentual = BigDecimal.ZERO;
-            }
-            break;
+        case PERICULOSIDADE -> {
+            percentual = switch (nivelPericulosidade) {
+            case BAIXO -> new BigDecimal("10");
+            case MEDIO -> new BigDecimal("20");
+            case ALTO -> new BigDecimal("40");
+            default -> BigDecimal.ZERO;
+        };
+        }
 
-        default:
-            percentual = BigDecimal.ZERO;
+        default -> percentual = BigDecimal.ZERO;
 
     }
     BigDecimal fator = percentual.divide(cem, 4, RoundingMode.HALF_UP);
@@ -204,7 +194,7 @@ public BigDecimal calcularValeTransporte(BigDecimal salarioBase) {
     
     BigDecimal salarioBase = CalcularSalariosDeFuncionarios(funcionario);
 
-    
+
     BigDecimal adicional = BigDecimal.ZERO;
     if (tipo != null && tipo != TipoAcrescimo.NENHUM) {
         adicional = incluirAcrescimo(funcionario, tipo, nivelPericulosidade);
@@ -311,7 +301,7 @@ public FolhaPagamento reabrirFolha(Long idFolha) {
 @Transactional
 public Pagamento editarPagamento(EditarPagamentoDto dto) {
 
-    Pagamento pagamento = pagamentoRepository.findById(dto.getPagamentoId())
+    Pagamento pagamento = pagamentoRepository.findById(dto.pagamentoId())
             .orElseThrow(() -> new RuntimeException("Pagamento não encontrado"));
 
     FolhaPagamento folha = pagamento.getFolhaPagamento();
@@ -329,16 +319,16 @@ public Pagamento editarPagamento(EditarPagamentoDto dto) {
     BigDecimal adicionalAuto = incluirAcrescimo(
             funcionario, 
             funcionario.getTipoAcrescimo(), 
-            funcionario.getNivelPericulosidade()
+            funcionario.getTipoPericulosidade()
     );
 
 
-    BigDecimal horasExtras = dto.getHorasExtras() != null 
-            ? dto.getHorasExtras() 
+    BigDecimal horasExtras = dto.horasExtras() != null 
+            ? dto.horasExtras() 
             : BigDecimal.ZERO;
 
-    BigDecimal adicionalManual = dto.getAdicionalManual() != null
-            ? dto.getAdicionalManual()
+    BigDecimal adicionalManual = dto.adicionalManual() != null
+            ? dto.adicionalPagamento()
             : BigDecimal.ZERO;
 
 
@@ -356,12 +346,12 @@ public Pagamento editarPagamento(EditarPagamentoDto dto) {
             .subtract(inss)
             .subtract(irrf)
             .subtract(vt)
-            .add(funcionario.getValeAlimentacao())
+            .add(pagamento.getValeAlimentacao())
             .setScale(2, RoundingMode.HALF_UP);
 
     // 7. salvar alterações no pagamento
     pagamento.setHorasExtras(horasExtras);
-    pagamento.setAdicionalManual(adicionalManual);
+    pagamento.setAdicionalPagamento(adicionalManual);
     pagamento.setSalarioBaseCalculado(salarioBase);
     pagamento.setValorLiquido(salarioLiquido);
 

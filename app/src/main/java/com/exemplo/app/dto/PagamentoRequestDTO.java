@@ -17,6 +17,8 @@ public record PagamentoRequestDTO(
     @NotNull
     LocalDate vencimento,
     String mensagens,
+    BigDecimal salarioBaseCalculado,
+    BigDecimal valeAlimentacao,
     @NotBlank
     String mesAnoReferencia,
     @NotBlank
