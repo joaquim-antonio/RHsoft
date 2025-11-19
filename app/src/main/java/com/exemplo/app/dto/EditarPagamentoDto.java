@@ -1,13 +1,10 @@
 package com.exemplo.app.dto;
 import java.math.BigDecimal;
 
-public class EditarPagamentoDto {
+public record EditarPagamentoDto(
+        
+    BigDecimal horasExtras,
 
-    private BigDecimal horasExtras;
+    BigDecimal adicionalManual,
 
-
-    private BigDecimal adicionalManual;
-
-
-    private Long pagamentoId;
-}
+    String codigo) {}

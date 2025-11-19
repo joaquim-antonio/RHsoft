@@ -21,6 +21,7 @@ public record RegisterFuncionarioDTO(
     LocalDate dataAdmissao,
     Double horasTrabalhadas,
     Cargo cargo,
+    BigDecimal valeAlimentacao,
     ContaBancaria contaBancaria,
     Departamento departamento
 ) {}

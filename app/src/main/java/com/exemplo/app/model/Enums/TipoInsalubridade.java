@@ -1,7 +1,7 @@
 package com.exemplo.app.model.Enums;
 
 
-public enum TipoPericulosidade {
+public enum TipoInsalubridade {
 
     BAIXO,
     MEDIO,

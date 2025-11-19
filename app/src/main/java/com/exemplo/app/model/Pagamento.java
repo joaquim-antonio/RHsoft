@@ -51,10 +51,23 @@ public class Pagamento {
     @Column(name = "valor_liquido", nullable = false, precision = 19, scale = 2)
     private BigDecimal valorLiquido;
 
+    @Column(name = "HorasExtras", nullable = true , precision = 19, scale = 2)
+    private BigDecimal horasExtras;
+
+    @Column(name = "SalarioBase", nullable = false, precision = 19, scale = 2)
+    private BigDecimal salarioBase;
+
+
+
+ 
+
+
     @NotNull
     private LocalDate vencimento;
 
     private String mensagens;
+
+    
 
     @NotBlank
     private String mesAnoReferencia;

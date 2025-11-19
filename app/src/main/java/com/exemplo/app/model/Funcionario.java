@@ -1,11 +1,13 @@
 package com.exemplo.app.model;
-
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import com.exemplo.app.model.Enums.TipoAcrescimo;
+import com.exemplo.app.model.Enums.TipoInsalubridade;
 
 import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
 import jakarta.persistence.DiscriminatorValue;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -49,6 +51,13 @@ public class Funcionario extends Pessoa{
     @OneToOne(mappedBy = "funcionario", cascade = CascadeType.ALL, orphanRemoval = true)
     private ContaBancaria contaBancaria;
 
+
+    @Column(name = "valeTransporte", nullable = true, precision = 19, scale = 2)
+    private TipoAcrescimo tipoAcrescimo;
+
+    @Column(name = "valeTransporte", nullable = true, precision = 19, scale = 2)
+    private TipoInsalubridade tipoInsalubridade;
+   
     //@NotNull
     @ManyToOne
     @JoinColumn(name = "departamento_id", foreignKey=@ForeignKey(name = "fk_funcionario_departamento"))
