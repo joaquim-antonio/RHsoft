@@ -142,7 +142,7 @@ public class FolhaPagamentoService {
             adicionarItem(pagamento, "Horas Extras", TipoItemPagamento.PROVENTO, horasExtras);
         }
 
-        // Adicional Manual (Vindo do DTO)
+        
         BigDecimal adicionalManual = dto.adicionalManual() != null ? dto.adicionalManual() : BigDecimal.ZERO;
         if (adicionalManual.compareTo(BigDecimal.ZERO) > 0) {
             adicionarItem(pagamento, "Adicional Manual", TipoItemPagamento.PROVENTO, adicionalManual);
@@ -241,7 +241,7 @@ public class FolhaPagamentoService {
         if (salario.compareTo(teto4) <= 0) {
             return salario.multiply(new BigDecimal("0.14")).subtract(new BigDecimal("181.18"));
         }
-        return new BigDecimal("908.86"); // Teto máximo de desconto
+        return new BigDecimal("908.86"); 
     }
 
     public BigDecimal calcularIRRF(BigDecimal base) {

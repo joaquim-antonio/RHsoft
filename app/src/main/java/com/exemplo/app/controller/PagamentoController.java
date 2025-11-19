@@ -41,7 +41,6 @@ public class PagamentoController {
                 null, // valorLiquido (calculado no service)
                 dto.vencimento(),
                 dto.mensagens(),
-                dto.salarioBaseCalculado(),
                 null,
                 dto.valeAlimentacao(),
                 null,
