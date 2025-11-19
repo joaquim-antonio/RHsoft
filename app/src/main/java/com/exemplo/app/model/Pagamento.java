@@ -57,17 +57,16 @@ public class Pagamento {
     @Column(name = "SalarioBase", nullable = false, precision = 19, scale = 2)
     private BigDecimal salarioBase;
 
-
-
- 
-
-
     @NotNull
     private LocalDate vencimento;
 
     private String mensagens;
 
-    
+    @Column(name = "ValeTransporte", nullable = false, precision = 19, scale = 2)
+    private BigDecimal valeTransporte;
+
+    @Column(name = "ValeAlimentacao", nullable = false, precision = 19, scale = 2)
+    private BigDecimal valeAlimentacao;
 
     @NotBlank
     private String mesAnoReferencia;

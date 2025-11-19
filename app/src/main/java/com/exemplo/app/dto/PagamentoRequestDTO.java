@@ -1,6 +1,7 @@
 package com.exemplo.app.dto;
 import java.time.LocalDate;
 import java.util.List;
+import java.math.BigDecimal;
 
 import com.exemplo.app.model.ItemPagamento;
 
@@ -15,6 +16,8 @@ public record PagamentoRequestDTO(
     @NotNull
     LocalDate vencimento,
     String mensagens,
+    BigDecimal valeTransporte,
+    BigDecimal valeAlimentacao,
     @NotBlank
     String mesAnoReferencia,
     @NotBlank

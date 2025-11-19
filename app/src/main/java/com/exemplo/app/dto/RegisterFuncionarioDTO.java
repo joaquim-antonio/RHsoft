@@ -7,6 +7,8 @@ import com.exemplo.app.model.Cargo;
 import com.exemplo.app.model.ContaBancaria;
 import com.exemplo.app.model.Departamento;
 import com.exemplo.app.model.Endereco;
+import com.exemplo.app.model.Enums.TipoAcrescimo;
+import com.exemplo.app.model.Enums.TipoInsalubridade;
 
 public record RegisterFuncionarioDTO(
     String cpf, // CPF
@@ -23,5 +25,7 @@ public record RegisterFuncionarioDTO(
     Cargo cargo,
     BigDecimal valeAlimentacao,
     ContaBancaria contaBancaria,
-    Departamento departamento
+    Departamento departamento,
+    TipoAcrescimo tipoAcrescimo,
+    TipoInsalubridade tipoInsalubridade
 ) {}

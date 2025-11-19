@@ -148,7 +148,6 @@ public class FolhaPagamentoService {
             adicionarItem(pagamento, "Adicional Manual", TipoItemPagamento.PROVENTO, adicionalManual);
         }
 
-        // --- Recalcular Impostos com novos valores ---
         BigDecimal totalBruto = salarioBase.add(adicionalAuto).add(horasExtras).add(adicionalManual);
 
         BigDecimal inss = calcularINSS(totalBruto);

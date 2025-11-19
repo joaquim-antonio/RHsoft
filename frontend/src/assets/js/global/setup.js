@@ -10,29 +10,38 @@ async function loadComponents(params) {
 
   if (headerHolder) {
     try {
-      const response = await fetch("/frontend/src/components/header.html"); 
+      const response = await fetch("./components/header.html"); 
       const headerHtml = await response.text();
       headerHolder.innerHTML = headerHtml;
 
       setupHeaderMenu();
       loadHeaderUserName();
     } catch (error) {
-      console.error("Erro ao carregar o header");
+      console.error("Erro ao carregar o sidebar");
       headerHolder.innerHTML = "<p>Erro ao carregar o header</p>";
     }
   }
 
   if (sidebarHolder) {
     try {
-      const response = await fetch("/frontend/src/components/sidebar.html"); 
+      const response = await fetch("./components/sidebar.html"); 
       const sidebarHtml = await response.text();
       sidebarHolder.innerHTML = sidebarHtml;
     } catch (error) {
-      console.error("Erro ao carregar o header");
-      sidebarHolder.innerHTML = "<p>Erro ao carregar o header</p>";
+      console.error("Erro ao carregar o sidebar");
+      sidebarHolder.innerHTML = "<p>Erro ao carregar o sidebar</p>";
     }
   }
+
   setupThemeToggle();
+
+    // Inicializa o dashboard e o observador de tema após o carregamento dos componentes
+  if (typeof initializeDashboard === 'function') {
+    initializeDashboard();
+  }
+  if (typeof observeThemeChanges === 'function') {
+    observeThemeChanges();
+  }
 }
 
 //Confdigura o botão de logout
@@ -126,15 +135,9 @@ function setupThemeToggle() {
   const currentTheme = localStorage.getItem("theme") || 'light';
   applyTheme(currentTheme);
 
-  if (typeof initializeDashboard === 'function') {
-    initializeDashboard();
-    if (typeof observeThemeChanges === 'function') {
-      observeThemeChanges();
-    }
-  }
+  
 }
 
 document.addEventListener("DOMContentLoaded", () => {
   loadComponents();
-  
 });

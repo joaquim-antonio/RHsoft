@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.List;
 import com.exemplo.app.model.Enums.TipoAcrescimo;
 import com.exemplo.app.model.Enums.TipoInsalubridade;
-
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.DiscriminatorValue;
@@ -42,6 +41,8 @@ public class Funcionario extends Pessoa{
 
     private Double horasExtras;
 
+
+
     //@NotNull
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "cargo_codigo", foreignKey=@ForeignKey(name = "fk_funcionario_cargo"))
@@ -52,10 +53,10 @@ public class Funcionario extends Pessoa{
     private ContaBancaria contaBancaria;
 
 
-    @Column(name = "valeTransporte", nullable = true, precision = 19, scale = 2)
+    @Column(name = "TipoAcrescimo", nullable = true, precision = 19, scale = 2)
     private TipoAcrescimo tipoAcrescimo;
 
-    @Column(name = "valeTransporte", nullable = true, precision = 19, scale = 2)
+    @Column(name = "TipoInsalubridade", nullable = true, precision = 19, scale = 2)
     private TipoInsalubridade tipoInsalubridade;
    
     //@NotNull

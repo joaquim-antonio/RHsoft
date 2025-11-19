@@ -1,5 +1,6 @@
 package com.exemplo.app.controller;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +20,7 @@ import com.exemplo.app.dto.PagamentoRequestDTO;
 import com.exemplo.app.model.Pagamento;
 import com.exemplo.app.service.PagamentoService;
 
+import jakarta.persistence.Column;
 import jakarta.validation.Valid;
 
 @RestController
@@ -39,6 +41,10 @@ public class PagamentoController {
                 null, // valorLiquido (calculado no service)
                 dto.vencimento(),
                 dto.mensagens(),
+                dto.salarioBaseCalculado(),
+                null,
+                dto.valeAlimentacao(),
+                null,
                 dto.mesAnoReferencia(),
                 null, // funcionario (setado no service)
                 dto.itens(),
