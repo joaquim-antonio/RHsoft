@@ -27,7 +27,7 @@ public class ItemPagamentoService {
 
     //PUT
     public Pagamento adicionarItemAoPagamento(String pagamentoCodigo, ItemPagamento novoItem){
-        Pagamento pagamento = pagamentoRepository.findById(pagamentoCodigo)
+        Pagamento pagamento = pagamentoRepository.findByCodigo(pagamentoCodigo)
             .orElseThrow(() -> new EntityNotFoundException("Pagamento não cadastrado"));
 
         novoItem.setPagamento(pagamento);
@@ -40,7 +40,7 @@ public class ItemPagamentoService {
     
     //DELETE
     public Pagamento removerItemDoPagamento(String pagamentoCodigo, Long itemId){
-        Pagamento pagamento = pagamentoRepository.findById(pagamentoCodigo)
+        Pagamento pagamento = pagamentoRepository.findByCodigo(pagamentoCodigo)
             .orElseThrow(() -> new EntityNotFoundException("Pagamento não encontrado"));
         
         ItemPagamento itemRemovido = buscarItemPorId(itemId);

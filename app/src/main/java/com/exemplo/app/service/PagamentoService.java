@@ -1,5 +1,6 @@
 package com.exemplo.app.service;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,19 +31,24 @@ public class PagamentoService {
     @Autowired
     private FuncionarioRepository funcionarioRepository;
 
+    @Autowired
+    private FolhaPagamentoService calculadoraService;
+
     /**
      * Busca um pagamento pelo seu código único.
+     * 
      * @param codigo O código do pagamento.
      * @return O Pagamento encontrado.
      * @throws EntityNotFoundException se o pagamento não for encontrado.
      */
     public Pagamento buscarPagamentoPorCodigo(String codigo) {
-        return pagamentoRepository.findById(codigo)
+        return pagamentoRepository.findByCodigo(codigo)
                 .orElseThrow(() -> new EntityNotFoundException("Pagamento com código " + codigo + " não encontrado."));
     }
 
     /**
      * Lista todos os pagamentos associados a um funcionário específico.
+     * 
      * @param cpf O CPF do funcionário.
      * @return Uma lista de Pagamentos.
      * @throws EntityNotFoundException se o funcionário não for encontrado.
@@ -56,23 +62,49 @@ public class PagamentoService {
 
     /**
      * Cria um novo pagamento no sistema.
+     * 
      * @param pagamento O objeto de Pagamento a ser criado.
-     * @param cpf O CPF do funcionário a ser associado.
-     * @param idFolha O ID da folha de pagamento a ser associada.
+     * @param cpf       O CPF do funcionário a ser associado.
+     * @param idFolha   O ID da folha de pagamento a ser associada.
      * @return O Pagamento salvo.
-     * @throws EntityNotFoundException se o funcionário ou a folha de pagamento não forem encontrados.
+     * @throws EntityNotFoundException se o funcionário ou a folha de pagamento não
+     *                                 forem encontrados.
      */
     @Transactional
     public Pagamento criarPagamento(Pagamento pagamento, String cpf, Long idFolha) {
+        //Buscas
         Funcionario funcionario = funcionarioRepository.findById(cpf)
-                .orElseThrow(() -> new EntityNotFoundException("Funcionário com CPF " + cpf + " não encontrado para associar ao pagamento."));
+                .orElseThrow(() -> new EntityNotFoundException("Funcionário não encontrado"));
         FolhaPagamento folhaPagamento = folhaPagamentoRepository.findById(idFolha)
-                .orElseThrow(() -> new EntityNotFoundException("Folha de Pagamento com ID " + idFolha + " não encontrada."));
+                .orElseThrow(() -> new EntityNotFoundException("Folha não encontrada"));
 
         pagamento.setFuncionario(funcionario);
         pagamento.setFolhaPagamento(folhaPagamento);
 
-        // Garante que os itens de pagamento tenham a referência correta ao pagamento pai
+        //Salário Base
+        BigDecimal salarioBase = pagamento.getSalarioBase();
+        if (salarioBase == null) {
+            salarioBase = funcionario.getSalario() != null ? funcionario.getSalario() : BigDecimal.ZERO;
+            pagamento.setSalarioBase(salarioBase);
+        }
+        // Vale Transporte
+        if (pagamento.getValeTransporte() == null) {
+            pagamento.setValeTransporte(calculadoraService.calcularValeTransporte(salarioBase));
+        }
+
+        // Adicionais (Insalubridade/Periculosidade)
+       
+        // Vale Alimentação 
+        if (pagamento.getValeAlimentacao() == null) {
+            pagamento.setValeAlimentacao(BigDecimal.ZERO);
+        }
+        
+        // Horas Extras
+        if (pagamento.getHorasExtras() == null) {
+            pagamento.setHorasExtras(BigDecimal.ZERO);
+        }
+
+        //Vincular itens manuais
         if (pagamento.getItens() != null) {
             pagamento.getItens().forEach(item -> item.setPagamento(pagamento));
         }
@@ -84,19 +116,20 @@ public class PagamentoService {
 
     /**
      * Deleta um pagamento do sistema.
+     * 
      * @param codigo O código do pagamento a ser deletado.
      * @throws EntityNotFoundException se o pagamento não for encontrado.
      */
     @Transactional
     public void deletarPagamento(String codigo) {
-        if (!pagamentoRepository.existsById(codigo)) {
-            throw new EntityNotFoundException("Pagamento com código " + codigo + " inexistente para exclusão.");
-        }
-        pagamentoRepository.deleteById(codigo);
+        Pagamento pagamento = buscarPagamentoPorCodigo(codigo);
+        pagamentoRepository.delete(pagamento);
     }
 
     /**
-     * Recalcula os totais (proventos, descontos e valor líquido) de um pagamento existente.
+     * Recalcula os totais (proventos, descontos e valor líquido) de um pagamento
+     * existente.
+     * 
      * @param codigo O código do pagamento a ser recalculado.
      * @return O Pagamento com os totais atualizados.
      * @throws EntityNotFoundException se o pagamento não for encontrado.

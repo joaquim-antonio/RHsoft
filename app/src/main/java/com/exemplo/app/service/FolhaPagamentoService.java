@@ -6,7 +6,7 @@ import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
-import com.exemplo.app.model.Enums.TipoItemPagamento;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -15,12 +15,12 @@ import com.exemplo.app.model.Administrador;
 import com.exemplo.app.model.Enums.StatusPagamento;
 import com.exemplo.app.model.Enums.TipoAcrescimo;
 import com.exemplo.app.model.Enums.TipoInsalubridade;
+import com.exemplo.app.model.Enums.TipoItemPagamento;
 import com.exemplo.app.model.FolhaPagamento;
 import com.exemplo.app.model.Funcionario;
 import com.exemplo.app.model.ItemPagamento;
 import com.exemplo.app.model.Pagamento;
 import com.exemplo.app.repository.FolhaPagamentoRepository;
-
 import com.exemplo.app.repository.PagamentoRepository;
 
 import jakarta.transaction.Transactional;
@@ -113,7 +113,7 @@ public class FolhaPagamentoService {
 
     @Transactional
     public Pagamento editarPagamento(EditarPagamentoDto dto) {
-        Pagamento pagamento = pagamentoRepository.findById(dto.codigo())
+        Pagamento pagamento = pagamentoRepository.findByCodigo(dto.codigo())
                 .orElseThrow(() -> new RuntimeException("Pagamento não encontrado"));
 
         if (pagamento.getFolhaPagamento().getStatus() != StatusPagamento.ABERTO) {

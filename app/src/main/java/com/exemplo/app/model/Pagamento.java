@@ -11,6 +11,8 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.ForeignKey;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
@@ -35,8 +37,11 @@ import lombok.Setter;
 public class Pagamento {
 
     @Id
-    @Column(name = "codigo", unique = true, nullable = false, updatable = false)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Setter(AccessLevel.NONE)
+    private Long id;
+
+    @Column(name = "codigo", unique = true, nullable = false, updatable = false)
     private String codigo;
 
     @NotBlank
@@ -51,7 +56,7 @@ public class Pagamento {
     @Column(name = "valor_liquido", nullable = false, precision = 19, scale = 2)
     private BigDecimal valorLiquido;
 
-    @Column(name = "HorasExtras", nullable = true , precision = 19, scale = 2)
+    @Column(name = "HorasExtras", nullable = true, precision = 19, scale = 2)
     private BigDecimal horasExtras;
 
     @Column(name = "SalarioBase", nullable = false, precision = 19, scale = 2)
@@ -72,14 +77,14 @@ public class Pagamento {
     private String mesAnoReferencia;
 
     @ManyToOne
-     @JoinColumn(name = "funcionario_id", foreignKey=@ForeignKey(name = "fk_pagamento_funcionario"))
+    @JoinColumn(name = "funcionario_id", foreignKey = @ForeignKey(name = "fk_pagamento_funcionario"))
     private Funcionario funcionario;
 
     @OneToMany(mappedBy = "pagamento", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ItemPagamento> itens;
 
     @ManyToOne(fetch = FetchType.LAZY)
-        @JoinColumn(name = "folha_pagamento_id", foreignKey=@ForeignKey(name = "fk_pagamento_folhapagamento"))
+    @JoinColumn(name = "folha_pagamento_id", foreignKey = @ForeignKey(name = "fk_pagamento_folhapagamento"))
     private FolhaPagamento folhaPagamento;
 
     public void calcularTotais() {
@@ -101,4 +106,22 @@ public class Pagamento {
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
         this.valorLiquido = this.proventos.subtract(this.descontos);
     }
+
+    // Construtor auxiliar para o DTO
+    public Pagamento(String codigo, String cbo, BigDecimal proventos, BigDecimal descontos, BigDecimal valorLiquido, LocalDate vencimento, String mensagens, BigDecimal valeTransporte, BigDecimal valeAlimentacao, String mesAnoReferencia, Funcionario funcionario, List<ItemPagamento> itens, FolhaPagamento folhaPagamento) {
+        this.codigo = codigo;
+        this.cbo = cbo;
+        this.proventos = proventos;
+        this.descontos = descontos;
+        this.valorLiquido = valorLiquido;
+        this.vencimento = vencimento;
+        this.mensagens = mensagens;
+        this.valeTransporte = valeTransporte;
+        this.valeAlimentacao = valeAlimentacao;
+        this.mesAnoReferencia = mesAnoReferencia;
+        this.funcionario = funcionario;
+        this.itens = itens;
+        this.folhaPagamento = folhaPagamento;
+    }
+
 }

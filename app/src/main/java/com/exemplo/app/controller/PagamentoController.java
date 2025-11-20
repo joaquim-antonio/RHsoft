@@ -1,6 +1,5 @@
 package com.exemplo.app.controller;
 
-import java.math.BigDecimal;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +19,6 @@ import com.exemplo.app.dto.PagamentoRequestDTO;
 import com.exemplo.app.model.Pagamento;
 import com.exemplo.app.service.PagamentoService;
 
-import jakarta.persistence.Column;
 import jakarta.validation.Valid;
 
 @RestController
@@ -31,29 +29,26 @@ public class PagamentoController {
     private PagamentoService pagamentoService;
 
     @PostMapping
-    public ResponseEntity<Pagamento> criarPagamento(@RequestBody @Valid PagamentoRequestDTO dto) {
-        Pagamento novoPagamento = pagamentoService.criarPagamento(
-            new Pagamento(
-                dto.codigo(),
-                dto.cbo(),
-                null, // proventos (calculado no service)
-                null, // descontos (calculado no service)
-                null, // valorLiquido (calculado no service)
-                dto.vencimento(),
-                dto.mensagens(),
-                null,
-                dto.valeAlimentacao(),
-                null,
-                dto.mesAnoReferencia(),
-                null, // funcionario (setado no service)
-                dto.itens(),
-                null // folhaPagamento (setado no service)
-            ),
-            dto.funcionarioCpf(),
-            dto.folhaPagamentoId()
-        );
-        return ResponseEntity.status(HttpStatus.CREATED).body(novoPagamento);
-    }
+public ResponseEntity<Pagamento> criarPagamento(@RequestBody @Valid PagamentoRequestDTO dto) {
+    Pagamento pagamentoParaSalvar = Pagamento.builder()
+        .codigo(dto.codigo())
+        .cbo(dto.cbo())
+        .vencimento(dto.vencimento())
+        .mensagens(dto.mensagens())
+        .valeAlimentacao(dto.valeAlimentacao())
+        .mesAnoReferencia(dto.mesAnoReferencia())
+        .itens(dto.itens())
+        // vai nulo automaticamente os campos calculados (proventos, descontos, etc) e o service calcula
+        .build();
+
+    Pagamento novoPagamento = pagamentoService.criarPagamento(
+        pagamentoParaSalvar,
+        dto.funcionarioCpf(),
+        dto.folhaPagamentoId()
+    );
+
+    return ResponseEntity.status(HttpStatus.CREATED).body(novoPagamento);
+}
 
     @GetMapping("/{codigo}")
     public ResponseEntity<Pagamento> buscarPagamentoPorCodigo(@PathVariable String codigo) {
