@@ -99,6 +99,12 @@ public class FolhaPagamentoService {
             adicionarItem(pagamento, "IRRF", TipoItemPagamento.DESCONTO, irrf);
         }
 
+
+        BigDecimal va = calcularValeAlimentacao(salarioBase);
+            if (va.compareTo(BigDecimal.ZERO) > 0) {
+                adicionarItem(pagamento, "Vale Alimentação", TipoItemPagamento.DESCONTO, va);
+            }
+
         
         BigDecimal vt = calcularValeTransporte(salarioBase);
         if (vt.compareTo(BigDecimal.ZERO) > 0) {
@@ -163,7 +169,12 @@ public class FolhaPagamentoService {
             adicionarItem(pagamento, "Vale Transporte", TipoItemPagamento.DESCONTO, vt);
         }
 
-        
+
+        BigDecimal va = calcularValeAlimentacao(salarioBase);
+            if (va.compareTo(BigDecimal.ZERO) > 0) {
+                adicionarItem(pagamento, "Vale Alimentação", TipoItemPagamento.DESCONTO, va);
+    }  
+
         pagamento.calcularTotais();
 
         return pagamentoRepository.save(pagamento);
@@ -219,6 +230,16 @@ public class FolhaPagamentoService {
         return salarioBase.multiply(new BigDecimal("0.06")).setScale(2, RoundingMode.HALF_UP);
     }
 
+
+    public BigDecimal calcularValeAlimentacao(BigDecimal salarioBase) {
+        return salarioBase.multiply(new BigDecimal("0.03")).setScale(2, RoundingMode.HALF_UP);
+        }
+
+
+
+
+
+    
     public BigDecimal calcularFGTS(BigDecimal salarioBruto) {
         return salarioBruto.multiply(new BigDecimal("0.08")).setScale(2, RoundingMode.HALF_UP);
     }
@@ -265,6 +286,11 @@ public class FolhaPagamentoService {
         return base.multiply(new BigDecimal("0.275")).subtract(new BigDecimal("896.00"));
     }
 
+
+    public FolhaPagamento buscarFolhaPorId(Long idFolha) {
+    return folhaPagamentoRepository.findById(idFolha)
+            .orElseThrow(() -> new RuntimeException("Folha não encontrada"));
+        }
    
 
     public FolhaPagamento abrirFolha(Administrador admin) {
