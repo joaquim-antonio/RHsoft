@@ -64,4 +64,6 @@ public class FolhaPagamento {
     @JoinColumn(name = "adminitrador_id", foreignKey=@ForeignKey(name = "fk_folhapagamento_administrador"))
     private Administrador administrador;
 
+    private LocalDate dataEnvio;
+
 }

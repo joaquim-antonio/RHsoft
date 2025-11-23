@@ -1,5 +1,5 @@
 package com.exemplo.app.dto;
-package com.exemplo.app.dto;
+
 
 import java.math.BigDecimal;
 
