@@ -82,6 +82,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
                 localStorage.setItem("authToken", data.token);
                 localStorage.setItem("userCpf", data.cpf);
+                localStorage.setItem("role", data.role);
 
                 switch (data.role) {
                     case "ROLE_ADMIN":

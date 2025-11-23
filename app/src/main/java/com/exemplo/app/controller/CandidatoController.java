@@ -1,4 +1,4 @@
-package com.exemplo.app.controller;
+    package com.exemplo.app.controller;
 /*
 import com.exemplo.app.model.Candidato;
 import com.exemplo.app.service.CandidatoService;

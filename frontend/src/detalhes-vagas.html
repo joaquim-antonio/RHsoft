@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="assets/css/pages/vagas/detalhesVagas.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <title>Detalhes da Vaga</title>
+</head>
+
+<body>
+    <header class="cabecalho" id="cabecalho">
+        <h1 class="cabecalho_titulo"><a href="index.html">RHsoft</a></h1>
+        <div class="profile">
+            <a href="login.html" class="profile">
+                <span id="nomeUserHeader">Perfil</span>
+                <i class="profile-icon fa-solid fa-circle-user fa-2x"></i>
+            </a>
+        </div>
+    </header>
+    <div class="content">
+        <aside class="aside">
+            <nav>
+                <h3 class="aside_titles">Geral</h3>
+                <ul>
+                    <li class="aside_items"><a href="funcionarios.html"><i
+                                class="aside_icons fa-solid fa-user-tie"></i>Funcionarios</a></li>
+                    <li class="aside_items"><a href="contracheque.html"><i
+                                class="aside_icons fa-solid fa-money-check-dollar"></i>Contracheque</a></li>
+                    <li class="aside_items"><a href="vagas.html"><i
+                                class="aside_icons fa-solid fa-receipt"></i>Vagas</a></li>
+                    <li class="aside_items"><a href="folhaPagamento.html"><i
+                                class="aside_icons fa-solid fa-suitcase"></i>Folha de
+                            Pagamento</a></li>
+                </ul>
+            </nav>
+            <section>
+                <h3>Suporte</h3>
+                <ul>
+                    <li class="aside_items"><a href="#"><i class="aside_icons fa-solid fa-circle-info"></i>Ajuda</a>
+                    </li>
+                    <li class="aside_items"><a href="#"><i class="aside_icons fa-solid fa-gear"></i>Configurações</a>
+                    </li>
+                </ul>
+            </section>
+            <div class="aside_themes">
+                <i class="aside_icons aside_items fa-solid fa-moon"></i>
+                <i class="aside_icons aside_items fa-solid fa-sun"></i>
+            </div>
+        </aside>
+        <main>
+            <section class="main_top">
+                <button class="btn" id="update_vaga"><i class="fa-solid fa-pen-to-square"></i></button>
+                <button class="btn" id="deletar_vaga" onclick="deleteVaga"><i class="fa-solid fa-trash"></i></button>
+            </section>
+            <section class="section-vaga">
+                <div class="main-content">
+                    <div class="job-detail-card">
+
+                        <div class="job-header">
+                            <div>
+                                <h2 id="jobTitle" class="job-title-large">Carregando Título...</h2>
+                                <p id="jobFunction" class="job-function-large">Carregando Função...</p>
+                            </div>
+                        </div>
+
+                        <div class="job-metadata">
+                            <div class="metadata-item">
+                                <i class="fa-solid fa-briefcase"></i>
+                                <p>Cargo: <span id="jobCargo">Carregando Cargo...</span></p>
+                            </div>
+                            <div class="metadata-item">
+                                <i class="fa-solid fa-building"></i>
+                                <p>Departamento: <span id="departamentoNome">Carregando Departamento...</span></p>
+                            </div>
+                            <div class="metadata-item">
+                                <i class="fa-solid fa-calendar-times"></i>
+                                <p>Data Limite: <span id="dataLimite">Carregando Data Limite...</span></p>
+                            </div>
+                        </div>
+
+                        <hr>
+
+                        <div class="job-section">
+                            <h3>Descrição da Vaga</h3>
+                            <div id="jobDescription">Carregando descrição detalhada...</div>
+                        </div>
+
+                        <div class="job-section">
+                            <h3>Sobre o Departamento (<span id="departamentoNome_secundario"></span>)</h3>
+                            <div id="departamentoDescricao">Carregando descrição do departamento...</div>
+                        </div>
+
+                    </div>
+                </div>
+            </section>
+        </main>
+        <!--MODAL-->
+        <div id="vagaModal" class="modal-overlay hidden">
+            <div class="modal-content">
+                <h3>Atualizar vaga atual</h3>
+                <form id="vagaForm">
+                    <label for="vaga-titulo">Título da Vaga:</label>
+                    <input type="text" id="vaga-titulo" name="titulo" required>
+
+                    <label for="vaga-funcao">Função:</label>
+                    <input type="text" id="vaga-funcao" name="funcao" required>
+
+                    <label for="vaga-descricao">Descrição:</label>
+                    <textarea id="vaga-descricao" name="descricao" rows="4" required></textarea>
+
+                    <label for="vaga-dataLimite">Data Limite:</label>
+                    <input type="date" id="vaga-dataLimite" name="dataLimite" required>
+
+                    <label for="vaga-cargoId">ID do Cargo:</label>
+                    <input type="number" id="vaga-cargoId" name="cargoId" required>
+
+                    <label for="vaga-departamentoId">ID do Departamento:</label>
+                    <input type="number" id="vaga-departamentoId" name="departamentoId" required>
+
+                    <div class="modal-actions">
+                        <button type="submit" class="submit-btn">Atualizar Vaga</button>
+                        <button type="button" class="cancel-btn" id="closeModal">Cancelar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <script src="assets/js/pages/vagas/detalhesVagas.js"></script>
+</body>
+
+</html>
