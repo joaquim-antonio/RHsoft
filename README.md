@@ -34,7 +34,7 @@ Problemas que o sistema resolve:
 - [x] **Fazer Login**
 - [x] **Gestão de funcionários**
 - [ ] Gestão da folha de pagamento
-- [ ] Publicação e gerenciamento de vagas
+- [X] **Publicação e gerenciamento de vagas**
 - [ ] Atualização de configurações
 - [ ] Consulta de contracheques
 - [ ] Atualização de dados cadastrais
@@ -42,9 +42,9 @@ Problemas que o sistema resolve:
 ## 🏗️ Arquitetura e Tecnologias
 
 - **Back-end**: Java + Spring Boot (camadas controller, service, repository).
-- **Front-end**: aplicação web em JavaScript puro ou framework moderno.
+- **Front-end**: aplicação web em JavaScript puro.
 - **Comunicação**: APIs REST + JSON.
-- **Banco de dados**: relacional (H2 para dev, outro SGBD em produção).
+- **Banco de dados**: relacional (Microsoft Azure).
 - **Disponibilidade**: acesso via navegador moderno.
 
 ## 📂 Estrutura do Repositório
