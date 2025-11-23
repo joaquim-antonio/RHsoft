@@ -8,14 +8,17 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.exemplo.app.dto.DadosContratacaoDTO;
 import com.exemplo.app.dto.RegisterFuncionarioDTO;
 import com.exemplo.app.exception.CpfAlreadyExistsException;
+import com.exemplo.app.model.Candidato;
+import com.exemplo.app.model.Cargo;
 import com.exemplo.app.model.ContaBancaria;
+import com.exemplo.app.model.Departamento;
 import com.exemplo.app.model.Endereco;
 import com.exemplo.app.model.Enums.TipoGenero;
 import com.exemplo.app.model.Funcionario;
 import com.exemplo.app.model.Pessoa;
-import com.exemplo.app.model.Candidato;
 import com.exemplo.app.model.Usuario;
 import com.exemplo.app.repository.FuncionarioRepository;
 import com.exemplo.app.repository.PessoaRepository;
@@ -36,6 +39,9 @@ public class FuncionarioService {
 
     @Autowired
     CargoService cargoService;
+
+    @Autowired
+    DepartamentoService departamentoService;
 
     @Autowired
     private FuncionarioRepository funcionarioRepository;
@@ -111,17 +117,16 @@ public class FuncionarioService {
      * Converte um Candidato existente em um Funcionario.
      */
     @Transactional
-    public Funcionario contratarCandidato(String cpf, RegisterFuncionarioDTO dadosContratacao) {
+    public Funcionario contratarCandidato(String cpf, DadosContratacaoDTO dados) {
         Pessoa pessoa = pessoaRepository.findById(cpf)
                 .orElseThrow(() -> new UsernameNotFoundException("Candidato não encontrado com CPF: " + cpf));
 
         if (!(pessoa instanceof Candidato)) {
-            throw new IllegalStateException(
-                    "Esta pessoa não é um Candidato e não pode ser contratada por este método.");
+            throw new IllegalStateException("Esta pessoa não é um Candidato.");
         }
 
+        // Preparar o Funcionario
         Funcionario novoFuncionario = new Funcionario();
-
         novoFuncionario.setCpf(pessoa.getCpf());
         novoFuncionario.setNome(pessoa.getNome());
         novoFuncionario.setSobrenome(pessoa.getSobrenome());
@@ -129,26 +134,35 @@ public class FuncionarioService {
         novoFuncionario.setSexo(pessoa.getSexo());
         novoFuncionario.setDataNascimento(pessoa.getDataNascimento());
         novoFuncionario.setEndereco(pessoa.getEndereco());
-        novoFuncionario.setUsuario(pessoa.getUsuario()); // Reutiliza o login!
+        novoFuncionario.setUsuario(pessoa.getUsuario());
 
-        novoFuncionario.setSalario(dadosContratacao.salario());
-        novoFuncionario.setDataAdmissao(dadosContratacao.dataAdmissao());
-        novoFuncionario.setHorasTrabalhadas(dadosContratacao.horasTrabalhadas());
+        // 3. Dados Contratuais
+        novoFuncionario.setSalario(dados.salario());
+        novoFuncionario.setDataAdmissao(dados.dataAdmissao());
+        novoFuncionario.setHorasTrabalhadas(dados.horasTrabalhadas());
         novoFuncionario.setHorasExtras(0.00);
+        novoFuncionario.setTipoAcrescimo(dados.tipoAcrescimo());
+        novoFuncionario.setTipoInsalubridade(dados.tipoInsalubridade());
 
-        novoFuncionario.setCargo(cargoService.registrarCargo(dadosContratacao.cargo()));
-        novoFuncionario.setDepartamento(deptoService.registrarDepartamento(dadosContratacao.departamento()));
+        Cargo cargo = cargoService.buscarCargoPorCodigo(dados.cargoId());
+        Departamento departamento = departamentoService.buscarDepartamentoPorCodigo(dados.departamentoId());
 
-        ContaBancaria newConta = new ContaBancaria(
-                dadosContratacao.contaBancaria().getAgencia(),
-                dadosContratacao.contaBancaria().getNumero(),
-                dadosContratacao.contaBancaria().getNomeBanco(),
-                dadosContratacao.contaBancaria().getChavePix());
-        novoFuncionario.setContaBancaria(newConta);
-        newConta.setFuncionario(novoFuncionario);
+        novoFuncionario.setCargo(cargo);
+        novoFuncionario.setDepartamento(departamento);
 
+        // Conta Bancária
+        ContaBancaria novaConta = new ContaBancaria(
+                dados.agencia(),
+                dados.numeroConta(),
+                dados.nomeBanco(),
+                dados.chavePix());
+        novoFuncionario.setContaBancaria(novaConta);
+        novaConta.setFuncionario(novoFuncionario);
+
+        // Troca de Tipo
         pessoaRepository.delete(pessoa);
+        pessoaRepository.flush();
 
-        return pessoaRepository.save(novoFuncionario);
+        return funcionarioRepository.save(novoFuncionario);
     }
 }

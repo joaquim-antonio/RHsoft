@@ -30,7 +30,7 @@ public class SecurityConfig {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
 
-        configuration.setAllowedOrigins(Arrays.asList("http://127.0.0.1:5501"));
+        configuration.setAllowedOrigins(Arrays.asList("http://127.0.0.1:5500"));
 
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(Arrays.asList("*"));
@@ -48,14 +48,37 @@ public class SecurityConfig {
                 .headers(headers -> headers.frameOptions(frameOptions -> frameOptions.disable()))
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(authorize -> authorize
+                        // --- ROTAS PÚBLICAS ---
                         .requestMatchers("/h2-console/**").permitAll()
                         .requestMatchers(HttpMethod.POST, "/auth/login").permitAll()
                         .requestMatchers(HttpMethod.POST, "/auth/register-candidato").permitAll()
-                        .requestMatchers("/api/v1/vagas/**").authenticated()
-                        .requestMatchers(HttpMethod.GET, "/user/me").authenticated()
-                        .requestMatchers(HttpMethod.GET, "/api/v1/dashboard/**")
-                        .hasAnyRole("USER", "ADMIN")
-                        .requestMatchers(HttpMethod.POST, "/auth/register-funcionario").permitAll()// teste
+                        .requestMatchers("/user/me").authenticated()
+
+                         // --- GESTÃO DE VAGAS ---
+                        .requestMatchers(HttpMethod.GET, "/api/v1/vagas/disponiveis").permitAll() 
+                        .requestMatchers(HttpMethod.GET, "/api/v1/vagas/{id}").permitAll() 
+                        .requestMatchers(HttpMethod.GET, "/api/v1/vagas").hasAnyRole("ADMIN", "USER") 
+                        .requestMatchers(HttpMethod.POST, "/api/v1/vagas").hasRole("ADMIN") 
+                        .requestMatchers(HttpMethod.PUT, "/api/v1/vagas/**").hasRole("ADMIN") 
+                        .requestMatchers(HttpMethod.DELETE, "/api/v1/vagas/**").hasRole("ADMIN") 
+                        
+                        // --- ROTAS DE ADMIN ---
+                        .requestMatchers(HttpMethod.PUT, "/api/v1/folha-pagamento/pagamento/editar").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.POST, "/api/v1/folha-pagamento/**").hasRole("ADMIN") 
+                        .requestMatchers(HttpMethod.PATCH, "/api/v1/folha-pagamento/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.POST, "/auth/register-funcionario").permitAll() // teste
+                        
+                        // --- ROTAS DE CANDIDATO ---
+                        .requestMatchers("/api/v1/candidaturas/minhas").hasAnyRole("CANDIDATO")
+                        .requestMatchers(HttpMethod.POST, "/api/v1/candidaturas/aplicar/**").hasAnyRole("CANDIDATO")
+                        
+                        // --- ROTAS DE ADMINISTRAÇÃO ---
+                        .requestMatchers("/api/v1/dashboard/**").hasAnyRole("USER", "ADMIN")
+                        .requestMatchers("/api/v1/candidaturas/**").hasAnyRole("ADMIN")
+                        
+                        // Leitura da folha
+                        .requestMatchers(HttpMethod.GET, "/api/v1/folha-pagamento/**").hasAnyRole("ADMIN", "USER")
+
                         .anyRequest().authenticated()
                 )
                 .headers(headers -> headers.frameOptions(frame -> frame.sameOrigin()))

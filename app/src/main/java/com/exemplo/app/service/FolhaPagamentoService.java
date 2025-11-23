@@ -23,8 +23,8 @@ import com.exemplo.app.model.Pagamento;
 import com.exemplo.app.repository.FolhaPagamentoRepository;
 import com.exemplo.app.repository.PagamentoRepository;
 
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
-
 
 @Service
 
@@ -39,11 +39,49 @@ public class FolhaPagamentoService {
     @Autowired
     private PagamentoRepository pagamentoRepository;
 
-   
-    private static final BigDecimal SALARIO_MINIMO = new BigDecimal("1412.00");
-    private static final BigDecimal HORAS_MENSAIS = new BigDecimal("220");
+    // Salário Mínimo 2025
+    private static final BigDecimal SALARIO_MINIMO = new BigDecimal("1518.00");
 
+    // Tetos das Faixas INSS 2025
+    private static final BigDecimal FAIXA_1_LIMITE = new BigDecimal("1518.00");
+    private static final BigDecimal FAIXA_2_LIMITE = new BigDecimal("2793.88");
+    private static final BigDecimal FAIXA_3_LIMITE = new BigDecimal("4190.83");
+    private static final BigDecimal FAIXA_4_LIMITE = new BigDecimal("8157.41"); // Teto máximo
+
+    // Faixa 1 (7.5%): 0.00
+    // Faixa 2 (9.0%): (1518.00 * 0.09) - 113.85 = 136.62 - 113.85 = 22.77
+    // Faixa 3 (12.0%): (2793.88 * 0.12) - (113.85 + 114.83) = 335.26 - 228.68 = 106.59
+    // Faixa 4 (14.0%): (4190.83 * 0.14) - (113.85 + 114.83 + 167.63) = 586.71 - 396.31 = 190.40
+    private static final BigDecimal DEDUCAO_FAIXA_2 = new BigDecimal("22.77");
+    private static final BigDecimal DEDUCAO_FAIXA_3 = new BigDecimal("106.59");
+    private static final BigDecimal DEDUCAO_FAIXA_4 = new BigDecimal("190.40");
     
+    // Teto máximo de desconto
+    // 113.85 + 114.83 + 167.63 + 555.32 = 951.63
+    private static final BigDecimal TETO_DESCONTO_INSS = new BigDecimal("951.63");
+
+    // private static final BigDecimal HORAS_MENSAIS = new BigDecimal("220");
+
+    public FolhaPagamento buscarFolhaPorId(Long id) {
+        return folhaPagamentoRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Folha de pagamento não encontrada com ID: " + id));
+    }
+
+    public Pagamento buscarPagamentoPorCodigo(String codigo) {
+        return pagamentoRepository.findByCodigo(codigo)
+                .orElseThrow(() -> new EntityNotFoundException("Pagamento não encontrado com código: " + codigo));
+    }
+
+    public void enviarFolhaParaFuncionarios(Long idFolha) {
+        FolhaPagamento folha = buscarFolhaPorId(idFolha);
+        
+        if (folha.getStatus() != StatusPagamento.FECHADA && folha.getStatus() != StatusPagamento.CONSOLIDADA) {
+            throw new IllegalStateException("A folha precisa estar FECHADA ou CONSOLIDADA para ser enviada.");
+        }
+        // Simulaçõa apenas (Ideal mandar para email)
+        System.out.println("Enviando folha " + idFolha + " para " + folha.getPagamentos().size() + " funcionários...");
+    }
+
     @Transactional
     public void gerarFolhaDePagamento(Long idFolha) {
         FolhaPagamento folha = folhaPagamentoRepository.findById(idFolha)
@@ -60,54 +98,50 @@ public class FolhaPagamentoService {
         }
     }
 
-    
     private void criarPagamentoParaFuncionario(Funcionario funcionario, FolhaPagamento folha) {
         Pagamento pagamento = new Pagamento();
         pagamento.setFuncionario(funcionario);
         pagamento.setFolhaPagamento(folha);
-        pagamento.setMesAnoReferencia(LocalDate.now().toString().substring(0, 7)); 
-        pagamento.setVencimento(LocalDate.now().plusDays(5)); 
+        pagamento.setMesAnoReferencia(LocalDate.now().toString().substring(0, 7));
+        pagamento.setVencimento(LocalDate.now().plusDays(5));
         pagamento.setItens(new ArrayList<>());
 
-      
+        // Gera código único
+        String sufixoCpf = funcionario.getCpf().length() >= 3 ? funcionario.getCpf().substring(0, 3) : "000";
+        pagamento.setCodigo("PAY-" + System.currentTimeMillis() + "-" + sufixoCpf);
+
         BigDecimal salarioBase = calcularSalarioBase(funcionario);
         pagamento.setSalarioBase(salarioBase);
         adicionarItem(pagamento, "Salário Base", TipoItemPagamento.PROVENTO, salarioBase);
 
-        
         BigDecimal valorHorasExtras = BigDecimal.ZERO;
         pagamento.setHorasExtras(valorHorasExtras);
 
-        
         BigDecimal adicional = calcularAdicional(funcionario);
         if (adicional.compareTo(BigDecimal.ZERO) > 0) {
-            String nomeAdicional = funcionario.getTipoAcrescimo() == TipoAcrescimo.INSALUBRIDADE ? "Insalubridade" : "Periculosidade";
+            String nomeAdicional = funcionario.getTipoAcrescimo() == TipoAcrescimo.INSALUBRIDADE ? "Insalubridade"
+                    : "Periculosidade";
             adicionarItem(pagamento, nomeAdicional, TipoItemPagamento.PROVENTO, adicional);
         }
 
-        
         BigDecimal totalBruto = salarioBase.add(valorHorasExtras).add(adicional);
 
-   
         BigDecimal inss = calcularINSS(totalBruto);
         adicionarItem(pagamento, "INSS", TipoItemPagamento.DESCONTO, inss);
 
-       
         BigDecimal baseIrrf = totalBruto.subtract(inss);
         BigDecimal irrf = calcularIRRF(baseIrrf);
         if (irrf.compareTo(BigDecimal.ZERO) > 0) {
             adicionarItem(pagamento, "IRRF", TipoItemPagamento.DESCONTO, irrf);
         }
 
-        
         BigDecimal vt = calcularValeTransporte(salarioBase);
         if (vt.compareTo(BigDecimal.ZERO) > 0) {
             adicionarItem(pagamento, "Vale Transporte", TipoItemPagamento.DESCONTO, vt);
         }
 
-       
         pagamento.calcularTotais();
-        
+
         pagamentoRepository.save(pagamento);
     }
 
@@ -120,7 +154,6 @@ public class FolhaPagamentoService {
             throw new RuntimeException("Só é possível editar pagamentos em folhas ABERTAS.");
         }
 
-        
         pagamento.getItens().clear();
 
         Funcionario funcionario = pagamento.getFuncionario();
@@ -128,21 +161,19 @@ public class FolhaPagamentoService {
         pagamento.setSalarioBase(salarioBase);
         adicionarItem(pagamento, "Salário Base", TipoItemPagamento.PROVENTO, salarioBase);
 
-        
         BigDecimal adicionalAuto = calcularAdicional(funcionario);
         if (adicionalAuto.compareTo(BigDecimal.ZERO) > 0) {
-            String nomeAdicional = funcionario.getTipoAcrescimo() == TipoAcrescimo.INSALUBRIDADE ? "Insalubridade" : "Periculosidade";
+            String nomeAdicional = funcionario.getTipoAcrescimo() == TipoAcrescimo.INSALUBRIDADE ? "Insalubridade"
+                    : "Periculosidade";
             adicionarItem(pagamento, nomeAdicional, TipoItemPagamento.PROVENTO, adicionalAuto);
         }
 
-        
         BigDecimal horasExtras = dto.horasExtras() != null ? dto.horasExtras() : BigDecimal.ZERO;
         pagamento.setHorasExtras(horasExtras);
         if (horasExtras.compareTo(BigDecimal.ZERO) > 0) {
             adicionarItem(pagamento, "Horas Extras", TipoItemPagamento.PROVENTO, horasExtras);
         }
 
-        
         BigDecimal adicionalManual = dto.adicionalManual() != null ? dto.adicionalManual() : BigDecimal.ZERO;
         if (adicionalManual.compareTo(BigDecimal.ZERO) > 0) {
             adicionarItem(pagamento, "Adicional Manual", TipoItemPagamento.PROVENTO, adicionalManual);
@@ -163,13 +194,11 @@ public class FolhaPagamentoService {
             adicionarItem(pagamento, "Vale Transporte", TipoItemPagamento.DESCONTO, vt);
         }
 
-        
         pagamento.calcularTotais();
 
         return pagamentoRepository.save(pagamento);
     }
 
-   
     private void adicionarItem(Pagamento pagamento, String descricao, TipoItemPagamento tipo, BigDecimal valor) {
         ItemPagamento item = ItemPagamento.builder()
                 .descricao(descricao)
@@ -182,14 +211,14 @@ public class FolhaPagamentoService {
 
     public BigDecimal calcularSalarioBase(Funcionario funcionario) {
         BigDecimal valorBruto = funcionario.getSalario();
-       
-        return valorBruto; 
+
+        return valorBruto;
     }
 
     public BigDecimal calcularAdicional(Funcionario funcionario) {
         TipoAcrescimo tipo = funcionario.getTipoAcrescimo();
         TipoInsalubridade nivel = funcionario.getTipoInsalubridade();
-        BigDecimal baseCalculo = funcionario.getSalario(); 
+        BigDecimal baseCalculo = funcionario.getSalario();
 
         if (tipo == null || tipo == TipoAcrescimo.NENHUM) {
             return BigDecimal.ZERO;
@@ -197,10 +226,10 @@ public class FolhaPagamentoService {
 
         BigDecimal percentual = BigDecimal.ZERO;
 
-        if (tipo == TipoAcrescimo.PERICULOSIDADE) {
-            
+       if (tipo == TipoAcrescimo.PERICULOSIDADE) {
             percentual = new BigDecimal("30");
         } else if (tipo == TipoAcrescimo.INSALUBRIDADE) {
+            baseCalculo = SALARIO_MINIMO; 
             
             if (nivel != null) {
                 switch (nivel) {
@@ -223,25 +252,25 @@ public class FolhaPagamentoService {
         return salarioBruto.multiply(new BigDecimal("0.08")).setScale(2, RoundingMode.HALF_UP);
     }
 
-    public BigDecimal calcularINSS(BigDecimal salario) {
-        BigDecimal teto1 = new BigDecimal("1412.00");
-        BigDecimal teto2 = new BigDecimal("2666.68");
-        BigDecimal teto3 = new BigDecimal("4000.03");
-        BigDecimal teto4 = new BigDecimal("7786.02");
+    public BigDecimal calcularINSS(BigDecimal salarioDeContribuicao) {
+        
+        // Se passar do teto, cobra o teto fixo
+        if (salarioDeContribuicao.compareTo(FAIXA_4_LIMITE) > 0) {
+            return TETO_DESCONTO_INSS;
+        }
 
-        if (salario.compareTo(teto1) <= 0) {
-            return salario.multiply(new BigDecimal("0.075"));
+        if (salarioDeContribuicao.compareTo(FAIXA_1_LIMITE) <= 0) {
+            return salarioDeContribuicao.multiply(new BigDecimal("0.075"));
+        } 
+        else if (salarioDeContribuicao.compareTo(FAIXA_2_LIMITE) <= 0) {
+            return salarioDeContribuicao.multiply(new BigDecimal("0.09")).subtract(DEDUCAO_FAIXA_2);
+        } 
+        else if (salarioDeContribuicao.compareTo(FAIXA_3_LIMITE) <= 0) {
+            return salarioDeContribuicao.multiply(new BigDecimal("0.12")).subtract(DEDUCAO_FAIXA_3);
+        } 
+        else {
+            return salarioDeContribuicao.multiply(new BigDecimal("0.14")).subtract(DEDUCAO_FAIXA_4);
         }
-        if (salario.compareTo(teto2) <= 0) {
-            return salario.multiply(new BigDecimal("0.09")).subtract(new BigDecimal("21.18"));
-        }
-        if (salario.compareTo(teto3) <= 0) {
-            return salario.multiply(new BigDecimal("0.12")).subtract(new BigDecimal("101.18"));
-        }
-        if (salario.compareTo(teto4) <= 0) {
-            return salario.multiply(new BigDecimal("0.14")).subtract(new BigDecimal("181.18"));
-        }
-        return new BigDecimal("908.86"); 
     }
 
     public BigDecimal calcularIRRF(BigDecimal base) {
@@ -265,8 +294,6 @@ public class FolhaPagamentoService {
         return base.multiply(new BigDecimal("0.275")).subtract(new BigDecimal("896.00"));
     }
 
-   
-
     public FolhaPagamento abrirFolha(Administrador admin) {
         FolhaPagamento folha = new FolhaPagamento();
         folha.setStatus(StatusPagamento.ABERTO);
@@ -283,7 +310,6 @@ public class FolhaPagamentoService {
             throw new RuntimeException("Só é possível fechar uma folha ABERTA.");
         }
 
-        
         BigDecimal total = folha.getPagamentos().stream()
                 .map(Pagamento::getValorLiquido)
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
@@ -323,52 +349,3 @@ public class FolhaPagamentoService {
         return folhaPagamentoRepository.save(folha);
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-   
-
-
-
-
-
-
-
-    
-
