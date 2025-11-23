@@ -3,6 +3,7 @@ package com.exemplo.app.service;
 import java.time.LocalDate;
 import java.util.List;
 
+import com.exemplo.app.dto.RequestVagaDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -36,27 +37,35 @@ public class VagaService {
             .orElseThrow(() -> new EntityNotFoundException());
     }
 
-    public Vaga criarVaga(Vaga vaga, Long cargoCodigo, Long departamentoCodigo){
-        if (vaga.getDataLimite().isBefore(LocalDate.now())){
+    public Vaga criarVaga(RequestVagaDTO vagaBody){
+        if (vagaBody.dataLimite().isBefore(LocalDate.now())){
             throw new IllegalArgumentException("Data inválida");
         }
-        Cargo cargo = cargoRepository.findById(cargoCodigo)
+
+        Cargo cargo = cargoRepository.findById(vagaBody.cargoId())
             .orElseThrow(() -> new EntityNotFoundException("Cargo não cadastrado"));
 
-        Departamento departamento = departamentoRepository.findById(departamentoCodigo)
+        Departamento departamento = departamentoRepository.findById(vagaBody.departamentoId())
             .orElseThrow(() -> new EntityNotFoundException("Departamento não cadastrado"));
-        vaga.setCargo(cargo);
-        vaga.setDepartamento(departamento);
-        return vagaRepository.save(vaga);
+
+        Vaga newVaga = new Vaga();
+        newVaga.setFuncao(vagaBody.funcao());
+        newVaga.setTitulo(vagaBody.titulo());
+        newVaga.setDescricao(vagaBody.descricao());
+        newVaga.setDataLimite(vagaBody.dataLimite());
+        newVaga.setCargo(cargo);
+        newVaga.setDepartamento(departamento);
+
+        return vagaRepository.save(newVaga);
     }
 
-    public Vaga atualizarVaga(Long id, Vaga vagaAtualizada){
+    public Vaga atualizarVaga(Long id, RequestVagaDTO vagaAtualizada){
         Vaga vagaAtual = buscarVagaPorId(id);
 
-        vagaAtual.setTitulo(vagaAtualizada.getTitulo());
-        vagaAtual.setFuncao(vagaAtualizada.getFuncao());
-        vagaAtual.setDescricao(vagaAtualizada.getDescricao());
-        vagaAtual.setDataLimite(vagaAtualizada.getDataLimite());
+        vagaAtual.setTitulo(vagaAtualizada.titulo());
+        vagaAtual.setFuncao(vagaAtualizada.funcao());
+        vagaAtual.setDescricao(vagaAtualizada.descricao());
+        vagaAtual.setDataLimite(vagaAtualizada.dataLimite());
 
         return vagaRepository.save(vagaAtual);
     }
