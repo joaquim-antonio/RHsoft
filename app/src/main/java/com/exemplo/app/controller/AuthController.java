@@ -41,11 +41,14 @@ public class AuthController {
    @PostMapping("/login")
     public ResponseEntity<LoginResponseDTO> login(@RequestBody LoginFuncionarioDTO body) {
         var usernamePassword = new UsernamePasswordAuthenticationToken(body.cpf(), body.password());
+        System.out.println("CPF: " + body.cpf());
+        System.out.println("Password: " + body.password());
         var auth = this.authenticationManager.authenticate(usernamePassword);
         
-        var token = tokenService.generateToken((Pessoa) auth.getPrincipal());
+        var token = tokenService.generateToken((Pessoa)auth.getPrincipal());
+        System.out.println();
 
-        String role = auth.getAuthorities().stream()
+       String role = auth.getAuthorities().stream()
             .map(GrantedAuthority::getAuthority)
             .findFirst() 
             .orElse("ROLE_USER"); 

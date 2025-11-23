@@ -41,8 +41,6 @@ public class Funcionario extends Pessoa{
 
     private Double horasExtras;
 
-
-
     //@NotNull
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "cargo_codigo", foreignKey=@ForeignKey(name = "fk_funcionario_cargo"))

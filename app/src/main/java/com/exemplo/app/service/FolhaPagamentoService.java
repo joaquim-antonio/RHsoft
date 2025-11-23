@@ -22,7 +22,6 @@ import com.exemplo.app.model.ItemPagamento;
 import com.exemplo.app.model.Pagamento;
 import com.exemplo.app.repository.FolhaPagamentoRepository;
 import com.exemplo.app.repository.PagamentoRepository;
-import com.exemplo.app.dto.FolhaPagamentoDto;
 
 import jakarta.transaction.Transactional;
 
@@ -100,12 +99,6 @@ public class FolhaPagamentoService {
             adicionarItem(pagamento, "IRRF", TipoItemPagamento.DESCONTO, irrf);
         }
 
-
-        BigDecimal va = calcularValeAlimentacao(salarioBase);
-            if (va.compareTo(BigDecimal.ZERO) > 0) {
-                adicionarItem(pagamento, "Vale Alimentação", TipoItemPagamento.DESCONTO, va);
-            }
-
         
         BigDecimal vt = calcularValeTransporte(salarioBase);
         if (vt.compareTo(BigDecimal.ZERO) > 0) {
@@ -119,65 +112,62 @@ public class FolhaPagamentoService {
     }
 
     @Transactional
-public FolhaPagamentoDto editarPagamento(String codigoPagamento, FolhaPagamentoDto dto) {
+    public Pagamento editarPagamento(EditarPagamentoDto dto) {
+        Pagamento pagamento = pagamentoRepository.findByCodigo(dto.codigo())
+                .orElseThrow(() -> new RuntimeException("Pagamento não encontrado"));
 
-    Pagamento pagamento = pagamentoRepository.findByCodigo(codigoPagamento)
-            .orElseThrow(() -> new RuntimeException("Pagamento não encontrado"));
+        if (pagamento.getFolhaPagamento().getStatus() != StatusPagamento.ABERTO) {
+            throw new RuntimeException("Só é possível editar pagamentos em folhas ABERTAS.");
+        }
 
-    if (pagamento.getFolhaPagamento().getStatus() != StatusPagamento.ABERTO) {
-        throw new RuntimeException("Só é possível editar pagamentos em folhas ABERTAS.");
+        
+        pagamento.getItens().clear();
+
+        Funcionario funcionario = pagamento.getFuncionario();
+        BigDecimal salarioBase = calcularSalarioBase(funcionario);
+        pagamento.setSalarioBase(salarioBase);
+        adicionarItem(pagamento, "Salário Base", TipoItemPagamento.PROVENTO, salarioBase);
+
+        
+        BigDecimal adicionalAuto = calcularAdicional(funcionario);
+        if (adicionalAuto.compareTo(BigDecimal.ZERO) > 0) {
+            String nomeAdicional = funcionario.getTipoAcrescimo() == TipoAcrescimo.INSALUBRIDADE ? "Insalubridade" : "Periculosidade";
+            adicionarItem(pagamento, nomeAdicional, TipoItemPagamento.PROVENTO, adicionalAuto);
+        }
+
+        
+        BigDecimal horasExtras = dto.horasExtras() != null ? dto.horasExtras() : BigDecimal.ZERO;
+        pagamento.setHorasExtras(horasExtras);
+        if (horasExtras.compareTo(BigDecimal.ZERO) > 0) {
+            adicionarItem(pagamento, "Horas Extras", TipoItemPagamento.PROVENTO, horasExtras);
+        }
+
+        
+        BigDecimal adicionalManual = dto.adicionalManual() != null ? dto.adicionalManual() : BigDecimal.ZERO;
+        if (adicionalManual.compareTo(BigDecimal.ZERO) > 0) {
+            adicionarItem(pagamento, "Adicional Manual", TipoItemPagamento.PROVENTO, adicionalManual);
+        }
+
+        BigDecimal totalBruto = salarioBase.add(adicionalAuto).add(horasExtras).add(adicionalManual);
+
+        BigDecimal inss = calcularINSS(totalBruto);
+        adicionarItem(pagamento, "INSS", TipoItemPagamento.DESCONTO, inss);
+
+        BigDecimal irrf = calcularIRRF(totalBruto.subtract(inss));
+        if (irrf.compareTo(BigDecimal.ZERO) > 0) {
+            adicionarItem(pagamento, "IRRF", TipoItemPagamento.DESCONTO, irrf);
+        }
+
+        BigDecimal vt = calcularValeTransporte(salarioBase);
+        if (vt.compareTo(BigDecimal.ZERO) > 0) {
+            adicionarItem(pagamento, "Vale Transporte", TipoItemPagamento.DESCONTO, vt);
+        }
+
+        
+        pagamento.calcularTotais();
+
+        return pagamentoRepository.save(pagamento);
     }
-
-    pagamento.getItens().clear();
-
-    Funcionario funcionario = pagamento.getFuncionario();
-    BigDecimal salarioBase = calcularSalarioBase(funcionario);
-    pagamento.setSalarioBase(salarioBase);
-    adicionarItem(pagamento, "Salário Base", TipoItemPagamento.PROVENTO, salarioBase);
-
-    BigDecimal adicionalAuto = calcularAdicional(funcionario);
-    if (adicionalAuto.compareTo(BigDecimal.ZERO) > 0) {
-        adicionarItem(pagamento,
-                funcionario.getTipoAcrescimo().name(),
-                TipoItemPagamento.PROVENTO,
-                adicionalAuto);
-    }
-
-    BigDecimal horasExtras = dto.horasExtras() != null ? dto.horasExtras() : BigDecimal.ZERO;
-    pagamento.setHorasExtras(horasExtras);
-    if (horasExtras.compareTo(BigDecimal.ZERO) > 0) {
-        adicionarItem(pagamento, "Horas Extras", TipoItemPagamento.PROVENTO, horasExtras);
-    }
-
-    BigDecimal adicionalManual = dto.adicionalManual() != null ? dto.adicionalManual() : BigDecimal.ZERO;
-    pagamento.setAdicionalManual(adicionalManual);
-    if (adicionalManual.compareTo(BigDecimal.ZERO) > 0) {
-        adicionarItem(pagamento, "Adicional Manual", TipoItemPagamento.PROVENTO, adicionalManual);
-    }
-
-    BigDecimal totalBruto = salarioBase.add(adicionalAuto).add(horasExtras).add(adicionalManual);
-
-    BigDecimal inss = calcularINSS(totalBruto);
-    pagamento.setInss(inss);
-    adicionarItem(pagamento, "INSS", TipoItemPagamento.DESCONTO, inss);
-
-    BigDecimal irrf = calcularIRRF(totalBruto.subtract(inss));
-    if (irrf.compareTo(BigDecimal.ZERO) > 0) {
-        adicionarItem(pagamento, "IRRF", TipoItemPagamento.DESCONTO, irrf);
-    }
-
-    BigDecimal vt = calcularValeTransporte(salarioBase);
-    adicionarItem(pagamento, "Vale Transporte", TipoItemPagamento.DESCONTO, vt);
-
-    BigDecimal va = calcularValeAlimentacao(salarioBase);
-    adicionarItem(pagamento, "Vale Alimentação", TipoItemPagamento.DESCONTO, va);
-
-    pagamento.calcularTotais();
-
-    pagamentoRepository.save(pagamento);
-
-    return converterParaDto(pagamento);
-}
 
    
     private void adicionarItem(Pagamento pagamento, String descricao, TipoItemPagamento tipo, BigDecimal valor) {
@@ -229,16 +219,6 @@ public FolhaPagamentoDto editarPagamento(String codigoPagamento, FolhaPagamentoD
         return salarioBase.multiply(new BigDecimal("0.06")).setScale(2, RoundingMode.HALF_UP);
     }
 
-
-    public BigDecimal calcularValeAlimentacao(BigDecimal salarioBase) {
-        return salarioBase.multiply(new BigDecimal("0.03")).setScale(2, RoundingMode.HALF_UP);
-        }
-
-
-
-
-
-    
     public BigDecimal calcularFGTS(BigDecimal salarioBruto) {
         return salarioBruto.multiply(new BigDecimal("0.08")).setScale(2, RoundingMode.HALF_UP);
     }
@@ -285,11 +265,6 @@ public FolhaPagamentoDto editarPagamento(String codigoPagamento, FolhaPagamentoD
         return base.multiply(new BigDecimal("0.275")).subtract(new BigDecimal("896.00"));
     }
 
-
-    public FolhaPagamento buscarFolhaPorId(Long idFolha) {
-    return folhaPagamentoRepository.findById(idFolha)
-            .orElseThrow(() -> new RuntimeException("Folha não encontrada"));
-        }
    
 
     public FolhaPagamento abrirFolha(Administrador admin) {
@@ -347,60 +322,11 @@ public FolhaPagamentoDto editarPagamento(String codigoPagamento, FolhaPagamentoD
         folha.setStatus(StatusPagamento.ABERTO);
         return folhaPagamentoRepository.save(folha);
     }
-
-
-
-private FolhaPagamentoDto converterParaDto(Pagamento p) {
-    return new FolhaPagamentoDto(
-        p.getCodigo(),
-        p.getFuncionario().getNome(),
-        p.getFuncionario().getCpf(),
-        p.getFuncionario().getCargo().getNome(),
-
-        p.getHorasExtras(),
-        p.getAdicionalManual(),
-        calcularValeAlimentacao(p.getSalarioBase()),
-        calcularValeTransporte(p.getSalarioBase()),
-
-        p.getSalarioBase(),
-        p.getInss(),
-        p.getFgts(),
-        p.getTotalDescontos(),
-        p.getTotalProventos(),
-        p.getValorLiquido()
-    );
 }
 
 
 
-@Transactional
-public FolhaPagamento enviarFolhaParaFuncionarios(Long idFolha) {
-    FolhaPagamento folha = folhaPagamentoRepository.findById(idFolha)
-            .orElseThrow(() -> new RuntimeException("Folha não encontrada"));
 
-    if (folha.getStatus() != StatusPagamento.FECHADA) {
-        throw new RuntimeException("Só é possível enviar folhas FECHADAS.");
-    }
-
-    folha.setStatus(StatusPagamento.ENVIADO);
-    folha.setDataEnvio(LocalDate.now());
-
-    
-
-    return folhaPagamentoRepository.save(folha);
-}
-
-
-public FolhaPagamentoDto buscarPagamentoDto(String codigo) {
-    Pagamento p = pagamentoRepository.findByCodigo(codigo)
-            .orElseThrow(() -> new RuntimeException("Pagamento não encontrado"));
-
-    return converterParaDto(p);
-}
-
-
-
-}
 
 
 

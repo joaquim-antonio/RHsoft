@@ -32,7 +32,8 @@
                                 class="aside_icons fa-solid fa-money-check-dollar"></i>Contracheque</a></li>
                     <li class="aside_items"><a href="vagas.html"><i
                                 class="aside_icons fa-solid fa-receipt"></i>Vagas</a></li>
-                    <li class="aside_items"><a href="folhaPagamento.html"><i class="aside_icons fa-solid fa-suitcase"></i>Folha de
+                    <li class="aside_items"><a href="folhaPagamento.html"><i
+                                class="aside_icons fa-solid fa-suitcase"></i>Folha de
                             Pagamento</a></li>
                 </ul>
             </nav>
@@ -61,49 +62,53 @@
                 <button class="btn" id="adicionar_vagas"><i class="fa-solid fa-square-plus fa-2x"></i></button>
             </section>
             <section class="main_cards">
-                <!--aqui serao inseridos os cards dinamicos-->
-                <div class="card" id="card" onclick="">
-                    <div class="card_titulo">
-                        <h3>(Nome da vaga)</h3>
-                        <p class="ativa">ativa</p>
+                <div class="vagasContainer" id="vagasContainer">
+                    <div class="col-12 text-center py-5">
+                        <div class="spinner-border text-primary" role="status">
+                            <span class="visually-hidden">Carregando...</span>
+                        </div>
                     </div>
-                    <p>Departamento: Vendas</p>
-                    <p>Descrição da vaga: Lorem ipsum dolor sit amet consectetur adipisicing elit. Nulla illo beatae ut aperiam quidem vel repudiandae perspiciatis animi magnam eveniet consequuntur sed labore accusamus, architecto dolore aliquam reprehenderit quibusdam? Deserunt.</p>
                 </div>
-                <div class="card" id="card" onclick="">
-                    <div class="card_titulo">
-                        <h3>(Nome da vaga)</h3>
-                        <p class="ativa">ativa</p>
-                    </div>
-                    <p>Departamento: Vendas</p>
-                    <p>Descrição da vaga: Lorem ipsum dolor sit amet consectetur adipisicing elit. Nulla illo beatae ut aperiam quidem vel repudiandae perspiciatis animi magnam eveniet consequuntur sed labore accusamus, architecto dolore aliquam reprehenderit quibusdam? Deserunt.</p>
-                </div>
-                <div class="card" id="card" onclick="">
-                    <div class="card_titulo">
-                        <h3>(Nome da vaga)</h3>
-                        <p class="ativa">ativa</p>
-                    </div>
-                    <p>Departamento: Vendas</p>
-                    <p>Descrição da vaga: Lorem ipsum dolor sit amet consectetur adipisicing elit. Nulla illo beatae ut aperiam quidem vel repudiandae perspiciatis animi magnam eveniet consequuntur sed labore accusamus, architecto dolore aliquam reprehenderit quibusdam? Deserunt.</p>
-                </div>
-                <div class="card" id="card" onclick="">
-                    <div class="card_titulo">
-                        <h3>(Nome da vaga)</h3>
-                        <p class="ativa">ativa</p>
-                    </div>
-                    <p>Departamento: Vendas</p>
-                    <p>Descrição da vaga: Lorem ipsum dolor sit amet consectetur adipisicing elit. Nulla illo beatae ut aperiam quidem vel repudiandae perspiciatis animi magnam eveniet consequuntur sed labore accusamus, architecto dolore aliquam reprehenderit quibusdam? Deserunt.</p>
-                </div><div class="card" id="card" onclick="">
-                    <div class="card_titulo">
-                        <h3>(Nome da vaga)</h3>
-                        <p class="ativa">ativa</p>
-                    </div>
-                    <p>Departamento: Vendas</p>
-                    <p>Descrição da vaga: Lorem ipsum dolor sit amet consectetur adipisicing elit. Nulla illo beatae ut aperiam quidem vel repudiandae perspiciatis animi magnam eveniet consequuntur sed labore accusamus, architecto dolore aliquam reprehenderit quibusdam? Deserunt.</p>
+                <div id="emptyState" class="empty-state d-none">
+                    <i class="fas fa-inbox"></i>
+                    <h3>Nenhuma vaga encontrada</h3>
+                    <p>Tente ajustar seus filtros de busca</p>
                 </div>
             </section>
         </main>
     </div>
+
+    <!--MODAL-->
+    <div id="vagaModal" class="modal-overlay hidden">
+        <div class="modal-content">
+            <h3>Criar Nova Vaga</h3>
+            <form id="vagaForm">
+                <label for="vaga-titulo">Título da Vaga:</label>
+                <input type="text" id="vaga-titulo" name="titulo" required>
+
+                <label for="vaga-funcao">Função:</label>
+                <input type="text" id="vaga-funcao" name="funcao" required>
+
+                <label for="vaga-descricao">Descrição:</label>
+                <textarea id="vaga-descricao" name="descricao" rows="4" required></textarea>
+
+                <label for="vaga-dataLimite">Data Limite:</label>
+                <input type="date" id="vaga-dataLimite" name="dataLimite" required>
+
+                <label for="vaga-cargoId">ID do Cargo:</label>
+                <input type="number" id="vaga-cargoId" name="cargoId" required>
+
+                <label for="vaga-departamentoId">ID do Departamento:</label>
+                <input type="number" id="vaga-departamentoId" name="departamentoId" required>
+
+                <div class="modal-actions">
+                    <button type="submit" class="submit-btn">Salvar Vaga</button>
+                    <button type="button" class="cancel-btn" id="closeModal">Cancelar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <script src="assets/js/pages/vagas/vagas.js"></script>
 </body>
 
 </html>

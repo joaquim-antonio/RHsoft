@@ -1,6 +1,8 @@
 package com.exemplo.app.infra.security;
 
 import java.io.IOException;
+
+import com.exemplo.app.repository.PessoaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -21,17 +23,21 @@ public class SecurityFilter extends OncePerRequestFilter {
     @Autowired
     TokenService tokenService;
 
+    //FuncionarioRepository é especifico, nao inclue candidato
+    //@Autowired
+    //FuncionarioRepository repository;
+
     @Autowired
-    FuncionarioRepository repository;
+    PessoaRepository repository;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         var token = this.recoverToken(request);
         if(token != null){
             var cpf = tokenService.validateToken(token);
-            UserDetails funcionario = this.repository.findByCpf(cpf);
+            UserDetails pessoa = this.repository.findByCpf(cpf);
 
-            var authentication = new UsernamePasswordAuthenticationToken(funcionario, null, funcionario.getAuthorities());
+            var authentication = new UsernamePasswordAuthenticationToken(pessoa, null, pessoa.getAuthorities());
             SecurityContextHolder.getContext().setAuthentication(authentication);
         }
         filterChain.doFilter(request, response);
