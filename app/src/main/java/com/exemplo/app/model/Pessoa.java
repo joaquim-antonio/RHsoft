@@ -55,7 +55,6 @@ public class Pessoa implements UserDetails {
     @NotBlank
     private String nome;
 
-    @NotBlank
     private String sobrenome;
 
     @NotBlank

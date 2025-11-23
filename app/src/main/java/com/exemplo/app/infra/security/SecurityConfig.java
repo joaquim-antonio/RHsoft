@@ -54,33 +54,36 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.POST, "/auth/register-candidato").permitAll()
                         .requestMatchers("/user/me").authenticated()
 
-                         // --- GESTÃO DE VAGAS ---
-                        .requestMatchers(HttpMethod.GET, "/api/v1/vagas/disponiveis").permitAll() 
-                        .requestMatchers(HttpMethod.GET, "/api/v1/vagas/{id}").permitAll() 
-                        .requestMatchers(HttpMethod.GET, "/api/v1/vagas").hasAnyRole("ADMIN", "USER") 
-                        .requestMatchers(HttpMethod.POST, "/api/v1/vagas").hasRole("ADMIN") 
-                        .requestMatchers(HttpMethod.PUT, "/api/v1/vagas/**").hasRole("ADMIN") 
-                        .requestMatchers(HttpMethod.DELETE, "/api/v1/vagas/**").hasRole("ADMIN") 
-                        
+                        // --- GESTÃO DE VAGAS ---
+                        .requestMatchers(HttpMethod.GET, "/api/v1/vagas/disponiveis").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/v1/vagas/{id}").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/v1/vagas").hasAnyRole("ADMIN", "USER")
+                        .requestMatchers(HttpMethod.POST, "/api/v1/vagas").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.PUT, "/api/v1/vagas/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.DELETE, "/api/v1/vagas/**").hasRole("ADMIN")
+
                         // --- ROTAS DE ADMIN ---
                         .requestMatchers(HttpMethod.PUT, "/api/v1/folha-pagamento/pagamento/editar").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.POST, "/api/v1/folha-pagamento/**").hasRole("ADMIN") 
+                        .requestMatchers(HttpMethod.POST, "/api/v1/folha-pagamento/**").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.PATCH, "/api/v1/folha-pagamento/**").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.POST, "/auth/register-funcionario").permitAll() // teste
-                        
+
                         // --- ROTAS DE CANDIDATO ---
                         .requestMatchers("/api/v1/candidaturas/minhas").hasAnyRole("CANDIDATO")
                         .requestMatchers(HttpMethod.POST, "/api/v1/candidaturas/aplicar/**").hasAnyRole("CANDIDATO")
-                        
+                        .requestMatchers(HttpMethod.DELETE, "/api/v1/candidaturas/cancelar/{vagaId}").hasAnyRole("CANDIDATO")
+
                         // --- ROTAS DE ADMINISTRAÇÃO ---
                         .requestMatchers("/api/v1/dashboard/**").hasAnyRole("USER", "ADMIN")
                         .requestMatchers("/api/v1/candidaturas/**").hasAnyRole("ADMIN")
-                        
+
+                        // PERFIL DE CANDIDATO
+                        .requestMatchers("/api/v1/Candidato/**").hasAnyRole("CANDIDATO", "ADMIN")
+
                         // Leitura da folha
                         .requestMatchers(HttpMethod.GET, "/api/v1/folha-pagamento/**").hasAnyRole("ADMIN", "USER")
 
-                        .anyRequest().authenticated()
-                )
+                        .anyRequest().authenticated())
                 .headers(headers -> headers.frameOptions(frame -> frame.sameOrigin()))
                 .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();

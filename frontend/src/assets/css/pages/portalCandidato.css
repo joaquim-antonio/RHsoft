@@ -1,0 +1,297 @@
+:root {
+    --cor-azul-escuro: #0b2239;
+    --cor-azul-claro: #3498db;
+    --cor-cinza-bg: #f8f9fa;
+    --card-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+    --card-hover-shadow: 0 20px 40px rgba(0, 0, 0, 0.12);
+}
+
+.search-box {
+    min-width: 320px;
+    position: relative;
+}
+
+.search-box .input-group {
+    background: white;
+    border-radius: 50px; 
+    padding: 0; 
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+    border: 1px solid transparent;
+    transition: all 0.3s ease;
+    overflow: hidden; 
+    display: flex;
+    align-items: center;
+    height: 45px; 
+}
+
+.search-box .input-group:focus-within {
+    box-shadow: 0 4px 20px rgba(52, 152, 219, 0.15);
+    border-color: var(--cor-azul-claro);
+    transform: translateY(-1px);
+}
+
+.search-box .input-group-text {
+    background: transparent;
+    border: none;
+    color: #95a5a6;
+    padding-left: 20px; 
+    padding-right: 10px;
+}
+
+.search-box .form-control {
+    border: none;
+    background: transparent;
+    box-shadow: none;
+    font-size: 0.95rem;
+    color: var(--cor-azul-escuro);
+    height: 100%; 
+    padding-left: 0;
+}
+
+.search-box .form-control::placeholder {
+    color: #bdc3c7;
+    font-weight: 400;
+}
+
+.nav-tabs {
+    border-bottom: 1px solid rgba(0,0,0,0.05);
+    gap: 10px;
+    padding-bottom: 10px;
+}
+
+.nav-tabs .nav-item {
+    margin-bottom: 0;
+}
+
+.nav-tabs .nav-link {
+    border: none;
+    border-radius: 30px; 
+    padding: 10px 24px;
+    font-weight: 600;
+    color: #7f8c8d;
+    background-color: transparent;
+    transition: all 0.25s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.nav-tabs .nav-link:hover {
+    color: var(--cor-azul-claro);
+    background-color: rgba(52, 152, 219, 0.05);
+}
+
+.nav-tabs .nav-link.active {
+    color: white;
+    background-color: var(--cor-azul-escuro);
+    box-shadow: 0 4px 10px rgba(11, 34, 57, 0.2);
+}
+
+.vaga-card {
+    background: white;
+    border: 1px solid rgba(0,0,0,0.03);
+    border-radius: 16px;
+    box-shadow: var(--card-shadow);
+    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.vaga-card:hover {
+    transform: translateY(-8px);
+    box-shadow: var(--card-hover-shadow);
+    border-color: rgba(52, 152, 219, 0.3);
+}
+
+.vaga-card .card-body {
+    padding: 1.75rem;
+    display: flex;
+    flex-direction: column;
+}
+
+.badge-dept {
+    background-color: #eff6ff;
+    color: var(--cor-azul-claro);
+    font-weight: 700;
+    font-size: 0.7rem;
+    padding: 0.5em 1em;
+    border-radius: 20px;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+}
+
+.vaga-title {
+    font-size: 1.35rem;
+    font-weight: 800;
+    color: var(--cor-azul-escuro);
+    margin: 15px 0 10px 0;
+    line-height: 1.3;
+}
+
+.vaga-info {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    font-size: 0.85rem;
+    color: #95a5a6;
+    margin-bottom: 15px;
+}
+
+.vaga-info i {
+    color: var(--cor-azul-claro);
+}
+
+.vaga-desc {
+    color: #7f8c8d;
+    font-size: 0.95rem;
+    line-height: 1.6;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    margin-bottom: auto;
+}
+
+.vaga-card .card-footer {
+    background: white;
+    border-top: 1px solid rgba(0,0,0,0.03);
+    padding: 1.25rem 1.75rem;
+}
+
+.btn-apply {
+    background-color: var(--cor-azul-escuro);
+    color: white;
+    width: 100%;
+    border: none;
+    padding: 12px;
+    border-radius: 10px;
+    font-weight: 600;
+    letter-spacing: 0.3px;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.btn-apply:hover {
+    background-color: #163a5c;
+    transform: scale(1.02);
+}
+
+.btn-apply:disabled {
+    background-color: #ecf0f1;
+    color: #95a5a6;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.vaga-card.inscrito {
+    border: 2px solid #2ecc71;
+    background: #fafffb;
+}
+
+#emptyState {
+    padding: 80px 0;
+    opacity: 0;
+    animation: fadeIn 0.5s forwards;
+}
+
+#emptyState i {
+    color: #ecf0f1;
+    transition: color 0.3s;
+}
+
+#emptyState:hover i {
+    color: #bdc3c7;
+}
+
+#emptyStateTitle {
+    color: var(--cor-azul-escuro);
+    margin-top: 20px;
+}
+
+@keyframes fadeIn {
+    to { opacity: 1; }
+}
+
+/* Modo escuro */
+body.dark-mode .search-box .input-group {
+    background-color: #2d2d2d;
+    box-shadow: none;
+    border: 1px solid #444;
+}
+
+body.dark-mode .search-box .input-group-text {
+    background: transparent; 
+}
+
+body.dark-mode .search-box .form-control {
+    color: #ecf0f1;
+    background: transparent;
+}
+
+body.dark-mode .search-box .form-control::placeholder {
+    color: #7f8c8d;
+}
+
+body.dark-mode .nav-tabs .nav-link {
+    color: #bdc3c7;
+}
+
+body.dark-mode .nav-tabs .nav-link:hover {
+    background-color: rgba(255, 255, 255, 0.05);
+    color: white;
+}
+
+body.dark-mode .nav-tabs .nav-link.active {
+    background-color: #3498db;
+    color: white;
+    box-shadow: 0 4px 15px rgba(52, 152, 219, 0.3);
+}
+
+body.dark-mode .vaga-card {
+    background-color: #1e1e1e;
+    border-color: #333;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+}
+
+body.dark-mode .vaga-card:hover {
+    background-color: #252525;
+    border-color: #555;
+}
+
+body.dark-mode .vaga-title {
+    color: #ecf0f1;
+}
+
+body.dark-mode .vaga-desc {
+    color: #bdc3c7;
+}
+
+body.dark-mode .badge-dept {
+    background-color: rgba(52, 152, 219, 0.15);
+    color: #5dade2;
+}
+
+body.dark-mode .card-footer {
+    background-color: #1e1e1e;
+    border-top-color: #333;
+}
+
+body.dark-mode .btn-apply {
+    background-color: #3498db;
+}
+
+body.dark-mode .btn-apply:hover {
+    background-color: #2980b9;
+}
+
+body.dark-mode #emptyState i {
+    color: #333;
+}
+
+body.dark-mode #emptyStateTitle {
+    color: #ecf0f1;
+}

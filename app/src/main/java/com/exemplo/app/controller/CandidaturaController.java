@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -45,7 +46,17 @@ public class CandidaturaController {
         }
     }
 
- 
+    @DeleteMapping("/cancelar/{vagaId}")
+    public ResponseEntity<?> cancelarCandidatura(@PathVariable Long vagaId, Authentication authentication) {
+        String cpfLogado = authentication.getName();
+        
+        try {
+            candidaturaService.cancelarCandidatura(vagaId, cpfLogado);
+            return ResponseEntity.ok().build();
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("Erro ao cancelar candidatura: " + e.getMessage());
+        }
+    }
     @GetMapping("/minhas")
     public ResponseEntity<List<CandidaturaResponseDTO>> minhasCandidaturas(Authentication authentication) {
         String cpfLogado = authentication.getName();

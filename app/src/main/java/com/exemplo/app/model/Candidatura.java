@@ -40,7 +40,7 @@ public class Candidatura {
     private StatusCandidatura status;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "candidato_id", foreignKey=@ForeignKey(name = "fk_candidatura_candidato"))
+    @JoinColumn(name = "candidato_cpf", foreignKey=@ForeignKey(name = "fk_candidatura_candidato"))
     private Candidato candidato;
 
     @ManyToOne(fetch = FetchType.LAZY)

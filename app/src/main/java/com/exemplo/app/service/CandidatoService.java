@@ -5,16 +5,19 @@ import java.util.Optional;
 
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
+import com.exemplo.app.dto.CandidatoProfileDTO;
 import com.exemplo.app.dto.RegisterCandidatoDTO;
 import com.exemplo.app.exception.CpfAlreadyExistsException;
 import com.exemplo.app.model.Candidato;
 import com.exemplo.app.model.Endereco;
-import com.exemplo.app.model.Usuario;
 import com.exemplo.app.model.Enums.TipoGenero;
+import com.exemplo.app.model.Usuario;
 import com.exemplo.app.repository.CandidatoRepository;
 import com.exemplo.app.repository.PessoaRepository;
 
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 
@@ -34,6 +37,66 @@ public class CandidatoService {
     }
 
     public Candidato salvarCandidato(Candidato candidato) {
+        return candidatoRepository.save(candidato);
+    }
+
+    public CandidatoProfileDTO buscarPerfilPorCpf(String cpf) {
+        Candidato c = candidatoRepository.findById(cpf)
+            .orElseThrow(() -> new EntityNotFoundException("Candidato não encontrado"));
+        
+        return new CandidatoProfileDTO(
+            c.getCpf(),
+            c.getNome(),
+            c.getSobrenome(), 
+            c.getTelefone(),
+            c.getHabilidades(),
+            c.getFormacao(),
+            c.getExperiencias()
+        );
+    }
+
+    @Transactional
+    public Candidato atualizarPerfil(String cpf, CandidatoProfileDTO dto) {
+        Candidato candidato = candidatoRepository.findById(cpf)
+                .orElseThrow(() -> new EntityNotFoundException("Candidato não encontrado: " + cpf));
+
+        // Atualiza listas (Limpando e readicionando para garantir sincronia)
+        if (dto.habilidades() != null) {
+            candidato.getHabilidades().clear();
+            candidato.getHabilidades().addAll(dto.habilidades());
+        }
+        
+        if (dto.formacao() != null) {
+            candidato.getFormacao().clear();
+            candidato.getFormacao().addAll(dto.formacao());
+        }
+
+        if (dto.experiencias() != null) {
+            candidato.getExperiencias().clear();
+            candidato.getExperiencias().addAll(dto.experiencias());
+        }
+
+        if (StringUtils.hasText(dto.nome())) {
+            candidato.setNome(dto.nome().trim());
+        }
+        
+        if (dto.sobrenome() != null) {
+            candidato.setSobrenome(dto.sobrenome().trim());
+        }
+
+        if (StringUtils.hasText(dto.telefone())) {
+            String foneLimpo = dto.telefone().replaceAll("\\D", "");
+            
+            if (!foneLimpo.isEmpty()) {
+                candidato.setTelefone(foneLimpo);
+            }
+        }
+
+        // Atualiza dados básicos se vierem
+        if(dto.nome() != null) candidato.setNome(dto.nome());
+        if(dto.sobrenome() != null) candidato.setSobrenome(dto.sobrenome());
+        if(dto.telefone() != null) candidato.setTelefone(dto.telefone());
+
         return candidatoRepository.save(candidato);
     }
 

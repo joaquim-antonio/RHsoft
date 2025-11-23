@@ -1,6 +1,7 @@
 package com.exemplo.app.repository;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
@@ -18,4 +19,6 @@ public interface CandidaturaRepository extends JpaRepository<Candidatura, Long> 
 
     // Lista quem se aplicou para uma vaga específica
     List<Candidatura> findByVagaId(Long vagaId);
+
+    Optional<Candidatura> findByVagaIdAndCandidatoCpf(Long vagaId, String candidatoCpf);
 }

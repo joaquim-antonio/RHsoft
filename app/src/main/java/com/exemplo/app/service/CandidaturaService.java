@@ -108,4 +108,14 @@ public class CandidaturaService {
 
         return candidatura;
     }
+
+    @Transactional
+    public void cancelarCandidatura(Long vagaId, String cpfCandidato) {
+        // 1. Tenta encontrar a inscrição específica
+        Candidatura candidatura = candidaturaRepository.findByVagaIdAndCandidatoCpf(vagaId, cpfCandidato)
+            .orElseThrow(() -> new IllegalStateException("Candidatura não encontrada ou você não está inscrito nesta vaga."));
+
+        // 2. Deleta
+        candidaturaRepository.delete(candidatura);
+    }
 }

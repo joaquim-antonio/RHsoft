@@ -1,82 +1,57 @@
-    package com.exemplo.app.controller;
-/*
-import com.exemplo.app.model.Candidato;
-import com.exemplo.app.service.CandidatoService;
-import jakarta.validation.Valid;
-import lombok.AllArgsConstructor;
+package com.exemplo.app.controller;
+
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
-import java.util.Optional;
+import com.exemplo.app.dto.CandidatoProfileDTO;
+import com.exemplo.app.model.Candidato;
+import com.exemplo.app.service.CandidatoService;
 
+import jakarta.validation.Valid;
 
-
-@AllArgsConstructor
 @RestController
-@RequestMapping(path = "api/v1/Candidato")
-
-public class CandidatoController{
+@RequestMapping("/api/v1/Candidato")
+public class CandidatoController {
 
     @Autowired
+    private CandidatoService candidatoService;
 
-    private final CandidatoService candidatoservice;
-
-    @GetMapping(path = "/all")
+    @GetMapping("/all")
     public ResponseEntity<List<Candidato>> listarCandidatos(){
-        List<Candidato> candidatos = candidatoservice.listarTodosOsCandidatos();
-        return new ResponseEntity<>(candidatos, HttpStatus.OK);
+        return ResponseEntity.ok(candidatoService.listarTodosOsCandidatos());
     }
 
-
-
-
-     @GetMapping(path = "/{id}")
-    public ResponseEntity<List<Candidato>> buscarCandidatoPorId(@PathVariable Long id) {
-
-        Optional<Candidato> candidatos = candidatoservice.buscarCandidatoPorId(id);
-        return new ResponseEntity<>(candidato, HttpStatus.OK);
-
-    }
-
-    @PostMapping
-    public ResponseEntity<Candidato> adicionarCandidatos(@Valid @RequestBody Candidato candidato){
-        Candidato novoCandidato = candidatoservice.salvarCandidato(candidato);
-        return new ResponseEntity<>(novoCandidato, HttpStatus.CREATED);
-    }
-
-
-
-    @PutMapping(path = "/{id}")
-    public ResponseEntity<?> atualizarCandidato(@PathVariable Long id, @RequestBody Candidato candidatoAtualizado) {
-
+    @GetMapping("/{cpf}")
+    public ResponseEntity<CandidatoProfileDTO> buscarCandidatoPorId(@PathVariable String cpf) {
         try {
-
-            Candidato candidato = candidatoservice.atualizarCandidato(id, candidatoAtualizado);
-            return new ResponseEntity<>(candidato, HttpStatus.OK);
-
-        } catch (IllegalArgumentException e) {
-
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+            CandidatoProfileDTO dto = candidatoService.buscarPerfilPorCpf(cpf);
+            return ResponseEntity.ok(dto);
+        } catch (Exception e) {
+            return ResponseEntity.notFound().build();
         }
     }
 
-    
-
-
-
-
+    @PutMapping("/{cpf}")
+    public ResponseEntity<?> atualizarCandidato(@PathVariable String cpf, @RequestBody @Valid CandidatoProfileDTO dto) {
+        try {
+            Candidato candidato = candidatoService.atualizarPerfil(cpf, dto);
+            return ResponseEntity.ok(candidato);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
     }
- */
 
-
-
-
-    
-    
-    
-
-
-
+    // @PostMapping
+    // public ResponseEntity<Candidato> adicionarCandidato(@Valid @RequestBody Candidato candidato){
+    //     return ResponseEntity.status(HttpStatus.CREATED).body(candidatoService.salvarCandidato(candidato));
+    // }
+}

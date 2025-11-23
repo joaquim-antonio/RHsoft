@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RHSoft - Portal do Candidato</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="assets/css/global/setup.css">
+    <link rel="stylesheet" href="assets/css/global/cabecalho.css">
+    <link rel="stylesheet" href="assets/css/global/aside.css">
+    <link rel="stylesheet" href="assets/css/pages/portalCandidato.css">
+    <link rel="icon" type="image/x-icon" href="./assets/images/global/logo.png" />
+</head>
+
+<body>
+    <header id="headerPlaceHolder"></header>
+
+    <div class="container-fluid">
+        <div class="row">
+
+            <div id="sidebarCandidatoContainer" class="col-md-3 col-lg-2 ps-0 d-none d-md-block"></div>
+
+            <!-- Conteúdo Principal -->
+            <div class="col-md-9 col-lg-10 main-content p-4">
+
+                <!-- Cabeçalho da Página -->
+                <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-4 gap-3">
+                    <div>
+                        <h2 class="fw-bold text-primary-custom mb-1">
+                            <i class="fas fa-briefcase me-2"></i>Oportunidades
+                        </h2>
+                        <p class="text-muted mb-0">Explore as vagas abertas e gerencie suas candidaturas.</p>
+                    </div>
+
+                    <!-- Campo de Busca -->
+                    <div class="search-box">
+                        <div class="input-group shadow-sm">
+                            <span class="input-group-text border-end-0">
+                                <i class="fas fa-search text-muted"></i>
+                            </span>
+                            <input type="text" id="searchVaga" class="form-control border-start-0 ps-0"
+                                placeholder="Pesquisar cargo ou departamento...">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Abas de Navegação -->
+                <ul class="nav nav-tabs mb-4 border-bottom-0">
+                    <li class="nav-item">
+                        <button class="nav-link active fw-bold" id="tabTodas" onclick="filtrarTab('todas')">
+                            Todas as Vagas
+                        </button>
+                    </li>
+                    <li class="nav-item">
+                        <button class="nav-link text-muted" id="tabMinhas" onclick="filtrarTab('minhas')">
+                            Minhas Candidaturas
+                        </button>
+                    </li>
+                </ul>
+
+                <div id="loadingSpinner" class="text-center py-5">
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="visually-hidden">Carregando...</span>
+                    </div>
+                    <p class="mt-2 text-muted">Carregando oportunidades...</p>
+                </div>
+
+                <!-- Grid de Vagas -->
+                <div id="vagasGrid" class="row gy-4 d-none">
+                </div>
+
+                <!-- Estado Vazio (Sem vagas) -->
+                <div id="emptyState" class="text-center py-5 d-none">
+                    <div class="mb-3">
+                        <i class="fas fa-folder-open fa-4x text-muted opacity-25"></i>
+                    </div>
+                    <h4 class="text-muted fw-bold" id="emptyStateTitle">Nenhuma vaga encontrada.</h4>
+                    <p class="text-muted" id="emptyStateMsg">Tente ajustar os filtros ou volte mais tarde.</p>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="modalConfirmarCancelamento" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-0 shadow">
+                <div class="modal-header bg-danger text-white border-0">
+                    <h5 class="modal-title fw-bold">
+                        <i class="fas fa-exclamation-triangle me-2"></i>Cancelar Inscrição
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                        aria-label="Close"></button>
+                </div>
+                <div class="modal-body p-4 text-center">
+                    <p class="mb-0 fs-5 text-dark">
+                        Tem certeza que deseja cancelar sua inscrição na vaga <strong id="nomeVagaModal"
+                            class="text-danger"></strong>?
+                    </p>
+                    <p class="text-muted small mt-2">Você poderá se candidatar novamente se a vaga ainda estiver aberta.
+                    </p>
+                </div>
+                <div class="modal-footer border-0 justify-content-center pb-4">
+                    <button type="button" class="btn btn-light px-4 border" data-bs-dismiss="modal">
+                        Não, voltar
+                    </button>
+                    <button type="button" id="btnConfirmarAcao" class="btn btn-danger px-4 fw-bold">
+                        Sim, cancelar
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast -->
+    <div class="toast-container position-fixed bottom-0 end-0 p-3" style="z-index: 1100">
+        <div id="liveToast" class="toast align-items-center border-0" role="alert" aria-live="assertive"
+            aria-atomic="true">
+            <div class="d-flex">
+                <div class="toast-body fw-semibold" id="toastMessage"></div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"
+                    aria-label="Close"></button>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/js/bootstrap.bundle.min.js"></script>
+    <script src="./assets/js/global/setup.js"></script>
+    <script src="assets/js/pages/portalCandidato.js"></script>
+
+</body>
+
+</html>

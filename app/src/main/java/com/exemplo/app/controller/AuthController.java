@@ -39,21 +39,24 @@ public class AuthController {
     private TokenService tokenService;
 
    @PostMapping("/login")
-    public ResponseEntity<LoginResponseDTO> login(@RequestBody LoginFuncionarioDTO body) {
+   public ResponseEntity<LoginResponseDTO> login(@RequestBody LoginFuncionarioDTO body) {
         var usernamePassword = new UsernamePasswordAuthenticationToken(body.cpf(), body.password());
-        System.out.println("CPF: " + body.cpf());
-        System.out.println("Password: " + body.password());
         var auth = this.authenticationManager.authenticate(usernamePassword);
-        
-        var token = tokenService.generateToken((Pessoa)auth.getPrincipal());
-        System.out.println();
+        Pessoa pessoaAuthenticated = (Pessoa) auth.getPrincipal();
 
-       String role = auth.getAuthorities().stream()
+        var token = tokenService.generateToken(pessoaAuthenticated);
+
+        String role = auth.getAuthorities().stream()
             .map(GrantedAuthority::getAuthority)
             .findFirst() 
             .orElse("ROLE_USER"); 
         
-        return ResponseEntity.ok(new LoginResponseDTO(auth.getName(), token, role));
+        return ResponseEntity.ok(new LoginResponseDTO(
+            pessoaAuthenticated.getCpf(), 
+            pessoaAuthenticated.getNome(), 
+            token, 
+            role
+        ));
     }
 
     @Transactional
