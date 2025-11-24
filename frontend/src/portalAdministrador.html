@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RHSoft - Portal do Administrador</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="assets/css/global/setup.css">
+    <link rel="stylesheet" href="assets/css/global/cabecalho.css">
+    <link rel="stylesheet" href="assets/css/global/aside.css">
+    <link rel="stylesheet" href="assets/css/pages/portalAdministrador.css">
+    <link rel="icon" type="image/x-icon" href="./assets/images/global/logo.png" />
+</head>
+
+<body>
+    <header id="headerPlaceHolder"></header>
+
+    <div class="container-fluid">
+        <div class="row">
+
+            <div id="sidebarCandidatoContainer" class="col-md-3 col-lg-2 ps-0 d-none d-md-block"></div>
+
+            <!-- Conteúdo Principal -->
+            <div class="col-md-9 col-lg-10 main-content p-4">
+
+                <!-- Cabeçalho da Página -->
+                <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-4 gap-3">
+                        <h2 class="fw-bold text-primary-custom mb-1">
+                            <i class="fas fa-briefcase me-2"></i>Dashboard
+                        </h2>
+                </div>
+                <div class="row gy-4 mb-4">
+
+                    <div class="col-lg-3 col-md-6">
+                        <h5 class="chart-title mb-3">Distribuição</h5>
+                        <div class="chart-wrapper">
+                            <div class="chart-center-text">
+                                <div class="display-4 fw-bold">..</div>
+                                <div class="text-muted">Funcionários</div>
+                            </div>
+                            <canvas id="funcionariosChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/js/bootstrap.bundle.min.js"></script>
+    <script src="./assets/js/global/setup.js"></script>
+    <script src="assets/js/pages/portalAdministrador.js"></script>
+
+</body>
+
+</html>
