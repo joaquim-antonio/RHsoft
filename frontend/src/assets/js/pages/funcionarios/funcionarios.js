@@ -1,3 +1,4 @@
+// Script de Gestão de Funcionários (Alteração Cosmética para Commit)
 let editingRow = null;
 
 // Abrir/fechar cadastro
