@@ -29,6 +29,17 @@ Problemas que o sistema resolve:
 - **Funcionário**: consulta contracheques, atualiza dados.
 - **Candidato**: acessa e se inscreve nas vagas publicadas.
 
+## ⚠️ Status Atual do Projeto
+
+O projeto **RHSoft** (Sirius) encontra-se atualmente em fase de **Protótipo de Alta Fidelidade (Frontend)**.
+
+É fundamental notar que, para fins de demonstração da interface de usuário e da lógica de interação no lado do cliente, o sistema utiliza **dados mockados** (simulados) diretamente no código JavaScript.
+
+**Atenção:**
+> A implementação atual **não possui persistência de dados** (não salva informações em um banco de dados) e **não está integrada ao backend** (APIs em Java/Spring Boot). As ações de cadastro, edição e consulta são apenas simulações visuais no frontend.
+
+---
+
 ## ⚙️ Funcionalidades Principais
 
 - [x] **Fazer Login**
