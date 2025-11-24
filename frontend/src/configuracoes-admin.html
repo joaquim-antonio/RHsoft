@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RHSoft - Configurações do Administrador</title>
+
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="assets/css/global/setup.css">
+    <link rel="stylesheet" href="assets/css/pages/configuracoes-admin.css">
+</head>
+
+<body>
+    <header id="headerPlaceHolder"></header>
+
+    <div class="container-fluid">
+        <div class="row">
+
+            <div id="sidebarPlaceHolder" class="col-md-3 col-lg-2 ps-0"></div>
+
+            <div class="col-md-9 col-lg-10 main-content p-4">
+
+                <h2 class="mb-4">Configurações do Sistema</h2>
+
+                <div class="row">
+                    <div class="col-lg-8">
+                        <div class="card shadow-sm mb-4">
+                            <div class="card-body">
+                                <h5 class="card-title mb-3">Configurações Gerais</h5>
+                                <form id="configForm">
+                                    <div class="mb-3">
+                                        <label for="nomeEmpresa" class="form-label">Nome da Empresa</label>
+                                        <input type="text" class="form-control" id="nomeEmpresa" value="RHSoft S.A." required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="emailSuporte" class="form-label">E-mail de Suporte</label>
+                                        <input type="email" class="form-control" id="emailSuporte" value="suporte@rhsoft.com.br" required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="fusoHorario" class="form-label">Fuso Horário Padrão</label>
+                                        <select class="form-select" id="fusoHorario">
+                                            <option value="-03:00" selected>(GMT-03:00) Brasília</option>
+                                            <option value="-04:00">(GMT-04:00) Manaus</option>
+                                            <option value="-05:00">(GMT-05:00) Lima</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-check form-switch mb-4">
+                                        <input class="form-check-input" type="checkbox" id="manutencaoSwitch" checked>
+                                        <label class="form-check-label" for="manutencaoSwitch">Modo de Manutenção</label>
+                                        <small class="form-text text-muted d-block">Ative para bloquear o acesso de usuários não-administradores.</small>
+                                    </div>
+                                    <button type="submit" class="btn btn-primary">Salvar Configurações</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <script src="./assets/js/global/setup.js"></script>
+    <script src="assets/js/pages/configuracoes-admin.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/js/bootstrap.bundle.min.js"></script>
+
+</body>
+
+</html>
