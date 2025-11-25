@@ -113,6 +113,8 @@ document.addEventListener("DOMContentLoaded", () => {
                 
                 switch (data.role) {
                     case "ROLE_ADMIN":
+                        window.location.href = "portalAdministrador.html";
+                        break;
                     case "ROLE_USER":
                         window.location.href = "dashboard.html";
                         break;

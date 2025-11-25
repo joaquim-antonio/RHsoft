@@ -19,7 +19,7 @@ import com.exemplo.app.service.FolhaPagamentoService;
 import jakarta.validation.Valid;
 
 @RestController
-@RequestMapping("/folha")
+@RequestMapping("/folha-pagamento")
 public class FolhaPagamentoController {
 
     @Autowired

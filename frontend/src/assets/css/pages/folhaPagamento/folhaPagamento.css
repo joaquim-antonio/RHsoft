@@ -1,160 +1,128 @@
-@import url(../../global/global.css);
+:root{
+    --bg-card: #ffffff;
+    --bg-conteudo: #f8f9fa;
+    --text-color: #212529;
+    --border-color: #dee2e6;
+    --table-header-bg: #e9ecef;
+    --table-hover-bg: #f1f3f5;
 
-#folhaPagamento {
-    overflow-y: auto;
-    padding: 4rem;
+    --badge-aberto-bg: #e3f2fd;
+    --badge-aberto-text: #0d47a1;
+    --badge-fechado-bg: #e8f5e9;
+    --badge-fechado-text: #1b5e20;
 }
 
-.detalhes h3 {
-    font-size: 1.2rem;
-    margin-bottom: 1rem;
+body.dark-mode{
+    --bg-card: #1e1e1e;
+    --bg-conteudo: #121212;
+    --text-color: #e0e0e0;
+    --border-color: #333333;
+    --table-header-bg: #2d2d2d;
+    --table-hover-bg: #2d2d2d;
+
+    --badge-aberto-bg: #152e4d;
+    --badge-aberto-text: #90caf9;
+    --badge-fechado-bg: #1b3e1b;
+    --badge-fechado-text: #a5d6a7;
 }
 
-
-/* Topo */
-
-.top {
-    display: flex;
-    justify-content: flex-end;
-    gap: 1rem;
-    margin-bottom: 1.5rem;
-    background-color: #fff;
+.card{
+    background-color: var(--bg-card);
+    color: var(--text-color);
+    border: 1px solid var(--border-color);
 }
 
-.top .periodo,
-.top button {
-    padding: 0.5rem 0.8rem;
-    border: 1px solid #ccc;
-    border-radius: 6px;
-    background: #fff;
-    cursor: pointer;
+.card-resumo{
+    border: 1px solid var(--border-color);
+    border-left: 5px solid var(--cor-azul);
+    transition: transform 0.2s;
 }
 
-.top select {
-    background: #fff;
-    cursor: pointer;
+.card-resumo:hover{
+    color: #adb5bd !important;
 }
 
-.top label {
-    color: var(--cor-cinza);
-    margin-right: 2px;
-    font-size: small;
+body.dark-mode .text-muted{
+    color: #adb5bd !important;
 }
 
-/* Topo - Fim */
-
-/* Card */
-
-.card {
-    border: 1px solid #ccc;
-    border-radius: 8px;
-    padding: 1rem;
-    background: #fff;
+.table{
+    color: var(--text-color);
+    --bs-table-bg: transparent;
 }
 
-.card h4 {
-    font-size: 1rem;
-    color: #666;
-    margin-bottom: 0.5rem;
+.table thead{
+    background-color: var(--table-header-bg);
 }
 
-.card .valor {
-    font-size: 1.3rem;
-    font-weight: bold;
-    margin-bottom: 0.5rem;
+body.dark-mode .table thead tr th{
+    background-color: var(--table-header-bg);
+    color: var(--text-color);
+    border-bottom: 2px solid var(--border-color);
 }
 
-.card small {
-    font-size: 0.8rem;
-    color: green;
+body.dark-mode .table td{
+    border-color: var(--border-color);
 }
 
-/* Card - Fim */
-
-/* Pesquisar */
-
-.detalhes_topo {
-    display: flex;
-    align-items: center;
-    margin-bottom: 1rem;
+.table-hover > tbody > tr:hover > *{
+    color: var(--text-color);
+    background-color: var(--table-hover-bg);
+    box-shadow: inset 0 0 9999px var(--table-hover-bg);
 }
 
-.pesquisar {
-    position: relative;
-    margin-left: auto;
-    margin-bottom: 1rem;
-}
-
-.pesquisar input {
-    width: 100%;
-    padding: 0.5rem 2rem 0.5rem 0.8rem;
-    border: 1px solid #ccc;
+.status-badge{
+    font-size: 0.9rem;
+    padding: 8px 12px;
     border-radius: 20px;
 }
 
-.pesquisar i {
-    position: absolute;
-    right: 10px;
-    top: 50%;
-    transform: translateY(-50%);
-    color: #888;
+.status-aberto{
+    background-color: var(--badge-aberto-bg);
+    color: var(--badge-aberto-text);
+    border: 1px solid var(--badge-aberto-text);
 }
 
-/* Pesquisar - Fim */
-
-/* Grid */
-.content {
-    display: grid;
-    grid-template-columns: 220px 1fr;
-    min-height: calc(100vh - 70px);
+.status-fechado{
+    background-color: var(--badge-fechado-bg);
+    color: var(--badge-fechado-text);
+    border: 1px solid var(--badge-fechado-text);
 }
 
-.resumo {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 1rem;
-    margin-bottom: 2rem;
+body.dark-mode .modal-content{
+    background-color: var(--bg-card);
+    color: var(--text-color);
+    border: 1px solid var(--border-color);
 }
 
-.lista_funcionarios {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 1rem;
+body.dark-mode .modal-header,
+body.dark-mode .modal-footer{
+    border-color: var(--border-color);
 }
 
-.funcionario {
-    position: relative;
-    border: 1px solid #ccc;
-    border-radius: 10px;
-    padding: 1rem;
-    background: #fff;
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
+body.dark-mode .btn-close{
+    filter: invert(1) grayscale(100%) brightness(200%);
 }
 
-/* Grid - Fim */
-
-/* Btn */
-
-.btn_adicionar {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    background-color: #fff;
-    border: 1px solid var(--cor-cinza);
-    border-radius: 8px;
-    padding: 0.3rem 0.6rem;
-    cursor: pointer;
-    font-size: 0.85rem;
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
+::-webkit-scrollbar{
+    width: 8px;
 }
 
-.btn_adicionar:hover {
-    transition: all;
-    transform: translate(-5px);
+::-webkit-scrollbar-track{
+    background: var(--bg-conteudo);
 }
 
-/* Btn - Fim */
+::-webkit-scrollbar-thumb{
+    background-color: var(--border-color);
+    border-radius: 4px;
+}
+
+body.dark-mode ::-webkit-scrollbar-track{
+    background: var(--bg-conteudo);
+}
+
+body.dark-mode ::-webkit-scrollbar-thumb{
+    background-color: var(--border-color);
+}
+
+

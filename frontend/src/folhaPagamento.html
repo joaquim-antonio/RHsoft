@@ -4,197 +4,134 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RHsoft - Folha de Pagamento</title>
-    <link rel="stylesheet" href="./assets/css/pages/folhaPagamento/folhaPagamento.css">
+    <title>RHSoft - Gestão da folha</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="assets/css/global/setup.css">
+    <link rel="stylesheet" href="assets/css/pages/folhaPagamento/folhaPagamento.css">
+    <link rel="icon" type="image/x-icon" href="assets/images/global/logo.png">
 </head>
 
 <body>
-    <!--cabecalho-->
-    <header class="cabecalho" id="cabecalho">
-        <h1 class="cabecalho_titulo"><a href="index.html">RHsoft</a></h1>
-        <div class="profile">
-            <a href="login.html" class="profile">
-                <span>Perfil</span>
-                <i class="profile-icon fa-solid fa-circle-user fa-2x"></i>
-            </a>
+    <header id="headerPlaceHolder"></header>
+
+    <div class="container-fluid p-0" style="height: calc(100vh -97px); overflow: hidden;">
+        <div class="row h-100 g-0">
+            <div id="sidebarAdmnistradorContainer" class="col-md-3 col-lg-2 d-none d-md-block h-100 border-end"></div>
+
+            <div class="col-md-9 col-lg-10 h-100 p-4" style="overflow-y: scroll;">
+                <div class="p-4">
+                    <div>
+                        <h2 class="fw-bold text-primary-custom mb-1">
+                            <i class="fa-solid fa-money-bill-wave me-2"></i>
+                            Gestão da Folha de Pagamento
+                        </h2>
+                    </div>
+
+                    <div class="d-flex gap-2">
+                        <button id="btnAbrirFolha" class="btn btn-outline-primary d-none">
+                            <i class="fas fa-plus me-2"></i>
+                        </button><button id="btnGerarCalculosFolha" class="btn btn-outline-primary d-none">
+                            <i class="fas fa-calculator me-2"></i>
+                        </button>
+                        <button id="btnFecharFolha" class="btn btn-outline-primary d-none">
+                            <i class="fas fa-check-circle me-2"></i>
+                        </button>
+                        <button id="btnReabrirFolha" class="btn btn-outline-primary d-none">
+                            <i class="fas fa-undo me-2"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="row mb-4" id="cardsResumo">
+                    <div class="col-md-4">
+                        <div class="card shadow-sm card-resumo p-3">
+                            <h6 class="text-muted">Total funcionários</h6>
+                            <h3 class="fw-bold" id="totalFuncionarios">0</h3>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card shadow-sm card-resumo p-3">
+                            <h6 class="text-muted">Status Atual</h6>
+                            <h3 class="fw-bold" id="statusFolha">---</h3>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card shadow-sm card-resumo p-3">
+                            <h6 class="text-muted">Total Líquido da Folha</h6>
+                            <h3 class="fw-bold" id="totalLiquido">R$ 0,00</h3>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card shadow-sm border-0">
+                    <div class="card-body p-0">
+                        <div class="table-responsive">
+                            <table class="table table-hover align-middle mb-0">
+                                <thead class="bg-light">
+                                    <tr>
+                                        <th class="ps-4">Funcionário</th>
+                                        <th>Cargo</th>
+                                        <th>Salário Base</th>
+                                        <th>Adicionais</th>
+                                        <th>Descontos</th>
+                                        <th>Líquido</th>
+                                        <th class="text-end pe-4">Ações</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="tabelaPagamentos"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
-    </header>
-    <!--div pra flexbox-->
-    <div class="content">
-        <!--barra lateral-->
-        <aside class="aside">
-            <nav>
-                <h3 class="aside_titles">Geral</h3>
-                <ul>
-                    <li class="aside_items"><a href="funcionarios.html"><i
-                                class="aside_icons fa-solid fa-user-tie"></i>Funcionarios</a></li>
-                    <li class="aside_items"><a href="contracheque.html"><i
-                                class="aside_icons fa-solid fa-money-check-dollar"></i>Contracheque</a></li>
-                    <li class="aside_items"><a href="vagas.html"><i
-                                class="aside_icons fa-solid fa-receipt"></i>Vagas</a></li>
-                    <li class="aside_items"><a href="folhaPagamento.html"><i class="aside_icons fa-solid fa-suitcase"></i>Folha de
-                            Pagamento</a></li>
-                </ul>
-            </nav>
-            <section>
-                <h3>Suporte</h3>
-                <ul>
-                    <li class="aside_items"><a href="#"><i class="aside_icons fa-solid fa-circle-info"></i>Ajuda</a>
-                    </li>
-                    <li class="aside_items"><a href="#"><i class="aside_icons fa-solid fa-gear"></i>Configurações</a>
-                    </li>
+    </div>
 
-
-                </ul>
-            </section>
-            <div class="aside_themes">
-                <i class="aside_icons aside_items fa-solid fa-moon"></i>
-                <i class="aside_icons aside_items fa-solid fa-sun"></i>
-            </div>
-        </aside>
-
-        <!-- Conteudo -->
-        <main id="folhaPagamento">
-            <h2>Folha de pagamento</h2>
-            <div class="top">
-                <div class="periodo">
-                    <label for="periodo">Período:</label>
-                    <select id="periodo">
-                        <option>18 Ago - 25 Ago, 2025</option>
-                        <option>11 Ago - 17 Ago, 2025</option>
-                        <option>04 Ago - 10 Ago, 2025</option>
-                    </select>
+    <div class="modal fade", id="modalEditarPagamento" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Ajuste Manual</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
-                <div class="exportar">
-                    <button class="btn">Exportar <i class="fa-solid fa-chevron-down"></i></button>
+                <div class="modal-body">
+                    <form id="formEdicao">
+                        <input type="hidden" id="editCodigoPagamento">
+
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Funcionário</label>
+                            <input type="text" class="form-control" id="editNomeFuncionario" disabled>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Horas Extras (R$)</label>
+                                <input type="number" step="0.01" class="form-control" id="editarHorasExtras">
+                                <div class="form-text">Valor monetário total das HE.</div>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Bônus/Adicional Manual</label>
+                                <input type="number" step="0.01" class="form-control" id="editarAdicionarManual">
+                            </div>
+                        </div>
+                        <div class="alert alert-info small">
+                            <i class="fas fa-into-circle me-1"></i>
+                            O sistema recalcularar INSS E FGTS automaticamente
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="model">Cancelar</button>
+                    <button type="button" class="btn btn-primary" onclick="salvarEdicaoPagamento()">Salvar e recalcular</button>
                 </div>
             </div>
+        </div>
+    </div>
 
-            <!-- Cards resumo -->
-            <section class="resumo">
-                <div class="card">
-                    <h4>Regular</h4>
-                    <p class="valor">300 horas</p>
-                    <small><i class="fa-solid fa-arrow-up"></i> <strong id="porcetagem_horas">5%</strong> Nessa semana</small>
-                </div>
-                <div class="card">
-                    <h4>Extras</h4>
-                    <p class="valor">100 horas</p>
-                    <small><i class="fa-solid fa-arrow-up"></i> <strong id="porcetagem_extra">3%</strong> Nessa semana</small>
-                </div>
-                <div class="card">
-                    <h4>Totais</h4>
-                    <p class="valor">400 horas</p>
-                    <small><i class="fa-solid fa-arrow-up"></i> <strong id="porcetagem_total_horas">4%</strong> Nessa semana</small>
-                </div>
-                <div class="card">
-                    <h4>Total pago</h4>
-                    <p id="total_pago" class="valor">R$ 100.000</p>
-                    <small><i class="fa-solid fa-arrow-up"></i> <strong id="porcetagem_total_pago">1%</strong> Nessa semana</small>
-                </div>
-            </section>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/js/bootstrap.bundle.min.js"></script>
+    <script src="./assets/js/global/setup.js"></script>
+    <script src="assets/js/pages/folhaPagamento.js"></script>
+</body>
 
-            <!-- Detalhes funcionário -->
-            <section class="detalhes">
-                <div class="detalhes_topo">
-                    <h3>Detalhes funcionário</h3>
-                    <div class="pesquisar">
-                        <i class="fa-solid fa-magnifying-glass"></i>
-                        <input type="text" placeholder="Pesquisar">
-                    </div>
-                </div>
-
-
-                <div class="lista_funcionarios">
-                    <div class="funcionario">
-                        <p><strong>Wesley Junior</strong> 1705</p>
-                        <p>Cargo: Gerente</p>
-                        <p>Departamento: Finanças</p>
-                        <p>Horas trabalhadas: 80 horas</p>
-                        <p>Horas Extras: 20 horas</p>
-                        <p>Horas Totais: 100 horas</p>
-                        <button class="btn_adicionar"><i class="fa-solid fa-plus"></i> Adicionar horas</button>
-                    </div>
-                    <div class="funcionario">
-                        <p><strong>Wesley Junior</strong> 1705</p>
-                        <p>Cargo: Gerente</p>
-                        <p>Departamento: Finanças</p>
-                        <p>Horas trabalhadas: 80 horas</p>
-                        <p>Horas Extras: 20 horas</p>
-                        <p>Horas Totais: 100 horas</p>
-                        <button class="btn_adicionar"><i class="fa-solid fa-plus"></i> Adicionar horas</button>
-                    </div>
-                    <div class="funcionario">
-                        <p><strong>Wesley Junior</strong> 1705</p>
-                        <p>Cargo: Gerente</p>
-                        <p>Departamento: Finanças</p>
-                        <p>Horas trabalhadas: 80 horas</p>
-                        <p>Horas Extras: 20 horas</p>
-                        <p>Horas Totais: 100 horas</p>
-                        <button class="btn_adicionar"><i class="fa-solid fa-plus"></i> Adicionar horas</button>
-                    </div>
-                    <div class="funcionario">
-                        <p><strong>Wesley Junior</strong> 1705</p>
-                        <p>Cargo: Gerente</p>
-                        <p>Departamento: Finanças</p>
-                        <p>Horas trabalhadas: 80 horas</p>
-                        <p>Horas Extras: 20 horas</p>
-                        <p>Horas Totais: 100 horas</p>
-                        <button class="btn_adicionar"><i class="fa-solid fa-plus"></i> Adicionar horas</button>
-                    </div>
-                    <div class="funcionario">
-                        <p><strong>Wesley Junior</strong> 1705</p>
-                        <p>Cargo: Gerente</p>
-                        <p>Departamento: Finanças</p>
-                        <p>Horas trabalhadas: 80 horas</p>
-                        <p>Horas Extras: 20 horas</p>
-                        <p>Horas Totais: 100 horas</p>
-                        <button class="btn_adicionar"><i class="fa-solid fa-plus"></i> Adicionar horas</button>
-                    </div>
-                    <div class="funcionario">
-                        <p><strong>Wesley Junior</strong> 1705</p>
-                        <p>Cargo: Gerente</p>
-                        <p>Departamento: Finanças</p>
-                        <p>Horas trabalhadas: 80 horas</p>
-                        <p>Horas Extras: 20 horas</p>
-                        <p>Horas Totais: 100 horas</p>
-                        <button class="btn_adicionar"><i class="fa-solid fa-plus"></i> Adicionar horas</button>
-                    </div>
-                    <div class="funcionario">
-                        <p><strong>Wesley Junior</strong> 1705</p>
-                        <p>Cargo: Gerente</p>
-                        <p>Departamento: Finanças</p>
-                        <p>Horas trabalhadas: 80 horas</p>
-                        <p>Horas Extras: 20 horas</p>
-                        <p>Horas Totais: 100 horas</p>
-                        <button class="btn_adicionar"><i class="fa-solid fa-plus"></i> Adicionar horas</button>
-                    </div>
-                    <div class="funcionario">
-                        <p><strong>Wesley Junior</strong> 1705</p>
-                        <p>Cargo: Gerente</p>
-                        <p>Departamento: Finanças</p>
-                        <p>Horas trabalhadas: 80 horas</p>
-                        <p>Horas Extras: 20 horas</p>
-                        <p>Horas Totais: 100 horas</p>
-                        <button class="btn_adicionar"><i class="fa-solid fa-plus"></i> Adicionar horas</button>
-                    </div>
-                    <div class="funcionario">
-                        <p><strong>Wesley Junior</strong> 1705</p>
-                        <p>Cargo: Gerente</p>
-                        <p>Departamento: Finanças</p>
-                        <p>Horas trabalhadas: 80 horas</p>
-                        <p>Horas Extras: 20 horas</p>
-                        <p>Horas Totais: 100 horas</p>
-                        <button class="btn_adicionar"><i class="fa-solid fa-plus"></i> Adicionar horas</button>
-                    </div>
-                    <div class="funcionario">
-                        <p><strong>Wesley Junior</strong> 1705</p>
-                        <p>Cargo: Gerente</p>
-                        <p>Departamento: Finanças</p>
-                        <p>Horas trabalhadas: 80 horas</p>
-                        <p>Horas Extras: 20 horas</p>
-                        <p>Horas Totais: 100 horas</p>
-                        <button class="btn_adicionar"><i class="fa-solid fa-plus"></i> Adicionar horas</button>
-                    </div>
-                </div>
-            </section>
+</html>
