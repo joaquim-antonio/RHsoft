@@ -1,0 +1,40 @@
+:root{
+    --bg-card: #ffffff;
+    --bg-conteudo: #f8f9fa;
+    --text-color: #212529;
+    --border-color: #dee2e6;
+    --holerite-bg: #ffffff;
+    --holerite-border: #333;
+}
+
+body.dark-mode{
+    --bg-card: #1e1e1e;
+    --bg-conteudo: #121212;
+    --text-color: #e0e0e0;
+    --border-color: #333333;
+    --holerite-bg: #2d2d2d;
+    --holerite-border: #555555;
+}
+
+.card{
+    background-color: var(--bg-card);
+    color: var(--text-color);
+    border: 1px solid var(--border-color);
+}
+
+.card-highlight{
+    border-left: 5px solid var(#0a67f1);
+}
+
+.table {
+    color: var(--text-color);
+}
+
+.table-hover tbody tr:hover{
+    background-color: rgba(0,0,0,0.05);
+    color: var(--text-color);
+}
+
+body.darkmode .table-hover tbody tr:hover{
+    background-color: rgba(255,255,255,0.05);
+}
