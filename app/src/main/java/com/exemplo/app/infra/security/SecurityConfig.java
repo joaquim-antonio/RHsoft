@@ -71,7 +71,8 @@ public class SecurityConfig {
                         // --- ROTAS DE CANDIDATO ---
                         .requestMatchers("/api/v1/candidaturas/minhas").hasAnyRole("CANDIDATO")
                         .requestMatchers(HttpMethod.POST, "/api/v1/candidaturas/aplicar/**").hasAnyRole("CANDIDATO")
-                        .requestMatchers(HttpMethod.DELETE, "/api/v1/candidaturas/cancelar/{vagaId}").hasAnyRole("CANDIDATO")
+                        .requestMatchers(HttpMethod.DELETE, "/api/v1/candidaturas/cancelar/{vagaId}")
+                        .hasAnyRole("CANDIDATO")
 
                         // --- ROTAS DE ADMINISTRAÇÃO ---
                         .requestMatchers("/api/v1/dashboard/**").hasAnyRole("USER", "ADMIN")
@@ -79,6 +80,12 @@ public class SecurityConfig {
 
                         // PERFIL DE CANDIDATO
                         .requestMatchers("/api/v1/Candidato/**").hasAnyRole("CANDIDATO", "ADMIN")
+
+                        // COMUNICADOS
+                        .requestMatchers(HttpMethod.GET, "/api/v1/comunicados/**").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/v1/comunicados/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.PUT, "/api/v1/comunicados/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.DELETE, "/api/v1/comunicados/**").hasRole("ADMIN")
 
                         // Leitura da folha
                         .requestMatchers(HttpMethod.GET, "/api/v1/folha-pagamento/**").hasAnyRole("ADMIN", "USER")
