@@ -116,7 +116,7 @@ document.addEventListener("DOMContentLoaded", () => {
                         window.location.href = "portalAdministrador.html";
                         break;
                     case "ROLE_USER":
-                        window.location.href = "dashboard.html";
+                        window.location.href = "portalFuncionario.html";
                         break;
                     case "ROLE_CANDIDATO":
                         window.location.href = "portalCandidato.html";
