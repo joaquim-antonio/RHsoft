@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.exemplo.app.dto.PagamentoRequestDTO;
+import com.exemplo.app.dto.PagamentoResponseDTO;
 import com.exemplo.app.model.Pagamento;
 import com.exemplo.app.service.PagamentoService;
 
@@ -57,10 +58,15 @@ public ResponseEntity<Pagamento> criarPagamento(@RequestBody @Valid PagamentoReq
     }
 
     @GetMapping("/funcionario")
-    public ResponseEntity<List<Pagamento>> listarPagamentosPorFuncionario(@RequestParam String cpf) {
-        List<Pagamento> pagamentos = pagamentoService.listarPagamentosPorFuncionario(cpf);
-        return ResponseEntity.ok(pagamentos);
-    }
+    public ResponseEntity<List<PagamentoResponseDTO>> listarPagamentosPorFuncionario(@RequestParam String cpf) {
+    List<Pagamento> pagamentos = pagamentoService.listarPagamentosPorFuncionario(cpf);
+    
+    List<PagamentoResponseDTO> dtos = pagamentos.stream()
+        .map(PagamentoResponseDTO::new)
+        .toList();
+
+    return ResponseEntity.ok(dtos);
+}
 
     @PatchMapping("/{codigo}/recalcular")
     public ResponseEntity<Pagamento> recalcularTotais(@PathVariable String codigo) {

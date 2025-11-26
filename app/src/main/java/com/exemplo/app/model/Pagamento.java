@@ -5,6 +5,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 import com.exemplo.app.model.Enums.TipoItemPagamento;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -83,6 +84,7 @@ public class Pagamento {
     @OneToMany(mappedBy = "pagamento", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ItemPagamento> itens;
 
+    @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "folha_pagamento_id", foreignKey = @ForeignKey(name = "fk_pagamento_folhapagamento"))
     private FolhaPagamento folhaPagamento;

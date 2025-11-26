@@ -1,40 +1,96 @@
-:root{
+:root {
     --bg-card: #ffffff;
-    --bg-conteudo: #f8f9fa;
+    --conteudo: #f8f9fa;
     --text-color: #212529;
     --border-color: #dee2e6;
-    --holerite-bg: #ffffff;
-    --holerite-border: #333;
 }
 
-body.dark-mode{
+body.dark-mode {
     --bg-card: #1e1e1e;
-    --bg-conteudo: #121212;
+    --conteudo: #121212; 
     --text-color: #e0e0e0;
-    --border-color: #333333;
-    --holerite-bg: #2d2d2d;
-    --holerite-border: #555555;
+    --border-color: #333;
 }
 
-.card{
+body.dark-mode h1, 
+body.dark-mode h2, 
+body.dark-mode h3, 
+body.dark-mode h4, 
+body.dark-mode h5, 
+body.dark-mode h6,
+body.dark-mode .fw-bold,
+body.dark-mode .text-primary-custom {
+    color: #e0e0e0 !important;
+}
+
+body.dark-mode .text-muted {
+    color: #adb5bd !important;
+}
+
+.card {
     background-color: var(--bg-card);
     color: var(--text-color);
     border: 1px solid var(--border-color);
+    transition: transform 0.2s ease-in-out;
 }
 
-.card-highlight{
-    border-left: 5px solid var(#0a67f1);
+.card-highlight {
+    border-left: 5px solid var(--cor-azul);
 }
 
-.table {
+.icon-shape {
+    width: 50px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 12px;
+}
+
+.list-group-item {
+    background-color: transparent; 
+    color: var(--text-color);     
+    border-color: var(--border-color);
+}
+
+.list-group-item span {
     color: var(--text-color);
 }
 
-.table-hover tbody tr:hover{
-    background-color: rgba(0,0,0,0.05);
-    color: var(--text-color);
+body.dark-mode .bg-primary-subtle {
+    background-color: rgba(13, 110, 253, 0.15) !important;
+    color: #6ea8fe !important;
 }
 
-body.darkmode .table-hover tbody tr:hover{
-    background-color: rgba(255,255,255,0.05);
+body.dark-mode .bg-success-subtle {
+    background-color: rgba(25, 135, 84, 0.15) !important;
+    color: #75b798 !important;
+}
+
+body.dark-mode .bg-warning-subtle {
+    background-color: rgba(255, 193, 7, 0.15) !important;
+    color: #ffda6a !important;
+}
+
+body.dark-mode .bg-danger-subtle {
+    background-color: rgba(220, 53, 69, 0.15) !important;
+    color: #ea868f !important;
+}
+
+body.dark-mode .bg-info-subtle {
+    background-color: rgba(13, 202, 240, 0.15) !important;
+    color: #6edff6 !important;
+}
+
+body.dark-mode .progress {
+    background-color: #333;
+}
+
+body.dark-mode .border-dark {
+    border-color: #555 !important;
+}
+
+body.dark-mode .bg-light {
+    background-color: #2d2d2d !important;
+    color: #e0e0e0 !important;
 }

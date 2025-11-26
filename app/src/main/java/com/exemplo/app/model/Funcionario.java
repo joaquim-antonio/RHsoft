@@ -3,8 +3,11 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+
 import com.exemplo.app.model.Enums.TipoAcrescimo;
 import com.exemplo.app.model.Enums.TipoInsalubridade;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.DiscriminatorValue;
@@ -61,7 +64,8 @@ public class Funcionario extends Pessoa{
     @ManyToOne
     @JoinColumn(name = "departamento_id", foreignKey=@ForeignKey(name = "fk_funcionario_departamento"))
     private Departamento departamento;
-
+    
+    @JsonIgnore
     @OneToMany(mappedBy = "funcionario", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Pagamento> pagamentos = new ArrayList<>();
 }

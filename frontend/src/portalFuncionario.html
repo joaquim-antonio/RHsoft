@@ -4,80 +4,163 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RHSoft - Portal do Funcionario</title>
+    <title>RHSoft - Portal do Funcionário</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+
     <link rel="stylesheet" href="assets/css/global/setup.css">
     <link rel="stylesheet" href="assets/css/global/cabecalho.css">
     <link rel="stylesheet" href="assets/css/global/aside.css">
     <link rel="stylesheet" href="assets/css/pages/portalFuncionario.css">
+
     <link rel="icon" type="image/x-icon" href="./assets/images/global/logo.png" />
 </head>
 
 <body>
     <header id="headerPlaceHolder"></header>
 
-    <div class="container-fluid">
-        <div class="row">
+    <div class="container-fluid p-0" style="height: calc(100vh - 97px); overflow: hidden;">
+        <div class="row h-100 g-0">
+            <div id="sidebarCandidatoContainer" class="col-md-3 col-lg-2 d-none d-md-block h-100 border-end"></div>
 
-            <div id="sidebarFuncionarioContainer" class="col-md-3 col-lg-2 ps-0 d-none d-md-block"></div>
-
-            <!-- Conteúdo Principal -->
-            <div class="col-md-9 col-lg-10 main-content p-4" style="overflow-y: scroll;">
+            <div class="col-md-9 col-lg-10 h-100" style="overflow-y: scroll; background-color: var(--conteudo);">
                 <div class="p-4">
+
                     <div class="d-flex justify-content-between align-items-center mb-4">
                         <div>
                             <h2 class="fw-bold text-primary-custom mb-1">
-                                <i class="fas fa-user-tie me-2"></i>Olá, <span id="nomeFuncionario"></span>
+                                <i class="fas fa-chart-line me-2"></i>Visão Geral
                             </h2>
-                            <p class="text-muted" id="cargoDepartamento">...</p>
+                            <p class="text-muted mb-0">Bem-vindo, <span id="nomeFuncionario">...</span></p>
                         </div>
+                        <div class="badge bg-primary fs-6 fw-normal px-3 py-2" id="mesReferencia">--/--</div>
                     </div>
-                    
-                    <div class="row mb-4">
-                        <div class="col-md-6 col-lg-4">
-                            <div class="card shadow-sm card-highlight p-3">
-                                <div class="d-flex justify-content-between align-content-start">
+
+                    <div class="row g-4 mb-4">
+                        <div class="col-md-4">
+                            <div class="card shadow-sm h-100 border-0 border-start border-5 border-success p-3">
+                                <div class="d-flex justify-content-between">
                                     <div>
-                                        <h6 class="text-muted text-uppercase small fw-bold">Último Salário Líquido</h6>
-                                        <h2 class="fw-bold text-success mb-0" id="ultimoSalario">R$ 0,00</h2>
-                                        <small class="text-muted" id="dataReferencia">---/---</small>
+                                        <p class="text-uppercase text-muted small fw-bold mb-1">Salário Líquido</p>
+                                        <h2 class="fw-bold text-success mb-0" id="dashLiquido">R$ 0,00</h2>
                                     </div>
-                                    <div class="icon-shape text-primary rounded-circle p-3">
+                                    <div class="icon-shape bg-success-subtle text-success rounded-circle">
                                         <i class="fas fa-wallet fa-lg"></i>
                                     </div>
                                 </div>
                             </div>
                         </div>
 
-                        <div class="col-md-6 col-lg-4">
-                            <div class="card shadow-sm p-3 h-100 cursor-pointer" onclick="windown.location.href='#'">
-                                <div class="d-flex align-items-center h-100">
-                                    <div class="icon-shape text-info rounded-circle p-3 me-3">
-                                        <i class="fas fa-user-edit fa-lg"></i>
-                                    </div>
+                        <div class="col-md-4">
+                            <div class="card shadow-sm h-100 border-0 border-start border-5 border-primary p-3">
+                                <div class="d-flex justify-content-between">
                                     <div>
-                                        <h6 class="fw-bold mb-1">Meus Dados</h6>
-                                        <small class="text-muted">Atualizar dados</small>
+                                        <p class="text-uppercase text-muted small fw-bold mb-1">Total Proventos</p>
+                                        <h3 class="fw-bold text-primary mb-0" id="dashProventos">R$ 0,00</h3>
+                                    </div>
+                                    <div class="icon-shape bg-primary-subtle text-primary rounded-circle">
+                                        <i class="fas fa-plus fa-lg"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-4">
+                            <div class="card shadow-sm h-100 border-0 border-start border-5 border-danger p-3">
+                                <div class="d-flex justify-content-between">
+                                    <div>
+                                        <p class="text-uppercase text-muted small fw-bold mb-1">Total Descontos</p>
+                                        <h3 class="fw-bold text-danger mb-0" id="dashDescontos">R$ 0,00</h3>
+                                    </div>
+                                    <div class="icon-shape bg-danger-subtle text-danger rounded-circle">
+                                        <i class="fas fa-minus fa-lg"></i>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
 
-                    <div class="card shadow-sm mb-4">
+                    <h5 class="fw-bold mb-3">Informações & Prazos</h5>
+                    <div class="row g-4">
 
+                        <div class="col-md-6">
+                            <div class="card shadow-sm h-100 border-0">
+                                <div class="card-body">
+                                    <div class="d-flex align-items-center mb-3">
+                                        <div class="icon-shape bg-primary-subtle text-primary rounded-3 me-3">
+                                            <i class="far fa-calendar-alt fa-lg"></i>
+                                        </div>
+                                        <div>
+                                            <h6 class="fw-bold mb-0">Próximo Pagamento</h6>
+                                            <small class="text-muted">Estimativa (5º dia útil)</small>
+                                        </div>
+                                    </div>
+
+                                    <div class="d-flex justify-content-between align-items-end mb-2">
+                                        <h3 class="fw-bold mb-0 text-primary" id="dataProximoPagamento">--/--</h3>
+                                        <span class="badge bg-primary-subtle text-primary" id="diasRestantesBadge">--
+                                            dias</span>
+                                    </div>
+
+                                    <div class="progress" style="height: 8px;">
+                                        <div class="progress-bar progress-bar-striped progress-bar-animated"
+                                            id="barraProgressoPagamento" role="progressbar" style="width: 0%"></div>
+                                    </div>
+                                    <small class="text-muted mt-2 d-block text-end"
+                                        id="textoStatusPagamento">Aguardando...</small>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="card shadow-sm h-100 border-0">
+                                <div class="card-body">
+                                    <div class="d-flex align-items-center mb-3">
+                                        <div class="icon-shape bg-warning-subtle text-warning rounded-3 me-3">
+                                            <i class="fas fa-bullhorn fa-lg"></i>
+                                        </div>
+                                        <h6 class="fw-bold mb-0">Comunicados do RH</h6>
+                                    </div>
+                                    <ul class="list-group list-group-flush small">
+                                        <li
+                                            class="list-group-item px-0 border-0 d-flex justify-content-between align-items-center bg-transparent">
+                                            <div>
+                                                <i class="fas fa-circle text-danger me-2" style="font-size: 8px;"></i>
+                                                <span>Férias Coletivas: Programação Dez/2025</span>
+                                            </div>
+                                            <span class="text-muted" style="font-size: 0.8em;">Ontem</span>
+                                        </li>
+                                        <li
+                                            class="list-group-item px-0 border-0 d-flex justify-content-between align-items-center bg-transparent">
+                                            <div>
+                                                <i class="fas fa-circle text-primary me-2" style="font-size: 8px;"></i>
+                                                <span>Atualização: Política de Home Office</span>
+                                            </div>
+                                            <span class="text-muted" style="font-size: 0.8em;">20/11</span>
+                                        </li>
+                                        <li
+                                            class="list-group-item px-0 border-0 d-flex justify-content-between align-items-center bg-transparent">
+                                            <div>
+                                                <i class="fas fa-circle text-secondary me-2"
+                                                    style="font-size: 8px;"></i>
+                                                <span>Manutenção no sistema dia 30/11</span>
+                                            </div>
+                                            <span class="text-muted" style="font-size: 0.8em;">15/11</span>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
                     </div>
+
                 </div>
             </div>
         </div>
     </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/js/bootstrap.bundle.min.js"></script>
-    <script src="./assets/js/global/setup.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="assets/js/global/setup.js"></script>
     <script src="assets/js/pages/portalFuncionario.js"></script>
-
 </body>
 
 </html>

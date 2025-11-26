@@ -3,6 +3,7 @@ package com.exemplo.app.model;
 import java.math.BigDecimal;
 
 import com.exemplo.app.model.Enums.TipoItemPagamento;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -51,6 +52,7 @@ public class ItemPagamento {
     @Column(name = "valor", nullable = false, precision = 19, scale = 2)
     private BigDecimal valor;
 
+    @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "codigo", nullable = false, foreignKey=@ForeignKey(name = "fk_itempagamento_pagamento"))
     private Pagamento pagamento;

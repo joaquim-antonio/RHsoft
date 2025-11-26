@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.exemplo.app.model.Enums.StatusPagamento;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -50,6 +51,7 @@ public class FolhaPagamento {
     @Enumerated(EnumType.STRING)
     private StatusPagamento status;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "folhaPagamento", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Pagamento> pagamentos = new ArrayList<>();
 
