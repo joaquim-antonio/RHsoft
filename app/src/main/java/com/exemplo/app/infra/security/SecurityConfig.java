@@ -83,7 +83,7 @@ public class SecurityConfig {
 
                         // COMUNICADOS
                         .requestMatchers(HttpMethod.GET, "/api/v1/comunicados/**").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/api/v1/comunicados/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.POST, "/api/v1/comunicados/**").hasAnyRole("ADMIN")
                         .requestMatchers(HttpMethod.PUT, "/api/v1/comunicados/**").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.DELETE, "/api/v1/comunicados/**").hasRole("ADMIN")
 
