@@ -20,6 +20,7 @@ import com.exemplo.app.model.FolhaPagamento;
 import com.exemplo.app.model.Funcionario;
 import com.exemplo.app.model.ItemPagamento;
 import com.exemplo.app.model.Pagamento;
+import com.exemplo.app.repository.AdministradorRepository;
 import com.exemplo.app.repository.FolhaPagamentoRepository;
 import com.exemplo.app.repository.PagamentoRepository;
 
@@ -43,6 +44,13 @@ public class FolhaPagamentoService {
     @Autowired
     private CalculadoraFolhaService calculadoraService;
 
+    @Autowired
+    private AdministradorRepository administradorRepository;
+
+    //Listar todas as folhas
+    public List<FolhaPagamento> listarTodas() {
+        return folhaPagamentoRepository.findAll();
+    }
 
     public FolhaPagamento buscarFolhaPorId(Long id) {
         return folhaPagamentoRepository.findById(id)
@@ -56,21 +64,31 @@ public class FolhaPagamentoService {
 
     // GERAÇÃO DA FOLHA
 
-    @Transactional
-    public void gerarFolhaDePagamento(Long idFolha) {
+   public void gerarFolhaDePagamento(Long idFolha) {
         FolhaPagamento folha = buscarFolhaPorId(idFolha);
 
         if (folha.getStatus() != StatusPagamento.ABERTO) {
             throw new RuntimeException("A folha não está aberta para geração.");
         }
 
-        // Busca configurações vigentes (Salário Mínimo, Tabelas IRRF, etc)
-        ConfiguracaoSistema config = configuracaoService.buscarConfiguracaoAtual();
+        // CORREÇÃO: Limpeza explícita e forçada para evitar duplicidade
+        if (!folha.getPagamentos().isEmpty()) {
+            // 1. Cria uma cópia da lista para referência
+            List<Pagamento> pagamentosAntigos = new ArrayList<>(folha.getPagamentos());
+            
+            // 2. Limpa a lista da entidade pai (remove a associação em memória)
+            folha.getPagamentos().clear();
+            
+            // 3. Deleta explicitamente os registros do banco
+            pagamentoRepository.deleteAll(pagamentosAntigos);
+            
+            // 4. Força o banco a processar os deletes AGORA, antes de inserir os novos
+            pagamentoRepository.flush();
+        }
 
-        // Busca funcionários ativos
+        ConfiguracaoSistema config = configuracaoService.buscarConfiguracaoAtual();
         List<Funcionario> funcionarios = funcionarioService.listarTodosFuncionarios();
 
-        // Gera pagamento para cada um
         for (Funcionario f : funcionarios) {
             criarPagamentoParaFuncionario(f, folha, config);
         }
@@ -144,18 +162,23 @@ public class FolhaPagamentoService {
     // --- FLUXO DA FOLHA (ABRIR, FECHAR, REABRIR) ---
 
     @Transactional
-    public FolhaPagamento abrirFolha(Administrador admin) {
+    public FolhaPagamento abrirFolha(String cpfAdmin) { 
         
         // Verifica se já existe folha aberta
         if (folhaPagamentoRepository.existsByStatus(StatusPagamento.ABERTO)) {
             throw new RuntimeException("Já existe uma folha de pagamento aberta.");
         }
         
+        // Busca o Objeto Administrador pelo CPF (Correção do erro)
+        Administrador admin = administradorRepository.findByCpf(cpfAdmin)
+            .orElseThrow(() -> new EntityNotFoundException("Administrador não encontrado com CPF: " + cpfAdmin));
+
         FolhaPagamento folha = new FolhaPagamento();
         folha.setStatus(StatusPagamento.ABERTO);
-        folha.setAdministrador(admin);
+        folha.setAdministrador(admin); // Agora passamos o objeto correto
         folha.setTotalLiquido(BigDecimal.ZERO);
-        folha.setDataEnvio(LocalDate.now()); // Data referência inicial
+        folha.setDataEnvio(LocalDate.now());
+        
         return folhaPagamentoRepository.save(folha);
     }
 

@@ -78,6 +78,7 @@ public class Pagamento {
     private String mesAnoReferencia;
 
     @ManyToOne
+    @JsonIgnore
     @JoinColumn(name = "funcionario_id", foreignKey = @ForeignKey(name = "fk_pagamento_funcionario"))
     private Funcionario funcionario;
 

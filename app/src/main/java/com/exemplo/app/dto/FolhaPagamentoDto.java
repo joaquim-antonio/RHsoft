@@ -1,28 +1,28 @@
-package com.exemplo.app.dto;
+// package com.exemplo.app.dto;
 
 
-import java.math.BigDecimal;
+// import java.math.BigDecimal;
 
-public record FolhaPagamentoDto(
+// public record FolhaPagamentoDto(
 
-        // Identificação do pagamento / funcionário
-        String codigoPagamento,
-        String nomeFuncionario,
-        String cpfFuncionario,
-        String cargoFuncionario,
+//         // Identificação do pagamento / funcionário
+//         String codigoPagamento,
+//         String nomeFuncionario,
+//         String cpfFuncionario,
+//         String cargoFuncionario,
 
-        // Entradas editáveis
-        BigDecimal horasExtras,
-        BigDecimal adicionalManual,
-        BigDecimal valeAlimentacao,
-        BigDecimal valeTransporte,
+//         // Entradas editáveis
+//         BigDecimal horasExtras,
+//         BigDecimal adicionalManual,
+//         BigDecimal valeAlimentacao,
+//         BigDecimal valeTransporte,
 
        
-        BigDecimal salarioBase,
-        BigDecimal inss,
-        BigDecimal fgts,
-        BigDecimal totalDescontos,
-        BigDecimal totalProventos,
-        BigDecimal liquidoFinal
+//         BigDecimal salarioBase,
+//         BigDecimal inss,
+//         BigDecimal fgts,
+//         BigDecimal totalDescontos,
+//         BigDecimal totalProventos,
+//         BigDecimal liquidoFinal
 
-) {}
+// ) {}

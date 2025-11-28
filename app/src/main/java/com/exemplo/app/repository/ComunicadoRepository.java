@@ -12,6 +12,7 @@ public interface ComunicadoRepository extends  JpaRepository<Comunicado, Long>{
 
     List<Comunicado> findTop5ByOrderByDataPublicacaoDesc();
     
+    @Override
     Page<Comunicado> findAll(Pageable pageable);
 
 }
