@@ -61,25 +61,32 @@ public class ConfiguracaoSistema {
     @Column(precision = 10, scale = 2)
     private BigDecimal irrfLimiteIsento;
 
-    // Faixa 2 (7,5%)
     @Column(precision = 10, scale = 2)
     private BigDecimal irrfLimiteFaixa2;
+    @Column(precision = 5, scale = 4)
+    private BigDecimal irrfAliquotaFaixa2; 
     @Column(precision = 10, scale = 2)
     private BigDecimal irrfDeducaoFaixa2;
 
-    // Faixa 3 (15%)
+    // Faixa 3
     @Column(precision = 10, scale = 2)
     private BigDecimal irrfLimiteFaixa3;
+    @Column(precision = 5, scale = 4) 
+    private BigDecimal irrfAliquotaFaixa3;
     @Column(precision = 10, scale = 2)
     private BigDecimal irrfDeducaoFaixa3;
 
-    // Faixa 4 (22,5%)
+    // Faixa 4
     @Column(precision = 10, scale = 2)
     private BigDecimal irrfLimiteFaixa4;
+    @Column(precision = 5, scale = 4) 
+    private BigDecimal irrfAliquotaFaixa4;
     @Column(precision = 10, scale = 2)
     private BigDecimal irrfDeducaoFaixa4;
 
-    // Faixa 5 (27,5%)
+    // Faixa 5 (27,5% ou mais)
+    @Column(precision = 5, scale = 4) 
+    private BigDecimal irrfAliquotaFaixa5;
     @Column(precision = 10, scale = 2)
     private BigDecimal irrfDeducaoFaixa5;
 

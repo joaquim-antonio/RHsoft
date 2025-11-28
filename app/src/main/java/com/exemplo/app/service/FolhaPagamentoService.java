@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -47,7 +48,6 @@ public class FolhaPagamentoService {
     @Autowired
     private AdministradorRepository administradorRepository;
 
-    //Listar todas as folhas
     public List<FolhaPagamento> listarTodas() {
         return folhaPagamentoRepository.findAll();
     }
@@ -64,37 +64,46 @@ public class FolhaPagamentoService {
 
     // GERAÇÃO DA FOLHA
 
-   public void gerarFolhaDePagamento(Long idFolha) {
+    @Transactional
+    @Async 
+    public void gerarFolhaDePagamento(Long idFolha) {
         FolhaPagamento folha = buscarFolhaPorId(idFolha);
 
         if (folha.getStatus() != StatusPagamento.ABERTO) {
             throw new RuntimeException("A folha não está aberta para geração.");
         }
 
-        // CORREÇÃO: Limpeza explícita e forçada para evitar duplicidade
+        // Limpeza de pagamentos antigos (Batch Delete)
         if (!folha.getPagamentos().isEmpty()) {
-            // 1. Cria uma cópia da lista para referência
             List<Pagamento> pagamentosAntigos = new ArrayList<>(folha.getPagamentos());
-            
-            // 2. Limpa a lista da entidade pai (remove a associação em memória)
             folha.getPagamentos().clear();
             
-            // 3. Deleta explicitamente os registros do banco
+            // Deleta do banco
             pagamentoRepository.deleteAll(pagamentosAntigos);
-            
-            // 4. Força o banco a processar os deletes AGORA, antes de inserir os novos
             pagamentoRepository.flush();
         }
 
         ConfiguracaoSistema config = configuracaoService.buscarConfiguracaoAtual();
         List<Funcionario> funcionarios = funcionarioService.listarTodosFuncionarios();
+        
+        List<Pagamento> lotePagamentos = new ArrayList<>();
 
         for (Funcionario f : funcionarios) {
-            criarPagamentoParaFuncionario(f, folha, config);
+            Pagamento novoPagamento = construirPagamento(f, folha, config);
+            lotePagamentos.add(novoPagamento);
+        }
+
+        // Salva todos de uma vez
+        if (!lotePagamentos.isEmpty()) {
+            pagamentoRepository.saveAll(lotePagamentos);
         }
     }
 
-    private void criarPagamentoParaFuncionario(Funcionario funcionario, FolhaPagamento folha, ConfiguracaoSistema config) {
+    /**
+     * Método auxiliar para montar o objeto Pagamento.
+     * NÃO salva no banco, apenas retorna a instância populada.
+     */
+    private Pagamento construirPagamento(Funcionario funcionario, FolhaPagamento folha, ConfiguracaoSistema config) {
         Pagamento pagamento = new Pagamento();
         pagamento.setFuncionario(funcionario);
         pagamento.setFolhaPagamento(folha);
@@ -105,12 +114,13 @@ public class FolhaPagamentoService {
         String sufixoCpf = funcionario.getCpf().length() >= 3 ? funcionario.getCpf().substring(0, 3) : "000";
         pagamento.setCodigo("PAY-" + folha.getId() + "-" + System.currentTimeMillis() + "-" + sufixoCpf);
 
+        // Chama a calculadora (que agora suporta IRRF dinâmico e Salário Proporcional)
         calculadoraService.processarFolhaFuncionario(pagamento, funcionario, config);
 
-        pagamentoRepository.save(pagamento);
+        return pagamento;
     }
 
-    // EDIÇÃO DE PAGAMENTOS
+    // EDIÇÃO DE PAGAMENTOS 
 
     @Transactional
     public Pagamento editarPagamento(EditarPagamentoDto dto) {
@@ -150,7 +160,7 @@ public class FolhaPagamentoService {
 
     private void adicionarItemManual(Pagamento pagamento, String descricao, TipoItemPagamento tipo, BigDecimal valor) {
         ItemPagamento item = ItemPagamento.builder()
-                .nome(descricao) // Usando 'nome' conforme sua entidade ItemPagamento
+                .nome(descricao) 
                 .descricao("Lançamento Manual")
                 .tipo(tipo)
                 .valor(valor.setScale(2, RoundingMode.HALF_UP))
@@ -159,7 +169,7 @@ public class FolhaPagamentoService {
         pagamento.getItens().add(item);
     }
 
-    // --- FLUXO DA FOLHA (ABRIR, FECHAR, REABRIR) ---
+    // FLUXO DA FOLHA (ABRIR, FECHAR, REABRIR)
 
     @Transactional
     public FolhaPagamento abrirFolha(String cpfAdmin) { 
@@ -169,13 +179,12 @@ public class FolhaPagamentoService {
             throw new RuntimeException("Já existe uma folha de pagamento aberta.");
         }
         
-        // Busca o Objeto Administrador pelo CPF (Correção do erro)
         Administrador admin = administradorRepository.findByCpf(cpfAdmin)
             .orElseThrow(() -> new EntityNotFoundException("Administrador não encontrado com CPF: " + cpfAdmin));
 
         FolhaPagamento folha = new FolhaPagamento();
         folha.setStatus(StatusPagamento.ABERTO);
-        folha.setAdministrador(admin); // Agora passamos o objeto correto
+        folha.setAdministrador(admin);
         folha.setTotalLiquido(BigDecimal.ZERO);
         folha.setDataEnvio(LocalDate.now());
         
@@ -185,7 +194,6 @@ public class FolhaPagamentoService {
     @Transactional
     public FolhaPagamento fecharFolha(Long idFolha) {
         FolhaPagamento folha = buscarFolhaPorId(idFolha);
-            
 
         if (folha.getStatus() != StatusPagamento.ABERTO) {
             throw new RuntimeException("Só é possível fechar uma folha ABERTA.");

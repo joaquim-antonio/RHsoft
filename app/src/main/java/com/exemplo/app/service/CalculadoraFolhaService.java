@@ -3,6 +3,7 @@ package com.exemplo.app.service;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
+import java.time.YearMonth;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,32 +32,34 @@ public class CalculadoraFolhaService {
     public void processarFolhaFuncionario(Pagamento pagamento, Funcionario func, ConfiguracaoSistema config) {
         List<ItemPagamento> novosItens = new ArrayList<>();
         
-        BigDecimal salarioBase = func.getSalario();
+        // Calcula quanto vale o salário neste mês específico (se entrou no meio do mês, recebe menos)
+        BigDecimal salarioCalculado = calcularSalarioProporcional(func, pagamento);
         BigDecimal totalProventos = BigDecimal.ZERO;
         
         //  PROVENTOS 
 
         // Salário Base
-        novosItens.add(criarItem("Salário Base", TipoItemPagamento.PROVENTO, salarioBase, pagamento));
-        totalProventos = totalProventos.add(salarioBase);
-        pagamento.setSalarioBase(salarioBase); 
+        novosItens.add(criarItem("Salário Base", TipoItemPagamento.PROVENTO, salarioCalculado, pagamento));
+        totalProventos = totalProventos.add(salarioCalculado);
+        pagamento.setSalarioBase(salarioCalculado); 
 
-        // Adicionais (Insalubridade / Periculosidade)
-        BigDecimal valorAdicional = calcularAdicionais(func, config, salarioBase);
+        // Adicionais
+        BigDecimal valorAdicional = calcularAdicionais(func, config, salarioCalculado);
+        
         if (valorAdicional.compareTo(BigDecimal.ZERO) > 0) {
             String nomeAdicional = (func.getTipoAcrescimo() == TipoAcrescimo.INSALUBRIDADE) ? "Insalubridade" : "Periculosidade";
             novosItens.add(criarItem(nomeAdicional, TipoItemPagamento.PROVENTO, valorAdicional, pagamento));
             totalProventos = totalProventos.add(valorAdicional);
         }
 
-        // Horas Extras
+        // Horas Extras (Inicializa zerado se nulo)
         if(pagamento.getHorasExtras() == null) {
             pagamento.setHorasExtras(BigDecimal.ZERO); 
         }
 
         //  DESCONTOS 
 
-        // INSS Progressivo
+        // INSS Progressivo (Mantido a lógica de banco de dados)
         BigDecimal inss = calcularInssProgressivo(totalProventos);
         novosItens.add(criarItem("INSS", TipoItemPagamento.DESCONTO, inss, pagamento));
 
@@ -68,14 +71,13 @@ public class CalculadoraFolhaService {
             novosItens.add(criarItem("IRRF", TipoItemPagamento.DESCONTO, irrf, pagamento));
         }
 
-        // Vale Transporte
-        BigDecimal vt = salarioBase.multiply(config.getPercentualValeTransporte());
+        // Vale Transporte (Baseado no salário calculado/proporcional)
+        BigDecimal vt = salarioCalculado.multiply(config.getPercentualValeTransporte());
         novosItens.add(criarItem("Vale Transporte", TipoItemPagamento.DESCONTO, vt, pagamento));
         pagamento.setValeTransporte(vt); 
 
         // Vale Alimentação
         pagamento.setValeAlimentacao(config.getValorValeAlimentacao());
-
         
         String nomeCargo = (func.getCargo() != null) ? func.getCargo().getNome() : "Não Informado";
         pagamento.setCbo(nomeCargo);
@@ -84,11 +86,40 @@ public class CalculadoraFolhaService {
         if (pagamento.getItens() == null) {
             pagamento.setItens(new ArrayList<>(novosItens));
         } else {
-            pagamento.getItens().clear(); // O OrphanRemoval cuidará dos deletes
+            pagamento.getItens().clear(); 
             pagamento.getItens().addAll(novosItens);
         }
 
         pagamento.calcularTotais(); 
+    }
+
+    /**
+     * Calcula o salário proporcional base 30 dias (Regra Comercial).
+     * Útil para meses de admissão.
+     */
+    private BigDecimal calcularSalarioProporcional(Funcionario func, Pagamento pagamento) {
+        YearMonth competenciaFolha = YearMonth.parse(pagamento.getMesAnoReferencia());
+        YearMonth competenciaAdmissao = YearMonth.from(func.getDataAdmissao());
+
+        // Se a admissão for no mesmo mês e ano da folha
+        if (competenciaFolha.equals(competenciaAdmissao)) {
+            int diaAdmissao = func.getDataAdmissao().getDayOfMonth();
+            
+            // Regra comercial: Dia 31 conta como 30.
+            // Ex: Entrou dia 20. Trabalhou: 30 - 20 + 1 = 11 dias.
+            int diasTrabalhados = 30 - Math.min(diaAdmissao, 30) + 1;
+            
+            if (diasTrabalhados < 1) diasTrabalhados = 0; 
+
+            // Cálculo: (Salário / 30) * diasTrabalhados
+            return func.getSalario()
+                    .divide(new BigDecimal("30"), 10, RoundingMode.HALF_UP)
+                    .multiply(new BigDecimal(diasTrabalhados))
+                    .setScale(2, RoundingMode.HALF_UP);
+        }
+
+        // Se não for mês de admissão, recebe integral
+        return func.getSalario();
     }
 
     private BigDecimal calcularAdicionais(Funcionario func, ConfiguracaoSistema config, BigDecimal salarioBase) {
@@ -138,34 +169,42 @@ public class CalculadoraFolhaService {
         return impostoTotal.setScale(2, RoundingMode.HALF_UP);
     }
 
+    /**
+     * Calcula o IRRF usando as alíquotas configuradas no banco de dados.
+     */
     private BigDecimal calcularIRRF(BigDecimal base, ConfiguracaoSistema config) {
         BigDecimal baseCalculo = base;
 
         if (baseCalculo.compareTo(BigDecimal.ZERO) <= 0) return BigDecimal.ZERO;
         
+        // Faixa 1 (Isento)
         if (baseCalculo.compareTo(config.getIrrfLimiteIsento()) <= 0) {
             return BigDecimal.ZERO;
         }
 
+        // Faixa 2
         if (baseCalculo.compareTo(config.getIrrfLimiteFaixa2()) <= 0) {
-            return baseCalculo.multiply(new BigDecimal("0.075"))
+            return baseCalculo.multiply(config.getIrrfAliquotaFaixa2())
                     .subtract(config.getIrrfDeducaoFaixa2())
                     .setScale(2, RoundingMode.HALF_UP);
         }
 
+        // Faixa 3
         if (baseCalculo.compareTo(config.getIrrfLimiteFaixa3()) <= 0) {
-            return baseCalculo.multiply(new BigDecimal("0.15"))
+            return baseCalculo.multiply(config.getIrrfAliquotaFaixa3())
                     .subtract(config.getIrrfDeducaoFaixa3())
                     .setScale(2, RoundingMode.HALF_UP);
         }
 
+        // Faixa 4
         if (baseCalculo.compareTo(config.getIrrfLimiteFaixa4()) <= 0) {
-            return baseCalculo.multiply(new BigDecimal("0.225"))
+            return baseCalculo.multiply(config.getIrrfAliquotaFaixa4())
                     .subtract(config.getIrrfDeducaoFaixa4())
                     .setScale(2, RoundingMode.HALF_UP);
         }
 
-        return baseCalculo.multiply(new BigDecimal("0.275"))
+        // Faixa 5 (Teto)
+        return baseCalculo.multiply(config.getIrrfAliquotaFaixa5())
                 .subtract(config.getIrrfDeducaoFaixa5())
                 .setScale(2, RoundingMode.HALF_UP);
     }
