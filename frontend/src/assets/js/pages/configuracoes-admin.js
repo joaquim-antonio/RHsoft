@@ -165,3 +165,20 @@ document.addEventListener('DOMContentLoaded', () => {
         alert("Simulando contato com o suporte. Um formulário ou chat seria aberto aqui.");
     });
 });
+
+
+document.addEventListener('DOMContentLoaded', () => {
+    const payrollConfigForm = document.getElementById('payrollConfigForm');
+    if (payrollConfigForm) {
+        payrollConfigForm.addEventListener('submit', (event) => {
+            event.preventDefault();
+            const closingDate = document.getElementById('closingDate').value;
+            const reopeningDeadline = document.getElementById('reopeningDeadline').value;
+            const taxRules = document.getElementById('taxRules').value;
+
+            alert(`Configurações da Folha de Pagamento Salvas (simulação):\nData de Fechamento: ${closingDate}\nPrazo para Reabertura: ${reopeningDeadline} dias\nRegras de Encargos: ${taxRules}`);
+
+            // Em um ambiente real, aqui seria a lógica para enviar os dados para o backend.
+        });
+    }
+});
