@@ -31,5 +31,53 @@ const CandidaturaAdminService = {
         }
     },
 
+
+    atualizarStatus: async (candidaturaId, novoStatusEnum) => {
+        try {
+            const response = await fetch(`${API_BASE_URL}/${candidaturaId}/status`, {
+                method: 'PATCH', 
+                headers: CandidaturaAdminService.getHeaders(),
+                body: JSON.stringify({ 
+                    status: novoStatusEnum 
+                })
+            });
+
+            if (!response.ok) {
+                
+                const errorMessage = await response.text(); 
+                throw new Error(errorMessage || 'Erro ao atualizar status');
+            }
+
+            return await response.json();
+        } catch (error) {
+            console.error('Erro ao atualizar status:', error);
+            throw error;
+        }
+    },
+
     
-    
+    aprovarEContratar: async (candidaturaId, dadosContratacaoObj) => {
+        try {
+            const response = await fetch(`${API_BASE_URL}/${candidaturaId}/aprovar`, {
+                method: 'POST',
+                headers: CandidaturaAdminService.getHeaders(),
+                body: JSON.stringify(dadosContratacaoObj) 
+                
+            });
+
+            if (!response.ok) {
+                
+                const errorMessage = await response.text();
+                throw new Error(errorMessage || 'Erro ao aprovar contratação');
+            }
+
+            const resultado = await response.json();
+            console.log("Sucesso! Candidato contratado.");
+            return resultado;
+
+        } catch (error) {
+            console.error('Erro na contratação:', error);
+            throw error;
+        }
+    }
+};
