@@ -7,43 +7,40 @@ import java.time.YearMonth;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.exemplo.app.model.ConfiguracaoSistema;
-import com.exemplo.app.model.FaixaInss;
-import com.exemplo.app.model.Funcionario;
-import com.exemplo.app.model.ItemPagamento;
-import com.exemplo.app.model.Pagamento;
 import com.exemplo.app.model.Enums.TipoAcrescimo;
 import com.exemplo.app.model.Enums.TipoInsalubridade;
 import com.exemplo.app.model.Enums.TipoItemPagamento;
-import com.exemplo.app.repository.FaixaInssRepository;
+import com.exemplo.app.model.FaixaInss;
+import com.exemplo.app.model.FaixaIrrf;
+import com.exemplo.app.model.Funcionario;
+import com.exemplo.app.model.ItemPagamento;
+import com.exemplo.app.model.Pagamento;
 
 @Service
 public class CalculadoraFolhaService {
 
-    @Autowired 
-    private FaixaInssRepository faixaInssRepository;
-
     /**
      * Processa o cálculo completo da folha de um funcionário.
+     * Agora totalmente desacoplado de Repositories.
      */
     public void processarFolhaFuncionario(Pagamento pagamento, Funcionario func, ConfiguracaoSistema config) {
         List<ItemPagamento> novosItens = new ArrayList<>();
         
-        // Calcula quanto vale o salário neste mês específico (se entrou no meio do mês, recebe menos)
+        // 1. CÁLCULO PROPORCIONAL (Admissão)
         BigDecimal salarioCalculado = calcularSalarioProporcional(func, pagamento);
         BigDecimal totalProventos = BigDecimal.ZERO;
         
-        //  PROVENTOS 
+        // --- PROVENTOS ---
 
         // Salário Base
         novosItens.add(criarItem("Salário Base", TipoItemPagamento.PROVENTO, salarioCalculado, pagamento));
         totalProventos = totalProventos.add(salarioCalculado);
         pagamento.setSalarioBase(salarioCalculado); 
 
-        // Adicionais
+        // Adicionais (Insalubridade / Periculosidade)
         BigDecimal valorAdicional = calcularAdicionais(func, config, salarioCalculado);
         
         if (valorAdicional.compareTo(BigDecimal.ZERO) > 0) {
@@ -57,21 +54,26 @@ public class CalculadoraFolhaService {
             pagamento.setHorasExtras(BigDecimal.ZERO); 
         }
 
-        //  DESCONTOS 
+        // --- DESCONTOS ---
 
-        // INSS Progressivo (Mantido a lógica de banco de dados)
-        BigDecimal inss = calcularInssProgressivo(totalProventos);
+        // INSS Progressivo (Usa a lista da config)
+        BigDecimal inss = calcularInssProgressivo(totalProventos, config);
         novosItens.add(criarItem("INSS", TipoItemPagamento.DESCONTO, inss, pagamento));
 
-        // IRRF (Sem dedução de dependentes por enquanto)
+        // IRRF (Usa a lista da config)
         BigDecimal baseIRRF = totalProventos.subtract(inss);
+        
+        // Descontar dependentes se implementado no futuro:
+        // BigDecimal deducaoDependentes = config.getIrrfDeducaoPorDependente().multiply(new BigDecimal(func.getDependentes()));
+        // baseIRRF = baseIRRF.subtract(deducaoDependentes);
+
         BigDecimal irrf = calcularIRRF(baseIRRF, config);
         
         if (irrf.compareTo(BigDecimal.ZERO) > 0) {
             novosItens.add(criarItem("IRRF", TipoItemPagamento.DESCONTO, irrf, pagamento));
         }
 
-        // Vale Transporte (Baseado no salário calculado/proporcional)
+        // Vale Transporte
         BigDecimal vt = salarioCalculado.multiply(config.getPercentualValeTransporte());
         novosItens.add(criarItem("Vale Transporte", TipoItemPagamento.DESCONTO, vt, pagamento));
         pagamento.setValeTransporte(vt); 
@@ -79,10 +81,12 @@ public class CalculadoraFolhaService {
         // Vale Alimentação
         pagamento.setValeAlimentacao(config.getValorValeAlimentacao());
         
+        // Metadados
         String nomeCargo = (func.getCargo() != null) ? func.getCargo().getNome() : "Não Informado";
         pagamento.setCbo(nomeCargo);
         pagamento.setMensagens("Cálculo realizado em " + LocalDate.now());
 
+        // Atualiza a lista
         if (pagamento.getItens() == null) {
             pagamento.setItens(new ArrayList<>(novosItens));
         } else {
@@ -95,30 +99,23 @@ public class CalculadoraFolhaService {
 
     /**
      * Calcula o salário proporcional base 30 dias (Regra Comercial).
-     * Útil para meses de admissão.
      */
     private BigDecimal calcularSalarioProporcional(Funcionario func, Pagamento pagamento) {
         YearMonth competenciaFolha = YearMonth.parse(pagamento.getMesAnoReferencia());
         YearMonth competenciaAdmissao = YearMonth.from(func.getDataAdmissao());
 
-        // Se a admissão for no mesmo mês e ano da folha
         if (competenciaFolha.equals(competenciaAdmissao)) {
             int diaAdmissao = func.getDataAdmissao().getDayOfMonth();
-            
-            // Regra comercial: Dia 31 conta como 30.
-            // Ex: Entrou dia 20. Trabalhou: 30 - 20 + 1 = 11 dias.
             int diasTrabalhados = 30 - Math.min(diaAdmissao, 30) + 1;
             
             if (diasTrabalhados < 1) diasTrabalhados = 0; 
 
-            // Cálculo: (Salário / 30) * diasTrabalhados
             return func.getSalario()
                     .divide(new BigDecimal("30"), 10, RoundingMode.HALF_UP)
                     .multiply(new BigDecimal(diasTrabalhados))
                     .setScale(2, RoundingMode.HALF_UP);
         }
 
-        // Se não for mês de admissão, recebe integral
         return func.getSalario();
     }
 
@@ -146,12 +143,15 @@ public class CalculadoraFolhaService {
         return BigDecimal.ZERO;
     }
 
-    private BigDecimal calcularInssProgressivo(BigDecimal salarioBruto) {
-        List<FaixaInss> faixas = faixaInssRepository.findAllByOrderByOrdemAsc();
-        if(faixas.isEmpty()) return BigDecimal.ZERO;
+    /**
+     * Calcula INSS iterando sobre a lista da configuração.
+     */
+    private BigDecimal calcularInssProgressivo(BigDecimal salarioBruto, ConfiguracaoSistema config) {
+        List<FaixaInss> faixas = config.getFaixasInss();
+        if(faixas == null || faixas.isEmpty()) return BigDecimal.ZERO;
 
         BigDecimal impostoTotal = BigDecimal.ZERO;
-        BigDecimal tetoINSS = faixas.get(faixas.size() - 1).getLimiteSuperior();
+        BigDecimal tetoINSS = config.getTetoInss();
         BigDecimal salarioCalculo = salarioBruto.compareTo(tetoINSS) > 0 ? tetoINSS : salarioBruto;
 
         for (FaixaInss faixa : faixas) {
@@ -170,43 +170,35 @@ public class CalculadoraFolhaService {
     }
 
     /**
-     * Calcula o IRRF usando as alíquotas configuradas no banco de dados.
+     * Calcula IRRF iterando sobre a lista da configuração.
      */
-    private BigDecimal calcularIRRF(BigDecimal base, ConfiguracaoSistema config) {
-        BigDecimal baseCalculo = base;
-
+    private BigDecimal calcularIRRF(BigDecimal baseCalculo, ConfiguracaoSistema config) {
         if (baseCalculo.compareTo(BigDecimal.ZERO) <= 0) return BigDecimal.ZERO;
         
-        // Faixa 1 (Isento)
-        if (baseCalculo.compareTo(config.getIrrfLimiteIsento()) <= 0) {
-            return BigDecimal.ZERO;
-        }
+        List<FaixaIrrf> faixas = config.getFaixasIrrf();
+        if(faixas == null || faixas.isEmpty()) return BigDecimal.ZERO;
 
-        // Faixa 2
-        if (baseCalculo.compareTo(config.getIrrfLimiteFaixa2()) <= 0) {
-            return baseCalculo.multiply(config.getIrrfAliquotaFaixa2())
-                    .subtract(config.getIrrfDeducaoFaixa2())
-                    .setScale(2, RoundingMode.HALF_UP);
+        for (FaixaIrrf faixa : faixas) {
+            
+            // Se tiver limite superior e a base for menor ou igual
+            if (faixa.getLimiteSuperior() != null && baseCalculo.compareTo(faixa.getLimiteSuperior()) <= 0) {
+                return aplicarAliquotaIrrf(baseCalculo, faixa);
+            }
+            
+            // Se for a última faixa (limite null ou "acima de")
+            if (faixa.getLimiteSuperior() == null) {
+                return aplicarAliquotaIrrf(baseCalculo, faixa);
+            }
         }
+        
+        return BigDecimal.ZERO; 
+    }
 
-        // Faixa 3
-        if (baseCalculo.compareTo(config.getIrrfLimiteFaixa3()) <= 0) {
-            return baseCalculo.multiply(config.getIrrfAliquotaFaixa3())
-                    .subtract(config.getIrrfDeducaoFaixa3())
-                    .setScale(2, RoundingMode.HALF_UP);
-        }
-
-        // Faixa 4
-        if (baseCalculo.compareTo(config.getIrrfLimiteFaixa4()) <= 0) {
-            return baseCalculo.multiply(config.getIrrfAliquotaFaixa4())
-                    .subtract(config.getIrrfDeducaoFaixa4())
-                    .setScale(2, RoundingMode.HALF_UP);
-        }
-
-        // Faixa 5 (Teto)
-        return baseCalculo.multiply(config.getIrrfAliquotaFaixa5())
-                .subtract(config.getIrrfDeducaoFaixa5())
-                .setScale(2, RoundingMode.HALF_UP);
+    private BigDecimal aplicarAliquotaIrrf(BigDecimal base, FaixaIrrf faixa) {
+        BigDecimal valor = base.multiply(faixa.getAliquota())
+                .subtract(faixa.getDeducao());
+        
+        return valor.max(BigDecimal.ZERO).setScale(2, RoundingMode.HALF_UP);
     }
 
     private ItemPagamento criarItem(String nome, TipoItemPagamento tipo, BigDecimal valor, Pagamento pg) {

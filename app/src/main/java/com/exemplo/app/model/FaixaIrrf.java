@@ -14,6 +14,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.PositiveOrZero;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -22,35 +23,35 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
-@Table(name = "faixas_inss")
+@Table(name = "faixas_irrf")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class FaixaInss {
+public class FaixaIrrf {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(nullable = false)
-    private Integer ordem;
+    private Integer ordem; 
 
+    @Column(name = "limite_superior", nullable = true, precision = 10, scale = 2)
+    @Positive(message="Limite superior não pode ser negativo")
+    private BigDecimal limiteSuperior;
+    
     @Column(nullable = false, precision = 5, scale = 4)
     @PositiveOrZero(message = "Aliquota não pode ser negativo")
     private BigDecimal aliquota; 
 
-    @Column(name = "limite_inferior", nullable = false, precision = 10, scale = 2)
-    @PositiveOrZero(message = "Limite inferior deve ser positivo ou zero")
-    private BigDecimal limiteInferior;
-
-    @Column(name="limite_superior" , nullable = false, precision = 10, scale = 2)
-    @PositiveOrZero(message="Limite superior deve ser maior que 0")
-    private BigDecimal limiteSuperior;
+    @Column(nullable = false, precision = 10, scale = 2)
+    @PositiveOrZero(message = "Dedução não pode ser negativa")
+    private BigDecimal deducao; 
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "configuracao_id", foreignKey=@ForeignKey(name= "fk_inss_config"))
+    @JoinColumn(name = "configuracao_id", foreignKey=@ForeignKey(name = "fk_irff_config"))
     @JsonBackReference
     private ConfiguracaoSistema configuracao;
 }

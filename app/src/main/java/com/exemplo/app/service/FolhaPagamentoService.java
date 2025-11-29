@@ -65,7 +65,7 @@ public class FolhaPagamentoService {
     // GERAÇÃO DA FOLHA
 
     @Transactional
-    @Async 
+    @Async
     public void gerarFolhaDePagamento(Long idFolha) {
         FolhaPagamento folha = buscarFolhaPorId(idFolha);
 
@@ -77,7 +77,7 @@ public class FolhaPagamentoService {
         if (!folha.getPagamentos().isEmpty()) {
             List<Pagamento> pagamentosAntigos = new ArrayList<>(folha.getPagamentos());
             folha.getPagamentos().clear();
-            
+
             // Deleta do banco
             pagamentoRepository.deleteAll(pagamentosAntigos);
             pagamentoRepository.flush();
@@ -85,7 +85,7 @@ public class FolhaPagamentoService {
 
         ConfiguracaoSistema config = configuracaoService.buscarConfiguracaoAtual();
         List<Funcionario> funcionarios = funcionarioService.listarTodosFuncionarios();
-        
+
         List<Pagamento> lotePagamentos = new ArrayList<>();
 
         for (Funcionario f : funcionarios) {
@@ -109,7 +109,7 @@ public class FolhaPagamentoService {
         pagamento.setFolhaPagamento(folha);
         pagamento.setMesAnoReferencia(LocalDate.now().toString().substring(0, 7)); // Ex: 2025-01
         pagamento.setVencimento(LocalDate.now().plusDays(5));
-        
+
         // Gera código único
         String sufixoCpf = funcionario.getCpf().length() >= 3 ? funcionario.getCpf().substring(0, 3) : "000";
         pagamento.setCodigo("PAY-" + folha.getId() + "-" + System.currentTimeMillis() + "-" + sufixoCpf);
@@ -119,7 +119,7 @@ public class FolhaPagamentoService {
         return pagamento;
     }
 
-    // EDIÇÃO DE PAGAMENTOS 
+    // EDIÇÃO DE PAGAMENTOS
 
     @Transactional
     public Pagamento editarPagamento(EditarPagamentoDto dto) {
@@ -142,9 +142,23 @@ public class FolhaPagamentoService {
         calculadoraService.processarFolhaFuncionario(pagamento, pagamento.getFuncionario(), config);
 
         // Adiciona Itens Manuais (Horas Extras / Adicional)
-        if (dto.horasExtras() != null && dto.horasExtras().compareTo(BigDecimal.ZERO) > 0) {
-            pagamento.setHorasExtras(dto.horasExtras());
-            adicionarItemManual(pagamento, "Horas Extras", TipoItemPagamento.PROVENTO, dto.horasExtras());
+        if (dto.quantidadeHorasExtras() != null && dto.quantidadeHorasExtras() > 0) {
+            Funcionario func = pagamento.getFuncionario();
+
+            // Calcula o valor da hora normal (Salário / Horas Mensais)
+            BigDecimal valorHora = func.getSalario()
+                    .divide(new BigDecimal(func.getHorasTrabalhadas()), 10, RoundingMode.HALF_UP);
+
+            // Aplica o adicional de 50% (padrão CLT) ou configure via banco
+            BigDecimal valorHoraExtra = valorHora.multiply(new BigDecimal("1.5"));
+
+            // Calcula o total a pagar (ValorHoraExtra * QtdHoras)
+            BigDecimal totalHorasExtras = valorHoraExtra
+                    .multiply(new BigDecimal(dto.quantidadeHorasExtras()))
+                    .setScale(2, RoundingMode.HALF_UP);
+
+            pagamento.setHorasExtras(totalHorasExtras);
+            adicionarItemManual(pagamento, "Horas Extras (50%)", TipoItemPagamento.PROVENTO, totalHorasExtras);
         }
 
         if (dto.adicionalManual() != null && dto.adicionalManual().compareTo(BigDecimal.ZERO) > 0) {
@@ -159,7 +173,7 @@ public class FolhaPagamentoService {
 
     private void adicionarItemManual(Pagamento pagamento, String descricao, TipoItemPagamento tipo, BigDecimal valor) {
         ItemPagamento item = ItemPagamento.builder()
-                .nome(descricao) 
+                .nome(descricao)
                 .descricao("Lançamento Manual")
                 .tipo(tipo)
                 .valor(valor.setScale(2, RoundingMode.HALF_UP))
@@ -171,22 +185,22 @@ public class FolhaPagamentoService {
     // FLUXO DA FOLHA (ABRIR, FECHAR, REABRIR)
 
     @Transactional
-    public FolhaPagamento abrirFolha(String cpfAdmin) { 
-        
+    public FolhaPagamento abrirFolha(String cpfAdmin) {
+
         // Verifica se já existe folha aberta
         if (folhaPagamentoRepository.existsByStatus(StatusPagamento.ABERTO)) {
             throw new RuntimeException("Já existe uma folha de pagamento aberta.");
         }
-        
+
         Administrador admin = administradorRepository.findByCpf(cpfAdmin)
-            .orElseThrow(() -> new EntityNotFoundException("Administrador não encontrado com CPF: " + cpfAdmin));
+                .orElseThrow(() -> new EntityNotFoundException("Administrador não encontrado com CPF: " + cpfAdmin));
 
         FolhaPagamento folha = new FolhaPagamento();
         folha.setStatus(StatusPagamento.ABERTO);
         folha.setAdministrador(admin);
         folha.setTotalLiquido(BigDecimal.ZERO);
         folha.setDataEnvio(LocalDate.now());
-        
+
         return folhaPagamentoRepository.save(folha);
     }
 
@@ -217,7 +231,7 @@ public class FolhaPagamentoService {
             throw new RuntimeException("A folha precisa estar FECHADA para ser consolidada.");
         }
         folha.setStatus(StatusPagamento.CONSOLIDADA);
-        
+
         return folhaPagamentoRepository.save(folha);
     }
 
@@ -229,25 +243,26 @@ public class FolhaPagamentoService {
         if (folha.getStatus() == StatusPagamento.ABERTO) {
             throw new RuntimeException("A folha já está aberta.");
         }
-        
+
         // Verifica prazo dinâmico do banco de dados
         if (folha.getStatus() == StatusPagamento.CONSOLIDADA) {
             long dias = ChronoUnit.DAYS.between(folha.getDataFechamento(), LocalDate.now());
-            
+
             Integer prazoLimite = config.getDiasLimiteReabertura();
-            
+
             if (dias > prazoLimite) {
-                throw new RuntimeException("Folha consolidada há " + dias + " dias. Prazo limite para reabertura é de " + prazoLimite + " dias.");
+                throw new RuntimeException("Folha consolidada há " + dias + " dias. Prazo limite para reabertura é de "
+                        + prazoLimite + " dias.");
             }
         }
-        
+
         folha.setStatus(StatusPagamento.ABERTO);
         return folhaPagamentoRepository.save(folha);
     }
 
     public void enviarFolhaParaFuncionarios(Long idFolha) {
         FolhaPagamento folha = buscarFolhaPorId(idFolha);
-        
+
         if (folha.getStatus() != StatusPagamento.FECHADA && folha.getStatus() != StatusPagamento.CONSOLIDADA) {
             throw new IllegalStateException("A folha precisa estar FECHADA ou CONSOLIDADA para ser enviada.");
         }

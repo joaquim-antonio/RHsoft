@@ -6,7 +6,7 @@ import jakarta.validation.constraints.PositiveOrZero;
 public record EditarPagamentoDto(
     
     @PositiveOrZero(message = "Horas extras não podem ser negativas")
-    BigDecimal horasExtras,
+    Double quantidadeHorasExtras,
 
     @PositiveOrZero(message = "O adicional manual não pode ser negativo")
     BigDecimal adicionalManual,

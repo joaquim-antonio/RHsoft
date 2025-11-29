@@ -1,7 +1,9 @@
 package com.exemplo.app.exception;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
+import java.time.LocalDateTime;
+import java.util.HashMap;
+import java.util.Map;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -12,28 +14,37 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
 
-import java.time.LocalDateTime;
-import java.util.HashMap;
-import java.util.Map;
+import lombok.AllArgsConstructor;
+import lombok.Data;
 
 /**
  * Handler global de exceções para a aplicação.
- * 
- * Intercepta e trata exceções lançadas pelos controllers,
- * retornando respostas HTTP apropriadas e mensagens de erro formatadas.
- * 
- * @author Manus
- * @version 1.0
  */
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
     /**
+     * Trata exceções de Regra de Negócio (Lógica inválida).
+     * Retorna 400 Bad Request.
+     */
+    @ExceptionHandler({RegraNegocioException.class, IllegalArgumentException.class, IllegalStateException.class})
+    public ResponseEntity<ErrorResponse> handleRegraNegocioException(
+            RuntimeException ex, WebRequest request) {
+        
+        ErrorResponse errorResponse = new ErrorResponse(
+                LocalDateTime.now(),
+                HttpStatus.BAD_REQUEST.value(),
+                "Erro de Regra de Negócio",
+                ex.getMessage(),
+                request.getDescription(false).replace("uri=", ""),
+                null 
+        );
+        
+        return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+    }
+
+    /**
      * Trata exceções de recursos não encontrados.
-     *
-     * @param ex exceção lançada
-     * @param request requisição web
-     * @return resposta com status 404
      */
     @ExceptionHandler(ResourceNotFoundException.class)
     public ResponseEntity<ErrorResponse> handleResourceNotFoundException(
@@ -44,7 +55,8 @@ public class GlobalExceptionHandler {
                 HttpStatus.NOT_FOUND.value(),
                 "Recurso não encontrado",
                 ex.getMessage(),
-                request.getDescription(false).replace("uri=", "")
+                request.getDescription(false).replace("uri=", ""),
+                null
         );
         
         return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
@@ -52,10 +64,6 @@ public class GlobalExceptionHandler {
 
     /**
      * Trata exceções de autenticação.
-     *
-     * @param ex exceção lançada
-     * @param request requisição web
-     * @return resposta com status 401
      */
     @ExceptionHandler({AuthenticationException.class, BadCredentialsException.class})
     public ResponseEntity<ErrorResponse> handleAuthenticationException(
@@ -66,7 +74,8 @@ public class GlobalExceptionHandler {
                 HttpStatus.UNAUTHORIZED.value(),
                 "Erro de autenticação",
                 ex.getMessage(),
-                request.getDescription(false).replace("uri=", "")
+                request.getDescription(false).replace("uri=", ""),
+                null
         );
         
         return new ResponseEntity<>(errorResponse, HttpStatus.UNAUTHORIZED);
@@ -74,10 +83,6 @@ public class GlobalExceptionHandler {
 
     /**
      * Trata exceções de usuário não encontrado.
-     *
-     * @param ex exceção lançada
-     * @param request requisição web
-     * @return resposta com status 401
      */
     @ExceptionHandler(UsernameNotFoundException.class)
     public ResponseEntity<ErrorResponse> handleUsernameNotFoundException(
@@ -88,21 +93,19 @@ public class GlobalExceptionHandler {
                 HttpStatus.UNAUTHORIZED.value(),
                 "Usuário não encontrado",
                 ex.getMessage(),
-                request.getDescription(false).replace("uri=", "")
+                request.getDescription(false).replace("uri=", ""),
+                null
         );
         
         return new ResponseEntity<>(errorResponse, HttpStatus.UNAUTHORIZED);
     }
 
     /**
-     * Trata exceções de validação de argumentos.
-     *
-     * @param ex exceção lançada
-     * @param request requisição web
-     * @return resposta com status 400
+     * Trata exceções de validação de argumentos (@Valid).
+     * Unificado para retornar o mesmo objeto ErrorResponse.
      */
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<ValidationErrorResponse> handleValidationExceptions(
+    public ResponseEntity<ErrorResponse> handleValidationExceptions(
             MethodArgumentNotValidException ex, WebRequest request) {
         
         Map<String, String> errors = new HashMap<>();
@@ -112,42 +115,39 @@ public class GlobalExceptionHandler {
             errors.put(fieldName, errorMessage);
         });
         
-        ValidationErrorResponse errorResponse = new ValidationErrorResponse(
+        ErrorResponse errorResponse = new ErrorResponse(
                 LocalDateTime.now(),
                 HttpStatus.BAD_REQUEST.value(),
                 "Erro de validação",
                 "Campos inválidos na requisição",
                 request.getDescription(false).replace("uri=", ""),
-                errors
+                errors 
         );
         
         return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
     }
 
     /**
-     * Trata exceções genéricas não capturadas por outros handlers.
-     *
-     * @param ex exceção lançada
-     * @param request requisição web
-     * @return resposta com status 500
+     * Trata exceções genéricas (500).
      */
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponse> handleGlobalException(
             Exception ex, WebRequest request) {
-        
+
         ErrorResponse errorResponse = new ErrorResponse(
                 LocalDateTime.now(),
                 HttpStatus.INTERNAL_SERVER_ERROR.value(),
                 "Erro interno do servidor",
-                ex.getMessage(),
-                request.getDescription(false).replace("uri=", "")
+                "Ocorreu um erro inesperado. Contate o suporte.",
+                request.getDescription(false).replace("uri=", ""),
+                null
         );
         
         return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     /**
-     * DTO para resposta de erro padrão.
+     * DTO Unificado para resposta de erro.
      */
     @Data
     @AllArgsConstructor
@@ -157,20 +157,6 @@ public class GlobalExceptionHandler {
         private String error;
         private String message;
         private String path;
-    }
-
-    /**
-     * DTO para resposta de erro de validação.
-     */
-    @Data
-    @AllArgsConstructor
-    public static class ValidationErrorResponse {
-        private LocalDateTime timestamp;
-        private int status;
-        private String error;
-        private String message;
-        private String path;
-        private Map<String, String> errors;
+        private Map<String, String> errors; 
     }
 }
-

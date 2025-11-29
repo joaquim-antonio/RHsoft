@@ -1,14 +1,26 @@
 package com.exemplo.app.model;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.OrderBy;
 import jakarta.persistence.Table;
-import jakarta.validation.constraints.*;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
+import jakarta.validation.constraints.PositiveOrZero;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -36,7 +48,6 @@ public class ConfiguracaoSistema {
 
     @NotNull(message = "O prazo de reabertura é obrigatório")
     @Min(value = 0, message = "O prazo não pode ser negativo")
-    @PositiveOrZero(message = "O prazo não pode ser negativo")
     @Column(name = "dias_limite_reabertura")
     private Integer diasLimiteReabertura;
     
@@ -57,66 +68,21 @@ public class ConfiguracaoSistema {
 
     // IRRF
     @Column(precision = 10, scale = 2)
-    @PositiveOrZero
+    @PositiveOrZero(message = "A dedução por dependente não pode ser negativa")
     private BigDecimal irrfDeducaoPorDependente; // MUITO CHATO DE IMPLEMENTAR, MAS TÁ AQUI, CASO QUEIRAM NO FUTURO, MAS FUJAM PARAS AS COLINAS IMEDIATAMENTE
 
-    // Faixa 1 (Isento)
-    @NotNull
-    @Column(name = "irrf_limite_isento", precision = 10, scale = 2)
-    @PositiveOrZero
-    private BigDecimal irrfLimiteIsento;
+    @OneToMany(mappedBy = "configuracao", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference
+    @OrderBy("ordem ASC") 
+    @Valid
+    private List<FaixaIrrf> faixasIrrf;
 
-    @NotNull
-    @PositiveOrZero
-    @Column(name = "irrf_limite_faixa_2", precision = 10, scale = 2)
-    private BigDecimal irrfLimiteFaixa2;
-    @NotNull
-    @PositiveOrZero
-    @Column(name = "irrf_aliquota_faixa_2", precision = 5, scale = 4)
-    private BigDecimal irrfAliquotaFaixa2; 
-    @NotNull
-    @PositiveOrZero
-    @Column(name = "irrf_deducao_faixa_2" , precision = 10, scale = 2)
-    private BigDecimal irrfDeducaoFaixa2;
 
-    // Faixa 3
-    @NotNull
-    @PositiveOrZero
-    @Column(name = "irrf_limite_faixa_3", precision = 10, scale = 2)
-    private BigDecimal irrfLimiteFaixa3;
-    @NotNull
-    @PositiveOrZero
-    @Column(name = "irrf_aliquota_faixa_3", precision = 5, scale = 4) 
-    private BigDecimal irrfAliquotaFaixa3;
-    @NotNull
-    @PositiveOrZero
-    @Column(name = "irrf_deducao_faixa_3", precision = 10, scale = 2)
-    private BigDecimal irrfDeducaoFaixa3;
-
-    // Faixa 4
-    @NotNull
-    @PositiveOrZero
-    @Column(name = "irrf_limite_faixa_4", precision = 10, scale = 2)
-    private BigDecimal irrfLimiteFaixa4;
-    @NotNull
-    @PositiveOrZero
-    @Column(name = "irrf_limite_aliquota_4", precision = 5, scale = 4) 
-    private BigDecimal irrfAliquotaFaixa4;
-    @NotNull
-    @PositiveOrZero
-    @Column(name = "irrf_deducao_faixa_4", precision = 10, scale = 2)
-    private BigDecimal irrfDeducaoFaixa4;
-
-    // Faixa 5 (27,5% ou mais)
-    @NotNull
-    @PositiveOrZero
-    @Column(name = "irrf_aliquota_faixa_5", precision = 5, scale = 4) 
-    private BigDecimal irrfAliquotaFaixa5;
-    @NotNull
-    @PositiveOrZero
-    @Column(name = "irrf_deducao_faixa_5", precision = 10, scale = 2)
-    private BigDecimal irrfDeducaoFaixa5;
-
+    @OneToMany(mappedBy = "configuracao", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference 
+    @OrderBy("ordem ASC")
+    @Valid
+    private List<FaixaInss> faixasInss = new ArrayList<>();
 
     // --- PERCENTUAIS ---
 
@@ -144,6 +110,5 @@ public class ConfiguracaoSistema {
     @PositiveOrZero
     @Column(name = "percentual_periculosidade", precision = 5, scale = 4)
     private BigDecimal percentualPericulosidade; // 0.30
-
 
 }
