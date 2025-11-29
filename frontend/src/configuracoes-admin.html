@@ -4,9 +4,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RHSoft - Configurações do Administrador</title>
+    <title>RHSoft - Configurações do Sistema</title>
 
     <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    
+    <link rel="stylesheet" href="assets/css/global/reset.css">
+    <link rel="stylesheet" href="assets/css/global/variables.css">
     <link rel="stylesheet" href="assets/css/global/setup.css">
     <link rel="stylesheet" href="assets/css/pages/configuracoes-admin.css">
 </head>
@@ -17,53 +21,235 @@
     <div class="container-fluid">
         <div class="row">
 
-            <div id="sidebarPlaceHolder" class="col-md-3 col-lg-2 ps-0"></div>
+            <!-- Sidebar -->
+            <div id="sidebarPlaceHolder" class="col-md-3 col-lg-2 ps-0 d-none d-md-block"></div>
 
             <div class="col-md-9 col-lg-10 main-content p-4">
 
-                <h2 class="mb-4">Configurações do Sistema</h2>
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h2><i class="fa-solid fa-sliders me-2"></i>Parâmetros do Sistema</h2>
+                    <button type="button" id="btnSalvar" class="btn btn-primary px-4">
+                        <i class="fa-solid fa-save me-2"></i>Salvar Alterações
+                    </button>
+                </div>
 
-                <div class="row">
-                    <div class="col-lg-8">
-                        <div class="card shadow-sm mb-4">
-                            <div class="card-body">
-                                <h5 class="card-title mb-3">Configurações Gerais</h5>
-                                <form id="configForm">
-                                    <div class="mb-3">
-                                        <label for="nomeEmpresa" class="form-label">Nome da Empresa</label>
-                                        <input type="text" class="form-control" id="nomeEmpresa" value="RHSoft S.A." required>
+                <form id="configForm">
+                    <div class="row">
+                        <!-- COLUNA 1 (ESQUERDA) -->
+                        <div class="col-lg-6">
+                            
+                            <!-- CARD 1: PRAZOS E VALORES -->
+                            <div class="card shadow-sm mb-4">
+                                <div class="card-header py-3">
+                                    <h5 class="card-title mb-0 fs-6 fw-bold">
+                                        <i class="fa-solid fa-calendar-check section-icon"></i>Geral
+                                    </h5>
+                                </div>
+                                <div class="card-body">
+                                    <div class="row g-3">
+                                        <div class="col-md-6">
+                                            <label class="form-label">Dia Fechamento</label>
+                                            <input type="number" class="form-control" id="diaFechamentoMensal" min="1" max="30">
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label class="form-label">Limite Reabertura (Dias)</label>
+                                            <input type="number" class="form-control" id="diasLimiteReabertura" min="0">
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label class="form-label">Salário Mínimo (R$)</label>
+                                            <input type="number" class="form-control" id="salarioMinimoVigente" step="0.01">
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label class="form-label">Teto INSS (R$)</label>
+                                            <input type="number" class="form-control" id="tetoInss" step="0.01">
+                                        </div>
+                                        <div class="col-12">
+                                            <label class="form-label">Valor Vale Alimentação (R$)</label>
+                                            <input type="number" class="form-control" id="valorValeAlimentacao" step="0.01">
+                                        </div>
                                     </div>
-                                    <div class="mb-3">
-                                        <label for="emailSuporte" class="form-label">E-mail de Suporte</label>
-                                        <input type="email" class="form-control" id="emailSuporte" value="suporte@rhsoft.com.br" required>
+                                </div>
+                            </div>
+
+                            <!-- CARD 3: INSS -->
+                            <div class="card shadow-sm mb-4">
+                                <div class="card-header py-3">
+                                    <h5 class="card-title mb-0 fs-6 fw-bold">
+                                        <i class="fa-solid fa-calculator section-icon"></i>Tabela INSS
+                                    </h5>
+                                </div>
+                                <div class="card-body">
+                                    <!-- Faixa 1 -->
+                                    <div class="row g-2 mb-2 align-items-center">
+                                        <div class="col-2 fw-bold text-muted small">Faixa 1</div>
+                                        <div class="col-5">
+                                            <label class="small text-muted">Até R$</label>
+                                            <input type="number" class="form-control form-control-sm" id="inssLim1" step="0.01">
+                                        </div>
+                                        <div class="col-5">
+                                            <label class="small text-muted">Alíquota</label>
+                                            <input type="number" class="form-control form-control-sm" id="inssAliq1" step="0.0001">
+                                        </div>
                                     </div>
-                                    <div class="mb-3">
-                                        <label for="fusoHorario" class="form-label">Fuso Horário Padrão</label>
-                                        <select class="form-select" id="fusoHorario">
-                                            <option value="-03:00" selected>(GMT-03:00) Brasília</option>
-                                            <option value="-04:00">(GMT-04:00) Manaus</option>
-                                            <option value="-05:00">(GMT-05:00) Lima</option>
-                                        </select>
+                                    <!-- Faixa 2 -->
+                                    <div class="row g-2 mb-2 align-items-center">
+                                        <div class="col-2 fw-bold text-muted small">Faixa 2</div>
+                                        <div class="col-5">
+                                            <input type="number" class="form-control form-control-sm" id="inssLim2" step="0.01">
+                                        </div>
+                                        <div class="col-5">
+                                            <input type="number" class="form-control form-control-sm" id="inssAliq2" step="0.0001">
+                                        </div>
                                     </div>
-                                    <div class="form-check form-switch mb-4">
-                                        <input class="form-check-input" type="checkbox" id="manutencaoSwitch" checked>
-                                        <label class="form-check-label" for="manutencaoSwitch">Modo de Manutenção</label>
-                                        <small class="form-text text-muted d-block">Ative para bloquear o acesso de usuários não-administradores.</small>
+                                    <!-- Faixa 3 -->
+                                    <div class="row g-2 mb-2 align-items-center">
+                                        <div class="col-2 fw-bold text-muted small">Faixa 3</div>
+                                        <div class="col-5">
+                                            <input type="number" class="form-control form-control-sm" id="inssLim3" step="0.01">
+                                        </div>
+                                        <div class="col-5">
+                                            <input type="number" class="form-control form-control-sm" id="inssAliq3" step="0.0001">
+                                        </div>
                                     </div>
-                                    <button type="submit" class="btn btn-primary">Salvar Configurações</button>
-                                </form>
+                                    <!-- Faixa 4 -->
+                                    <div class="row g-2 align-items-center">
+                                        <div class="col-2 fw-bold text-muted small">Faixa 4</div>
+                                        <div class="col-5 text-center small text-muted">
+                                            (Até o Teto)
+                                        </div>
+                                        <div class="col-5">
+                                            <input type="number" class="form-control form-control-sm" id="inssAliq4" step="0.0001">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- COLUNA 2 (DIREITA) -->
+                        <div class="col-lg-6">
+                            
+                            <!-- ADICIONAIS -->
+                            <div class="card shadow-sm mb-4">
+                                <div class="card-header py-3">
+                                    <h5 class="card-title mb-0 fs-6 fw-bold">
+                                        <i class="fa-solid fa-percent section-icon"></i>Adicionais (%)
+                                    </h5>
+                                </div>
+                                <div class="card-body">
+                                    <div class="row g-3">
+                                        <div class="col-6">
+                                            <label class="form-label small">Vale Transporte</label>
+                                            <input type="number" class="form-control" id="percentualValeTransporte" step="0.0001">
+                                        </div>
+                                        <div class="col-6">
+                                            <label class="form-label small">Periculosidade</label>
+                                            <input type="number" class="form-control" id="percentualPericulosidade" step="0.0001">
+                                        </div>
+                                    </div>
+                                    <hr>
+                                    <label class="form-label fw-bold small">Insalubridade</label>
+                                    <div class="row g-2">
+                                        <div class="col-4">
+                                            <label class="small text-muted">Mínima</label>
+                                            <input type="number" class="form-control" id="percentualInsalubridadeMin" step="0.01">
+                                        </div>
+                                        <div class="col-4">
+                                            <label class="small text-muted">Média</label>
+                                            <input type="number" class="form-control" id="percentualInsalubridadeMedia" step="0.01">
+                                        </div>
+                                        <div class="col-4">
+                                            <label class="small text-muted">Máxima</label>
+                                            <input type="number" class="form-control" id="percentualInsalubridadeMax" step="0.01">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- CARD IRRF -->
+                            <div class="card shadow-sm mb-4">
+                                <div class="card-header py-3">
+                                    <h5 class="card-title mb-0 fs-6 fw-bold">
+                                        <i class="fa-solid fa-table-list section-icon"></i>Tabela IRRF
+                                    </h5>
+                                </div>
+                                <div class="card-body">
+                                    <div class="mb-4 p-3 rounded border bg-light">
+                                        <label class="form-label fw-bold small">Dedução por Dependente</label>
+                                        <div class="input-group input-group-sm">
+                                            <span class="input-group-text">R$</span>
+                                            <input type="number" class="form-control" id="irrfDeducaoDep" step="0.01" readonly>
+                                        </div>
+                                    </div>
+
+                                    <h6 class="text-uppercase text-muted small fw-bold mb-3 border-bottom pb-2">Faixas de Tributação</h6>
+                                    
+                                    <!-- Cabeçalho -->
+                                    <div class="row g-2 mb-2 text-center small fw-bold text-muted">
+                                        <div class="col-2"></div>
+                                        <div class="col-4">Até R$</div>
+                                        <div class="col-3">Alíquota</div>
+                                        <div class="col-3">Dedução</div>
+                                    </div>
+
+                                    <!-- Faixas IRRF 1-5 -->
+                                    <div class="row g-2 mb-2 align-items-center">
+                                        <div class="col-2 fw-bold text-success small">1 (Isento)</div>
+                                        <div class="col-4"><input type="number" class="form-control form-control-sm" id="irrfLim1" step="0.01"></div>
+                                        <div class="col-3 text-center">-</div>
+                                        <div class="col-3 text-center">-</div>
+                                    </div>
+
+                                    <div class="row g-2 mb-2 align-items-center">
+                                        <div class="col-2 fw-bold text-primary small">Faixa 2</div>
+                                        <div class="col-4"><input type="number" class="form-control form-control-sm" id="irrfLim2" step="0.01"></div>
+                                        <div class="col-3"><input type="number" class="form-control form-control-sm" id="irrfAliq2" step="0.0001"></div>
+                                        <div class="col-3"><input type="number" class="form-control form-control-sm" id="irrfDed2" step="0.01"></div>
+                                    </div>
+
+                                    <div class="row g-2 mb-2 align-items-center">
+                                        <div class="col-2 fw-bold text-primary small">Faixa 3</div>
+                                        <div class="col-4"><input type="number" class="form-control form-control-sm" id="irrfLim3" step="0.01"></div>
+                                        <div class="col-3"><input type="number" class="form-control form-control-sm" id="irrfAliq3" step="0.0001"></div>
+                                        <div class="col-3"><input type="number" class="form-control form-control-sm" id="irrfDed3" step="0.01"></div>
+                                    </div>
+
+                                    <div class="row g-2 mb-2 align-items-center">
+                                        <div class="col-2 fw-bold text-primary small">Faixa 4</div>
+                                        <div class="col-4"><input type="number" class="form-control form-control-sm" id="irrfLim4" step="0.01"></div>
+                                        <div class="col-3"><input type="number" class="form-control form-control-sm" id="irrfAliq4" step="0.0001"></div>
+                                        <div class="col-3"><input type="number" class="form-control form-control-sm" id="irrfDed4" step="0.01"></div>
+                                    </div>
+
+                                    <div class="row g-2 align-items-center">
+                                        <div class="col-2 fw-bold text-danger small">Faixa 5</div>
+                                        <div class="col-4 text-center small text-muted">(Acima)</div>
+                                        <div class="col-3"><input type="number" class="form-control form-control-sm" id="irrfAliq5" step="0.0001"></div>
+                                        <div class="col-3"><input type="number" class="form-control form-control-sm" id="irrfDed5" step="0.01"></div>
+                                    </div>
+
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
+                </form>
 
             </div>
         </div>
     </div>
-    <script src="./assets/js/global/setup.js"></script>
+
+    <!-- Toast -->
+    <div class="toast-container position-fixed bottom-0 end-0 p-3">
+        <div id="liveToast" class="toast align-items-center text-white bg-success border-0" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="d-flex">
+                <div class="toast-body" id="toastMessage"></div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+        </div>
+    </div>
+
+    <script src="assets/js/global/setup.js"></script>
     <script src="assets/js/pages/configuracoes-admin.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/js/bootstrap.bundle.min.js"></script>
 
 </body>
-
 </html>
