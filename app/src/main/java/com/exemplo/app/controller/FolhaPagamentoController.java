@@ -1,7 +1,6 @@
 package com.exemplo.app.controller;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -33,10 +32,7 @@ public class FolhaPagamentoController {
     // LISTAR
     @GetMapping("/listar")
     public ResponseEntity<List<FolhaPagamentoResponseDto>> listarTodas() {
-        List<FolhaPagamento> folhas = folhaService.listarTodas();   
-        List<FolhaPagamentoResponseDto> dtos = folhas.stream()
-            .map(FolhaPagamentoResponseDto::fromEntity)
-            .collect(Collectors.toList());
+        List<FolhaPagamentoResponseDto> dtos = folhaService.listarTodasDTO();   
             
         return ResponseEntity.ok(dtos);
     }

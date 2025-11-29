@@ -1,137 +1,202 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RHSoft - Gestão da folha</title>
+    <title>RHSoft - Folha de Pagamento</title>
+
     <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    
+    <link rel="stylesheet" href="assets/css/global/reset.css">
+    <link rel="stylesheet" href="assets/css/global/variables.css">
     <link rel="stylesheet" href="assets/css/global/setup.css">
-    <link rel="stylesheet" href="assets/css/pages/folhaPagamento/folhaPagamento.css">
-    <link rel="icon" type="image/x-icon" href="assets/images/global/logo.png">
+    <link rel="stylesheet" href="assets/css/pages/folhaPagamento.css">
 </head>
 
-<body>
+<body> 
     <header id="headerPlaceHolder"></header>
 
-    <div class="container-fluid p-0" style="height: calc(100vh -97px); overflow: hidden;">
-        <div class="row h-100 g-0">
-            <div id="sidebarAdmnistradorContainer" class="col-md-3 col-lg-2 d-none d-md-block h-100 border-end"></div>
+    <div class="container-fluid">
+        <div class="row">
+            <div id="sidebarPlaceHolder" class="col-md-3 col-lg-2 ps-0 d-none d-md-block"></div>
 
-            <div class="col-md-9 col-lg-10 h-100 p-4" style="overflow-y: scroll;">
-                <div class="p-4">
+            <div class="col-md-9 col-lg-10 main-content p-4">
+
+                <div class="d-flex justify-content-between align-items-start mb-4">
                     <div>
-                        <h2 class="fw-bold text-primary-custom mb-1">
-                            <i class="fa-solid fa-money-bill-wave me-2"></i>
-                            Gestão da Folha de Pagamento
-                        </h2>
+                        <h2 class="fw-bold text-dark mb-1">Gestão da Folha de Pagamento</h2>
+                        <p class="text-muted mb-0">Administre e acompanhe os pagamentos dos funcionários</p>
                     </div>
-
+                    
                     <div class="d-flex gap-2">
-                        <button id="btnAbrirFolha" class="btn btn-outline-primary d-none">
-                            <i class="fas fa-plus me-2"></i>
-                        </button><button id="btnGerarCalculosFolha" class="btn btn-outline-primary d-none">
-                            <i class="fas fa-calculator me-2"></i>
+                        <button type="button" id="btnAbrirFolha" class="btn btn-outline-secondary" disabled>
+                            <i class="fa-solid fa-plus me-1"></i> Abrir Mês
                         </button>
-                        <button id="btnFecharFolha" class="btn btn-outline-primary d-none">
-                            <i class="fas fa-check-circle me-2"></i>
+                        <button type="button" id="btnGerarCalculo" class="btn btn-primary" disabled>
+                            <i class="fa-solid fa-gear me-1"></i> Gerar Cálculo
                         </button>
-                        <button id="btnReabrirFolha" class="btn btn-outline-primary d-none">
-                            <i class="fas fa-undo me-2"></i>
-                        </button>
-                    </div>
-                </div>
-
-                <div class="row mb-4" id="cardsResumo">
-                    <div class="col-md-4">
-                        <div class="card shadow-sm card-resumo p-3">
-                            <h6 class="text-muted">Total funcionários</h6>
-                            <h3 class="fw-bold" id="totalFuncionarios">0</h3>
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="card shadow-sm card-resumo p-3">
-                            <h6 class="text-muted">Status Atual</h6>
-                            <h3 class="fw-bold" id="statusFolha">---</h3>
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="card shadow-sm card-resumo p-3">
-                            <h6 class="text-muted">Total Líquido da Folha</h6>
-                            <h3 class="fw-bold" id="totalLiquido">R$ 0,00</h3>
+                        
+                        <div class="dropdown">
+                            <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" id="btnAcoes" disabled>
+                                Ações
+                            </button>
+                            <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0">
+                                <li><button class="dropdown-item text-warning" id="btnFecharFolha"><i class="fa-solid fa-lock me-2"></i>Fechar Folha</button></li>
+                                <li><button class="dropdown-item text-info" id="btnConsolidarFolha"><i class="fa-solid fa-file-invoice-dollar me-2"></i>Consolidar</button></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li><button class="dropdown-item text-danger" id="btnReabrirFolha"><i class="fa-solid fa-unlock me-2"></i>Reabrir</button></li>
+                            </ul>
                         </div>
                     </div>
                 </div>
 
-                <div class="card shadow-sm border-0">
-                    <div class="card-body p-0">
-                        <div class="table-responsive">
-                            <table class="table table-hover align-middle mb-0">
-                                <thead class="bg-light">
-                                    <tr>
-                                        <th class="ps-4">Funcionário</th>
-                                        <th>Cargo</th>
-                                        <th>Salário Base</th>
-                                        <th>Adicionais</th>
-                                        <th>Descontos</th>
-                                        <th>Líquido</th>
-                                        <th class="text-end pe-4">Ações</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="tabelaPagamentos"></tbody>
-                            </table>
+                <div id="loader" class="text-center py-5 d-none">
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="visually-hidden">Carregando...</span>
+                    </div>
+                    <p class="text-muted mt-2">Carregando dados...</p>
+                </div>
+
+                <div id="contentArea">
+                    <div class="row g-3 mb-4">
+                        <div class="col-12 col-md-6 col-xl-3">
+                            <div class="card border-0 shadow-sm h-100 p-3">
+                                <div class="d-flex justify-content-between align-items-start mb-2">
+                                    <span class="text-uppercase text-muted small fw-bold">Status Atual</span>
+                                    <i class="fa-solid fa-suitcase text-muted opacity-50"></i>
+                                </div>
+                                <div>
+                                    <span id="badgeStatus" class="badge rounded-pill text-dark border px-3 py-2">
+                                        Carregando...
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-12 col-md-6 col-xl-3">
+                            <div class="card border-0 shadow-sm h-100 p-3">
+                                <div class="d-flex justify-content-between align-items-start mb-2">
+                                    <span class="text-uppercase text-muted small fw-bold">Competência</span>
+                                    <i class="fa-regular fa-calendar text-muted opacity-50"></i>
+                                </div>
+                                <h5 class="fw-bold text-dark mb-0" id="txtCompetencia">--</h5>
+                            </div>
+                        </div>
+
+                        <div class="col-12 col-md-6 col-xl-3">
+                            <div class="card border-0 shadow-sm h-100 p-3">
+                                <div class="d-flex justify-content-between align-items-start mb-2">
+                                    <span class="text-uppercase text-muted small fw-bold">Total Líquido</span>
+                                    <i class="fa-solid fa-dollar-sign text-success opacity-50"></i>
+                                </div>
+                                <h5 class="fw-bold text-success mb-0" id="txtTotalLiquido">R$ 0,00</h5>
+                            </div>
+                        </div>
+
+                        <div class="col-12 col-md-6 col-xl-3">
+                            <div class="card border-0 shadow-sm h-100 p-3">
+                                <div class="d-flex justify-content-between align-items-start mb-2">
+                                    <span class="text-uppercase text-muted small fw-bold">Data Fechamento</span>
+                                    <i class="fa-regular fa-calendar-check text-muted opacity-50"></i>
+                                </div>
+                                <h5 class="fw-bold text-dark mb-0" id="txtDataFechamento">--/--/----</h5>
+                            </div>
                         </div>
                     </div>
-                </div>
-            </div>
+
+                    <div class="card border-0 shadow-sm">
+                        <div class="card-body p-4">
+                            
+                            <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
+                                <div>
+                                    <h5 class="fw-bold mb-0 d-flex align-items-center gap-2">
+                                        <i class="fa-solid fa-users-viewfinder text-primary"></i> Holerites Gerados
+                                    </h5>
+                                    <span class="text-muted small" id="txtContadorFuncionarios">0 funcionários</span>
+                                </div>
+                                <div class="input-group" style="max-width: 300px;">
+                                    <span class="input-group-text bg-light border-0"><i class="fa-solid fa-search text-muted"></i></span>
+                                    <input type="text" class="form-control border-0 bg-light" id="searchFuncionario" placeholder="Buscar funcionário...">
+                                </div>
+                            </div>
+
+                            <div class="table-responsive">
+                                <table class="table table-hover align-middle custom-table">
+                                    <thead class="text-uppercase small text-muted">
+                                        <tr>
+                                            <th class="ps-3" style="width: 25%;">Funcionário</th>
+                                            <th style="width: 20%;">Cargo</th>
+                                            <th style="width: 15%;">Salário Base</th>
+                                            <th style="width: 10%;">Proventos</th>
+                                            <th style="width: 10%;">Descontos</th>
+                                            <th style="width: 10%;">Líquido</th>
+                                            <th class="text-end pe-3" style="width: 10%;">Ações</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="tbodyPagamentos">
+                                        </tbody>
+                                </table>
+                            </div>
+
+                            <div class="d-flex justify-content-between align-items-center mt-3 pt-3 border-top">
+                                <span class="text-muted small" id="txtFooterInfo">Mostrando 0 registros</span>
+                            </div>
+
+                        </div>
+                    </div>
+                </div> </div>
         </div>
     </div>
 
-    <div class="modal fade", id="modalEditarPagamento" tabindex="-1">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Ajuste Manual</h5>
+    <div class="modal fade" id="modalEditarPagamento" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-0 shadow">
+                <div class="modal-header border-bottom-0">
+                    <h5 class="modal-title fw-bold">Editar Lançamento</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
                     <form id="formEdicao">
                         <input type="hidden" id="editCodigoPagamento">
-
                         <div class="mb-3">
-                            <label class="form-label fw-bold">Funcionário</label>
-                            <input type="text" class="form-control" id="editNomeFuncionario" disabled>
+                            <label class="form-label text-muted small fw-bold">FUNCIONÁRIO</label>
+                            <input type="text" class="form-control fw-bold bg-light" id="editNomeFuncionario" readonly>
                         </div>
-
-                        <div class="row">
-                            <div class="col-md-6 mb-3">
-                                <label class="form-label">Horas Extras (R$)</label>
-                                <input type="number" step="0.01" class="form-control" id="editarHorasExtras">
-                                <div class="form-text">Valor monetário total das HE.</div>
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label class="form-label text-muted small">Horas Extras (Qtd)</label>
+                                <input type="number" class="form-control" id="editHorasExtras" placeholder="Ex: 5.5" step="0.5" min="0">
                             </div>
-                            <div class="col-md-6 mb-3">
-                                <label class="form-label">Bônus/Adicional Manual</label>
-                                <input type="number" step="0.01" class="form-control" id="editarAdicionarManual">
+                            <div class="col-md-6">
+                                <label class="form-label text-muted small">Adicional Manual (R$)</label>
+                                <input type="number" class="form-control" id="editAdicional" placeholder="Ex: 150.00" step="0.01" min="0">
                             </div>
-                        </div>
-                        <div class="alert alert-info small">
-                            <i class="fas fa-into-circle me-1"></i>
-                            O sistema recalcularar INSS E FGTS automaticamente
                         </div>
                     </form>
                 </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="model">Cancelar</button>
-                    <button type="button" class="btn btn-primary" onclick="salvarEdicaoPagamento()">Salvar e recalcular</button>
+                <div class="modal-footer border-top-0">
+                    <button type="button" class="btn btn-light text-muted" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-primary px-4" id="btnSalvarEdicao">
+                        <span class="spinner-border spinner-border-sm d-none me-2" role="status" aria-hidden="true"></span>
+                        Salvar
+                    </button>
                 </div>
             </div>
         </div>
     </div>
 
+    <div class="toast-container position-fixed bottom-0 end-0 p-3">
+        <div id="liveToast" class="toast align-items-center text-white border-0" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="d-flex">
+                <div class="toast-body" id="toastMessage"></div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+            </div>
+        </div>
+    </div>
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/js/bootstrap.bundle.min.js"></script>
-    <script src="./assets/js/global/setup.js"></script>
+    <script src="assets/js/global/setup.js"></script>
     <script src="assets/js/pages/folhaPagamento.js"></script>
 </body>
-
 </html>

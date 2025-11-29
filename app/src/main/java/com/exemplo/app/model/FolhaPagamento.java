@@ -18,8 +18,8 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
-import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;
@@ -62,8 +62,8 @@ public class FolhaPagamento {
     private BigDecimal adicionalManual;
 
     @NotNull
-    @OneToOne
-    @JoinColumn(name = "adminitrador_id", foreignKey=@ForeignKey(name = "fk_folhapagamento_administrador"))
+    @ManyToOne
+    @JoinColumn(name = "administrador_id", foreignKey=@ForeignKey(name = "fk_folhapagamento_administrador"))
     private Administrador administrador;
 
     private LocalDate dataEnvio;

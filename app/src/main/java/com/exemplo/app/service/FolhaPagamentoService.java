@@ -6,6 +6,7 @@ import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.exemplo.app.dto.EditarPagamentoDto;
+import com.exemplo.app.dto.FolhaPagamentoResponseDto;
 import com.exemplo.app.model.Administrador;
 import com.exemplo.app.model.ConfiguracaoSistema;
 import com.exemplo.app.model.Enums.StatusPagamento;
@@ -48,8 +50,12 @@ public class FolhaPagamentoService {
     @Autowired
     private AdministradorRepository administradorRepository;
 
-    public List<FolhaPagamento> listarTodas() {
-        return folhaPagamentoRepository.findAll();
+    public List<FolhaPagamentoResponseDto> listarTodasDTO() {
+        List<FolhaPagamento> folhas = folhaPagamentoRepository.findAll();
+        
+        return folhas.stream()
+            .map(FolhaPagamentoResponseDto::fromEntity)
+            .collect(Collectors.toList());
     }
 
     public FolhaPagamento buscarFolhaPorId(Long id) {
@@ -186,20 +192,27 @@ public class FolhaPagamentoService {
 
     @Transactional
     public FolhaPagamento abrirFolha(String cpfAdmin) {
-
-        // Verifica se já existe folha aberta
         if (folhaPagamentoRepository.existsByStatus(StatusPagamento.ABERTO)) {
             throw new RuntimeException("Já existe uma folha de pagamento aberta.");
         }
 
         Administrador admin = administradorRepository.findByCpf(cpfAdmin)
                 .orElseThrow(() -> new EntityNotFoundException("Administrador não encontrado com CPF: " + cpfAdmin));
+        
+        ConfiguracaoSistema config = configuracaoService.buscarConfiguracaoAtual();
+        LocalDate hoje = LocalDate.now();
+        
+        int diaFechamento = config.getDiaFechamentoMensal();
+        int diaFinal = Math.min(diaFechamento, hoje.lengthOfMonth());
+        LocalDate dataPrevistaFechamento = LocalDate.of(hoje.getYear(), hoje.getMonth(), diaFinal);
 
         FolhaPagamento folha = new FolhaPagamento();
         folha.setStatus(StatusPagamento.ABERTO);
         folha.setAdministrador(admin);
         folha.setTotalLiquido(BigDecimal.ZERO);
         folha.setDataEnvio(LocalDate.now());
+        
+        folha.setDataFechamento(dataPrevistaFechamento);
 
         return folhaPagamentoRepository.save(folha);
     }
@@ -217,7 +230,12 @@ public class FolhaPagamentoService {
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
 
         folha.setTotalLiquido(total);
-        folha.setDataFechamento(LocalDate.now());
+        ConfiguracaoSistema config = configuracaoService.buscarConfiguracaoAtual();
+        LocalDate hoje = LocalDate.now();
+        int diaFinal = Math.min(config.getDiaFechamentoMensal(), hoje.lengthOfMonth());
+        LocalDate dataOficialFechamento = LocalDate.of(hoje.getYear(), hoje.getMonth(), diaFinal);
+        
+        folha.setDataFechamento(dataOficialFechamento);
         folha.setStatus(StatusPagamento.FECHADA);
 
         return folhaPagamentoRepository.save(folha);
@@ -244,19 +262,16 @@ public class FolhaPagamentoService {
             throw new RuntimeException("A folha já está aberta.");
         }
 
-        // Verifica prazo dinâmico do banco de dados
         if (folha.getStatus() == StatusPagamento.CONSOLIDADA) {
             long dias = ChronoUnit.DAYS.between(folha.getDataFechamento(), LocalDate.now());
-
             Integer prazoLimite = config.getDiasLimiteReabertura();
 
             if (dias > prazoLimite) {
-                throw new RuntimeException("Folha consolidada há " + dias + " dias. Prazo limite para reabertura é de "
-                        + prazoLimite + " dias.");
+                throw new RuntimeException("Folha consolidada há " + dias + " dias. Prazo limite para reabertura é de " + prazoLimite + " dias.");
             }
         }
 
-        folha.setStatus(StatusPagamento.ABERTO);
+        folha.setStatus(StatusPagamento.ABERTO);    
         return folhaPagamentoRepository.save(folha);
     }
 

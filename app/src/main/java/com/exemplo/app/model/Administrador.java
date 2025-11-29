@@ -1,8 +1,11 @@
 package com.exemplo.app.model;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import jakarta.persistence.DiscriminatorValue;
 import jakarta.persistence.Entity;
-import jakarta.persistence.OneToOne;
+import jakarta.persistence.OneToMany;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -16,6 +19,6 @@ import lombok.Setter;
 @DiscriminatorValue("ADMINISTRADOR")
 public class Administrador extends Funcionario {
 
-    @OneToOne(mappedBy = "administrador")
-    private FolhaPagamento folhaPagamento;
+    @OneToMany(mappedBy = "administrador")
+    private List<FolhaPagamento> folhaPagamento = new ArrayList<>();
 }
