@@ -121,113 +121,30 @@
                                             <input type="number" class="form-control form-control-sm" id="inssAliq4" step="0.0001">
                                         </div>
                                     </div>
-                                </div>
+                                    <button type="submit" class="btn btn-primary">Salvar Configurações</button>
+                                    <button type="submit" class="btn btn-primary">Salvar Configurações</button>
+                                </form>
                             </div>
                         </div>
 
-                        <!-- COLUNA 2 (DIREITA) -->
-                        <div class="col-lg-6">
-                            
-                            <!-- ADICIONAIS -->
-                            <div class="card shadow-sm mb-4">
-                                <div class="card-header py-3">
-                                    <h5 class="card-title mb-0 fs-6 fw-bold">
-                                        <i class="fa-solid fa-percent section-icon"></i>Adicionais (%)
-                                    </h5>
-                                </div>
-                                <div class="card-body">
-                                    <div class="row g-3">
-                                        <div class="col-6">
-                                            <label class="form-label small">Vale Transporte</label>
-                                            <input type="number" class="form-control" id="percentualValeTransporte" step="0.0001">
-                                        </div>
-                                        <div class="col-6">
-                                            <label class="form-label small">Periculosidade</label>
-                                            <input type="number" class="form-control" id="percentualPericulosidade" step="0.0001">
-                                        </div>
+                        <div class="card shadow-sm mb-4">
+                            <div class="card-body">
+                                <h5 class="card-title mb-3">Configurações da Folha de Pagamento</h5>
+                                <form id="payrollConfigForm">
+                                    <div class="mb-3">
+                                        <label for="closingDate" class="form-label">Data de Fechamento da Folha</label>
+                                        <input type="date" class="form-control" id="closingDate" required>
                                     </div>
-                                    <hr>
-                                    <label class="form-label fw-bold small">Insalubridade</label>
-                                    <div class="row g-2">
-                                        <div class="col-4">
-                                            <label class="small text-muted">Mínima</label>
-                                            <input type="number" class="form-control" id="percentualInsalubridadeMin" step="0.01">
-                                        </div>
-                                        <div class="col-4">
-                                            <label class="small text-muted">Média</label>
-                                            <input type="number" class="form-control" id="percentualInsalubridadeMedia" step="0.01">
-                                        </div>
-                                        <div class="col-4">
-                                            <label class="small text-muted">Máxima</label>
-                                            <input type="number" class="form-control" id="percentualInsalubridadeMax" step="0.01">
-                                        </div>
+                                    <div class="mb-3">
+                                        <label for="reopeningDeadline" class="form-label">Prazo para Reabertura/Cancelamento (dias)</label>
+                                        <input type="number" class="form-control" id="reopeningDeadline" min="1" required>
                                     </div>
-                                </div>
-                            </div>
-
-                            <!-- CARD IRRF -->
-                            <div class="card shadow-sm mb-4">
-                                <div class="card-header py-3">
-                                    <h5 class="card-title mb-0 fs-6 fw-bold">
-                                        <i class="fa-solid fa-table-list section-icon"></i>Tabela IRRF
-                                    </h5>
-                                </div>
-                                <div class="card-body">
-                                    <div class="mb-4 p-3 rounded border bg-light">
-                                        <label class="form-label fw-bold small">Dedução por Dependente</label>
-                                        <div class="input-group input-group-sm">
-                                            <span class="input-group-text">R$</span>
-                                            <input type="number" class="form-control" id="irrfDeducaoDep" step="0.01" readonly>
-                                        </div>
+                                    <div class="mb-3">
+                                        <label for="taxRules" class="form-label">Regras e Percentuais de Encargos</label>
+                                        <textarea class="form-control" id="taxRules" rows="3" placeholder="Ex: INSS: 8% a 11%\nFGTS: 8%"></textarea>
                                     </div>
-
-                                    <h6 class="text-uppercase text-muted small fw-bold mb-3 border-bottom pb-2">Faixas de Tributação</h6>
-                                    
-                                    <!-- Cabeçalho -->
-                                    <div class="row g-2 mb-2 text-center small fw-bold text-muted">
-                                        <div class="col-2"></div>
-                                        <div class="col-4">Até R$</div>
-                                        <div class="col-3">Alíquota</div>
-                                        <div class="col-3">Dedução</div>
-                                    </div>
-
-                                    <!-- Faixas IRRF 1-5 -->
-                                    <div class="row g-2 mb-2 align-items-center">
-                                        <div class="col-2 fw-bold text-success small">1 (Isento)</div>
-                                        <div class="col-4"><input type="number" class="form-control form-control-sm" id="irrfLim1" step="0.01"></div>
-                                        <div class="col-3 text-center">-</div>
-                                        <div class="col-3 text-center">-</div>
-                                    </div>
-
-                                    <div class="row g-2 mb-2 align-items-center">
-                                        <div class="col-2 fw-bold text-primary small">Faixa 2</div>
-                                        <div class="col-4"><input type="number" class="form-control form-control-sm" id="irrfLim2" step="0.01"></div>
-                                        <div class="col-3"><input type="number" class="form-control form-control-sm" id="irrfAliq2" step="0.0001"></div>
-                                        <div class="col-3"><input type="number" class="form-control form-control-sm" id="irrfDed2" step="0.01"></div>
-                                    </div>
-
-                                    <div class="row g-2 mb-2 align-items-center">
-                                        <div class="col-2 fw-bold text-primary small">Faixa 3</div>
-                                        <div class="col-4"><input type="number" class="form-control form-control-sm" id="irrfLim3" step="0.01"></div>
-                                        <div class="col-3"><input type="number" class="form-control form-control-sm" id="irrfAliq3" step="0.0001"></div>
-                                        <div class="col-3"><input type="number" class="form-control form-control-sm" id="irrfDed3" step="0.01"></div>
-                                    </div>
-
-                                    <div class="row g-2 mb-2 align-items-center">
-                                        <div class="col-2 fw-bold text-primary small">Faixa 4</div>
-                                        <div class="col-4"><input type="number" class="form-control form-control-sm" id="irrfLim4" step="0.01"></div>
-                                        <div class="col-3"><input type="number" class="form-control form-control-sm" id="irrfAliq4" step="0.0001"></div>
-                                        <div class="col-3"><input type="number" class="form-control form-control-sm" id="irrfDed4" step="0.01"></div>
-                                    </div>
-
-                                    <div class="row g-2 align-items-center">
-                                        <div class="col-2 fw-bold text-danger small">Faixa 5</div>
-                                        <div class="col-4 text-center small text-muted">(Acima)</div>
-                                        <div class="col-3"><input type="number" class="form-control form-control-sm" id="irrfAliq5" step="0.0001"></div>
-                                        <div class="col-3"><input type="number" class="form-control form-control-sm" id="irrfDed5" step="0.01"></div>
-                                    </div>
-
-                                </div>
+                                    <button type="submit" class="btn btn-primary">Salvar Configurações da Folha</button>
+                                </form>
                             </div>
                         </div>
                     </div>
