@@ -12,5 +12,7 @@ public interface PagamentoRepository extends CrudRepository<Pagamento, Long>{
     List<Pagamento> findByFuncionarioCpf(String cpf);
 
     Optional<Pagamento> findByCodigo(String codigo);
+
+    public void flush();
     
 }

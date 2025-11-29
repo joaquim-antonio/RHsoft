@@ -19,7 +19,7 @@ public class ItemPagamentoService {
     @Autowired
     private ItemPagamentoRepository itemPagamentoRepository;
 
-    //GET
+   //GET
     public ItemPagamento buscarItemPorId(Long id) {
         return itemPagamentoRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Item de Pagamento não encontrado."));

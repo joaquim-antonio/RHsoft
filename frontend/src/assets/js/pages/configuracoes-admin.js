@@ -1,142 +1,42 @@
-// Dados mockados para simular os contracheques
-const mockContracheques = [
-    {
-        mes: "Ago, 2025",
-        nome: "Neymar Santos Júnior",
-        cargo: "Gerente",
-        departamento: "Financeiro",
-        cpf: "400.288.220-17",
-        dataNascimento: "01/05/1999",
-        salarioBase: 1600.80,
-        horasExtras: 250.90,
-        feriasRemuneradas: 190.45,
-        inss: 190.45,
-        irrf: 190.45,
-        fgts: 190.45,
-        valeTransporte: 130.00,
-        valeAlimentacao: 130.00,
-        gymPass: 130.00,
-        codigoContracheque: "00076",
-        cbo: "41105",
-        baseInss: 0.00,
-        baseFgts: 0.00,
-        baseIrrf: 0.00,
-        fgtsMes: 0.00,
-        faixaIrrf: 0.00,
-        mensagens: "(caixa de mensagens)",
-        status: "Aguardando assinatura"
-    },
-    {
-        mes: "Jul, 2025",
-        nome: "Neymar Santos Júnior",
-        cargo: "Gerente",
-        departamento: "Financeiro",
-        cpf: "400.288.220-17",
-        dataNascimento: "01/05/1999",
-        salarioBase: 1600.80,
-        horasExtras: 0.00,
-        feriasRemuneradas: 0.00,
-        inss: 190.45,
-        irrf: 190.45,
-        fgts: 190.45,
-        valeTransporte: 130.00,
-        valeAlimentacao: 130.00,
-        gymPass: 130.00,
-        codigoContracheque: "00075",
-        cbo: "41105",
-        baseInss: 0.00,
-        baseFgts: 0.00,
-        baseIrrf: 0.00,
-        fgtsMes: 0.00,
-        faixaIrrf: 0.00,
-        mensagens: "Parabéns pelo seu desempenho!",
-        status: "Assinado"
+document.addEventListener("DOMContentLoaded", async () => {
+    const token = localStorage.getItem("token");
+    const API_URL = "http://localhost:8080/api/v1/configuracoes";
+
+    if (!token) {
+        window.location.href = "login.html";
+        return;
     }
-];
 
-let contrachequeAtual = mockContracheques[0];
+    // Inicialização
+    await init();
 
-// Função utilitária para formatar moeda
-function formatCurrency(value) {
-    return `R$ ${value.toFixed(2).replace('.', ',')}`;
-}
-
-// Função para calcular o total líquido
-function calcularTotalLiquido(contracheque) {
-    const totalProventos = contracheque.salarioBase + contracheque.horasExtras + contracheque.feriasRemuneradas;
-    const totalDescontos = contracheque.inss + contracheque.irrf + contracheque.fgts;
-    return totalProventos - totalDescontos;
-}
-
-// Função para renderizar o contracheque na tela
-function renderContracheque(contracheque) {
-    const totalLiquido = calcularTotalLiquido(contracheque);
-
-    // Dados Pessoais
-    document.getElementById('nome').innerHTML = `<strong>Nome:</strong> ${contracheque.nome}`;
-    document.getElementById('cargo').innerHTML = `<strong>Cargo:</strong> ${contracheque.cargo}`;
-    document.getElementById('departamento').innerHTML = `<strong>Departamento:</strong> ${contracheque.departamento}`;
-    document.getElementById('cpf').innerHTML = `<strong>CPF:</strong> ${contracheque.cpf}`;
-    document.getElementById('data_nascimento').innerHTML = `<strong>Data de nascimento:</strong> ${contracheque.dataNascimento}`;
-
-    // Salário
-    document.getElementById('salario_base').textContent = formatCurrency(contracheque.salarioBase);
-    document.getElementById('horas_extras_valor').textContent = formatCurrency(contracheque.horasExtras);
-    document.getElementById('ferias_remuneradas_valor').textContent = formatCurrency(contracheque.feriasRemuneradas);
-    document.getElementById('inss_desconto').textContent = formatCurrency(contracheque.inss);
-    document.getElementById('irrf_desconto').textContent = formatCurrency(contracheque.irrf);
-    document.getElementById('fgts_desconto').textContent = formatCurrency(contracheque.fgts);
-    document.getElementById('total_liquido').textContent = formatCurrency(totalLiquido);
-
-    // Códigos
-    document.getElementById('codigo_contracheque').textContent = contracheque.codigoContracheque;
-    document.getElementById('cbo_codigo').textContent = contracheque.cbo;
-
-    // Cálculos
-    document.getElementById('base_inss').textContent = formatCurrency(contracheque.baseInss);
-    document.getElementById('base_fgts').textContent = formatCurrency(contracheque.baseFgts);
-    document.getElementById('base_irrf').textContent = formatCurrency(contracheque.baseIrrf);
-    document.getElementById('fgts_mes').textContent = formatCurrency(contracheque.fgtsMes);
-    document.getElementById('faixa_irrf').textContent = contracheque.faixaIrrf;
-
-    // Benefícios (Mantendo os valores fixos do HTML, pois não estão no mock)
-    // document.getElementById('vale_transporte_valor').textContent = formatCurrency(contracheque.valeTransporte);
-    // document.getElementById('vale_alimentacao_valor').textContent = formatCurrency(contracheque.valeAlimentacao);
-    // document.getElementById('gym_pass_valor').textContent = formatCurrency(contracheque.gymPass);
-
-    // Mensagens
-    document.getElementById('mensagens_contracheque').textContent = contracheque.mensagens;
-
-    // Status e Ações
-    const statusSpan = document.getElementById('status_contracheque');
-    const assinarBtn = document.getElementById('assinar');
-
-    statusSpan.textContent = contracheque.status;
-    statusSpan.className = contracheque.status === 'Assinado' ? 'valor_verde' : 'valor_azul';
-    
-    if (contracheque.status === 'Assinado') {
-        assinarBtn.textContent = 'Contracheque Assinado';
-        assinarBtn.disabled = true;
-    } else {
-        assinarBtn.textContent = 'Assinar contracheque';
-        assinarBtn.disabled = false;
+    async function init() {
+        if (!(await validarPermissaoAdmin())) return;
+        
+        carregarSidebarAdmin();
+        carregarDadosConfiguracao();
+        configurarEventos();
     }
-}
 
-// Função para simular a exportação
-function exportarContracheque() {
-    alert(`Simulando exportação do contracheque de ${contrachequeAtual.mes}.`);
-    // Em um ambiente real, aqui seria a lógica para gerar um PDF ou outro formato.
-}
-
-// Função para simular a assinatura
-function assinarContracheque() {
-    if (contrachequeAtual.status !== 'Assinado') {
-        if (confirm(`Tem certeza que deseja assinar o contracheque de ${contrachequeAtual.mes}?`)) {
-            // Simula a mudança de status
-            contrachequeAtual.status = 'Assinado';
-            renderContracheque(contrachequeAtual);
-            alert("Contracheque assinado com sucesso! (Mock)");
+    // Valida se é ADMIN
+    async function validarPermissaoAdmin() {
+        try {
+            const response = await fetch("http://localhost:8080/user/me", {
+                headers: { Authorization: `Bearer ${token}` },
+            });
+            if (response.ok) {
+                const user = await response.json();
+                if (user.role !== "ROLE_ADMIN") {
+                    alert("Acesso restrito a administradores.");
+                    window.location.href = "portalFuncionario.html";
+                    return false;
+                }
+                return true;
+            }
+            throw new Error("Falha na autenticação");
+        } catch {
+            window.location.href = "login.html";
+            return false;
         }
     }
 }

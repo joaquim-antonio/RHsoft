@@ -15,6 +15,10 @@ public record PagamentoResponseDTO(
     BigDecimal proventos,
     BigDecimal descontos,
     BigDecimal valorLiquido,
+    BigDecimal salarioBase,      // Adicionado
+    BigDecimal horasExtras,      // Adicionado
+    BigDecimal valeTransporte,   // Adicionado
+    BigDecimal valeAlimentacao,  // Adicionado
     String mensagens,
     String nomeFuncionario, 
     String cpfFuncionario,
@@ -26,12 +30,16 @@ public record PagamentoResponseDTO(
             p.getCbo(),
             p.getMesAnoReferencia(),
             p.getVencimento(),
-            p.getProventos(),
-            p.getDescontos(),
-            p.getValorLiquido(),
+            p.getProventos(),       
+            p.getDescontos(),       
+            p.getValorLiquido(),    
+            p.getSalarioBase(),     
+            p.getHorasExtras() != null ? p.getHorasExtras() : BigDecimal.ZERO, 
+            p.getValeTransporte(),
+            p.getValeAlimentacao(),
             p.getMensagens(),
-            p.getFuncionario().getNome() + " " + p.getFuncionario().getSobrenome(),
-            p.getFuncionario().getCpf(),
+            p.getFuncionario() != null ? p.getFuncionario().getNome() + " " + p.getFuncionario().getSobrenome() : "N/A",
+            p.getFuncionario() != null ? p.getFuncionario().getCpf() : "N/A",
             p.getItens()
         );
     }

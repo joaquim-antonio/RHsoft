@@ -8,26 +8,26 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.exemplo.app.dto.EditarPagamentoDto;
 import com.exemplo.app.model.Administrador;
+import com.exemplo.app.model.ConfiguracaoSistema;
 import com.exemplo.app.model.Enums.StatusPagamento;
-import com.exemplo.app.model.Enums.TipoAcrescimo;
-import com.exemplo.app.model.Enums.TipoInsalubridade;
 import com.exemplo.app.model.Enums.TipoItemPagamento;
 import com.exemplo.app.model.FolhaPagamento;
 import com.exemplo.app.model.Funcionario;
 import com.exemplo.app.model.ItemPagamento;
 import com.exemplo.app.model.Pagamento;
+import com.exemplo.app.repository.AdministradorRepository;
 import com.exemplo.app.repository.FolhaPagamentoRepository;
 import com.exemplo.app.repository.PagamentoRepository;
 
 import jakarta.persistence.EntityNotFoundException;
-import jakarta.transaction.Transactional;
 
 @Service
-
 public class FolhaPagamentoService {
 
     @Autowired
@@ -39,28 +39,18 @@ public class FolhaPagamentoService {
     @Autowired
     private PagamentoRepository pagamentoRepository;
 
-    // Salário Mínimo 2025
-    private static final BigDecimal SALARIO_MINIMO = new BigDecimal("1518.00");
+    @Autowired
+    private ConfiguracaoService configuracaoService;
 
-    // Tetos das Faixas INSS 2025
-    private static final BigDecimal FAIXA_1_LIMITE = new BigDecimal("1518.00");
-    private static final BigDecimal FAIXA_2_LIMITE = new BigDecimal("2793.88");
-    private static final BigDecimal FAIXA_3_LIMITE = new BigDecimal("4190.83");
-    private static final BigDecimal FAIXA_4_LIMITE = new BigDecimal("8157.41"); // Teto máximo
+    @Autowired
+    private CalculadoraFolhaService calculadoraService;
 
-    // Faixa 1 (7.5%): 0.00
-    // Faixa 2 (9.0%): (1518.00 * 0.09) - 113.85 = 136.62 - 113.85 = 22.77
-    // Faixa 3 (12.0%): (2793.88 * 0.12) - (113.85 + 114.83) = 335.26 - 228.68 = 106.59
-    // Faixa 4 (14.0%): (4190.83 * 0.14) - (113.85 + 114.83 + 167.63) = 586.71 - 396.31 = 190.40
-    private static final BigDecimal DEDUCAO_FAIXA_2 = new BigDecimal("22.77");
-    private static final BigDecimal DEDUCAO_FAIXA_3 = new BigDecimal("106.59");
-    private static final BigDecimal DEDUCAO_FAIXA_4 = new BigDecimal("190.40");
-    
-    // Teto máximo de desconto
-    // 113.85 + 114.83 + 167.63 + 555.32 = 951.63
-    private static final BigDecimal TETO_DESCONTO_INSS = new BigDecimal("951.63");
+    @Autowired
+    private AdministradorRepository administradorRepository;
 
-    // private static final BigDecimal HORAS_MENSAIS = new BigDecimal("220");
+    public List<FolhaPagamento> listarTodas() {
+        return folhaPagamentoRepository.findAll();
+    }
 
     public FolhaPagamento buscarFolhaPorId(Long id) {
         return folhaPagamentoRepository.findById(id)
@@ -72,136 +62,119 @@ public class FolhaPagamentoService {
                 .orElseThrow(() -> new EntityNotFoundException("Pagamento não encontrado com código: " + codigo));
     }
 
-    public void enviarFolhaParaFuncionarios(Long idFolha) {
-        FolhaPagamento folha = buscarFolhaPorId(idFolha);
-        
-        if (folha.getStatus() != StatusPagamento.FECHADA && folha.getStatus() != StatusPagamento.CONSOLIDADA) {
-            throw new IllegalStateException("A folha precisa estar FECHADA ou CONSOLIDADA para ser enviada.");
-        }
-        // Simulaçõa apenas (Ideal mandar para email)
-        System.out.println("Enviando folha " + idFolha + " para " + folha.getPagamentos().size() + " funcionários...");
-    }
+    // GERAÇÃO DA FOLHA
 
     @Transactional
+    @Async
     public void gerarFolhaDePagamento(Long idFolha) {
-        FolhaPagamento folha = folhaPagamentoRepository.findById(idFolha)
-                .orElseThrow(() -> new RuntimeException("Folha não encontrada"));
+        FolhaPagamento folha = buscarFolhaPorId(idFolha);
 
         if (folha.getStatus() != StatusPagamento.ABERTO) {
             throw new RuntimeException("A folha não está aberta para geração.");
         }
 
+        // Limpeza de pagamentos antigos
+        if (!folha.getPagamentos().isEmpty()) {
+            List<Pagamento> pagamentosAntigos = new ArrayList<>(folha.getPagamentos());
+            folha.getPagamentos().clear();
+
+            // Deleta do banco
+            pagamentoRepository.deleteAll(pagamentosAntigos);
+            pagamentoRepository.flush();
+        }
+
+        ConfiguracaoSistema config = configuracaoService.buscarConfiguracaoAtual();
         List<Funcionario> funcionarios = funcionarioService.listarTodosFuncionarios();
 
+        List<Pagamento> lotePagamentos = new ArrayList<>();
+
         for (Funcionario f : funcionarios) {
-            criarPagamentoParaFuncionario(f, folha);
+            Pagamento novoPagamento = construirPagamento(f, folha, config);
+            lotePagamentos.add(novoPagamento);
+        }
+
+        // Salva todos de uma vez
+        if (!lotePagamentos.isEmpty()) {
+            pagamentoRepository.saveAll(lotePagamentos);
         }
     }
 
-    private void criarPagamentoParaFuncionario(Funcionario funcionario, FolhaPagamento folha) {
+    /**
+     * Método auxiliar para montar o objeto Pagamento.
+     * NÃO salva no banco, apenas retorna a instância populada.
+     */
+    private Pagamento construirPagamento(Funcionario funcionario, FolhaPagamento folha, ConfiguracaoSistema config) {
         Pagamento pagamento = new Pagamento();
         pagamento.setFuncionario(funcionario);
         pagamento.setFolhaPagamento(folha);
-        pagamento.setMesAnoReferencia(LocalDate.now().toString().substring(0, 7));
+        pagamento.setMesAnoReferencia(LocalDate.now().toString().substring(0, 7)); // Ex: 2025-01
         pagamento.setVencimento(LocalDate.now().plusDays(5));
-        pagamento.setItens(new ArrayList<>());
 
         // Gera código único
         String sufixoCpf = funcionario.getCpf().length() >= 3 ? funcionario.getCpf().substring(0, 3) : "000";
-        pagamento.setCodigo("PAY-" + System.currentTimeMillis() + "-" + sufixoCpf);
+        pagamento.setCodigo("PAY-" + folha.getId() + "-" + System.currentTimeMillis() + "-" + sufixoCpf);
 
-        BigDecimal salarioBase = calcularSalarioBase(funcionario);
-        pagamento.setSalarioBase(salarioBase);
-        adicionarItem(pagamento, "Salário Base", TipoItemPagamento.PROVENTO, salarioBase);
+        calculadoraService.processarFolhaFuncionario(pagamento, funcionario, config);
 
-        BigDecimal valorHorasExtras = BigDecimal.ZERO;
-        pagamento.setHorasExtras(valorHorasExtras);
-
-        BigDecimal adicional = calcularAdicional(funcionario);
-        if (adicional.compareTo(BigDecimal.ZERO) > 0) {
-            String nomeAdicional = funcionario.getTipoAcrescimo() == TipoAcrescimo.INSALUBRIDADE ? "Insalubridade"
-                    : "Periculosidade";
-            adicionarItem(pagamento, nomeAdicional, TipoItemPagamento.PROVENTO, adicional);
-        }
-
-        BigDecimal totalBruto = salarioBase.add(valorHorasExtras).add(adicional);
-
-        BigDecimal inss = calcularINSS(totalBruto);
-        adicionarItem(pagamento, "INSS", TipoItemPagamento.DESCONTO, inss);
-
-        BigDecimal baseIrrf = totalBruto.subtract(inss);
-        BigDecimal irrf = calcularIRRF(baseIrrf);
-        if (irrf.compareTo(BigDecimal.ZERO) > 0) {
-            adicionarItem(pagamento, "IRRF", TipoItemPagamento.DESCONTO, irrf);
-        }
-
-        BigDecimal vt = calcularValeTransporte(salarioBase);
-        if (vt.compareTo(BigDecimal.ZERO) > 0) {
-            adicionarItem(pagamento, "Vale Transporte", TipoItemPagamento.DESCONTO, vt);
-        }
-
-        pagamento.calcularTotais();
-
-        pagamentoRepository.save(pagamento);
+        return pagamento;
     }
+
+    // EDIÇÃO DE PAGAMENTOS
 
     @Transactional
     public Pagamento editarPagamento(EditarPagamentoDto dto) {
-        Pagamento pagamento = pagamentoRepository.findByCodigo(dto.codigo())
-                .orElseThrow(() -> new RuntimeException("Pagamento não encontrado"));
+        Pagamento pagamento = buscarPagamentoPorCodigo(dto.codigo());
 
         if (pagamento.getFolhaPagamento().getStatus() != StatusPagamento.ABERTO) {
             throw new RuntimeException("Só é possível editar pagamentos em folhas ABERTAS.");
         }
 
-        pagamento.getItens().clear();
+        ConfiguracaoSistema config = configuracaoService.buscarConfiguracaoAtual();
 
-        Funcionario funcionario = pagamento.getFuncionario();
-        BigDecimal salarioBase = calcularSalarioBase(funcionario);
-        pagamento.setSalarioBase(salarioBase);
-        adicionarItem(pagamento, "Salário Base", TipoItemPagamento.PROVENTO, salarioBase);
-
-        BigDecimal adicionalAuto = calcularAdicional(funcionario);
-        if (adicionalAuto.compareTo(BigDecimal.ZERO) > 0) {
-            String nomeAdicional = funcionario.getTipoAcrescimo() == TipoAcrescimo.INSALUBRIDADE ? "Insalubridade"
-                    : "Periculosidade";
-            adicionarItem(pagamento, nomeAdicional, TipoItemPagamento.PROVENTO, adicionalAuto);
+        // Reseta os itens automáticos para garantir cálculo limpo
+        if (pagamento.getItens() == null) {
+            pagamento.setItens(new ArrayList<>());
+        } else {
+            pagamento.getItens().clear();
         }
 
-        BigDecimal horasExtras = dto.horasExtras() != null ? dto.horasExtras() : BigDecimal.ZERO;
-        pagamento.setHorasExtras(horasExtras);
-        if (horasExtras.compareTo(BigDecimal.ZERO) > 0) {
-            adicionarItem(pagamento, "Horas Extras", TipoItemPagamento.PROVENTO, horasExtras);
+        // Recalcula a base (Salário, INSS e IRRF padrões)
+        calculadoraService.processarFolhaFuncionario(pagamento, pagamento.getFuncionario(), config);
+
+        // Adiciona Itens Manuais (Horas Extras / Adicional)
+        if (dto.quantidadeHorasExtras() != null && dto.quantidadeHorasExtras() > 0) {
+            Funcionario func = pagamento.getFuncionario();
+
+            // Calcula o valor da hora normal (Salário / Horas Mensais)
+            BigDecimal valorHora = func.getSalario()
+                    .divide(new BigDecimal(func.getHorasTrabalhadas()), 10, RoundingMode.HALF_UP);
+
+            // Aplica o adicional de 50% (padrão CLT) ou configure via banco
+            BigDecimal valorHoraExtra = valorHora.multiply(new BigDecimal("1.5"));
+
+            // Calcula o total a pagar (ValorHoraExtra * QtdHoras)
+            BigDecimal totalHorasExtras = valorHoraExtra
+                    .multiply(new BigDecimal(dto.quantidadeHorasExtras()))
+                    .setScale(2, RoundingMode.HALF_UP);
+
+            pagamento.setHorasExtras(totalHorasExtras);
+            adicionarItemManual(pagamento, "Horas Extras (50%)", TipoItemPagamento.PROVENTO, totalHorasExtras);
         }
 
-        BigDecimal adicionalManual = dto.adicionalManual() != null ? dto.adicionalManual() : BigDecimal.ZERO;
-        if (adicionalManual.compareTo(BigDecimal.ZERO) > 0) {
-            adicionarItem(pagamento, "Adicional Manual", TipoItemPagamento.PROVENTO, adicionalManual);
+        if (dto.adicionalManual() != null && dto.adicionalManual().compareTo(BigDecimal.ZERO) > 0) {
+            adicionarItemManual(pagamento, "Adicional Manual", TipoItemPagamento.PROVENTO, dto.adicionalManual());
         }
 
-        BigDecimal totalBruto = salarioBase.add(adicionalAuto).add(horasExtras).add(adicionalManual);
-
-        BigDecimal inss = calcularINSS(totalBruto);
-        adicionarItem(pagamento, "INSS", TipoItemPagamento.DESCONTO, inss);
-
-        BigDecimal irrf = calcularIRRF(totalBruto.subtract(inss));
-        if (irrf.compareTo(BigDecimal.ZERO) > 0) {
-            adicionarItem(pagamento, "IRRF", TipoItemPagamento.DESCONTO, irrf);
-        }
-
-        BigDecimal vt = calcularValeTransporte(salarioBase);
-        if (vt.compareTo(BigDecimal.ZERO) > 0) {
-            adicionarItem(pagamento, "Vale Transporte", TipoItemPagamento.DESCONTO, vt);
-        }
-
+        // (Base + Manuais)
         pagamento.calcularTotais();
 
         return pagamentoRepository.save(pagamento);
     }
 
-    private void adicionarItem(Pagamento pagamento, String descricao, TipoItemPagamento tipo, BigDecimal valor) {
+    private void adicionarItemManual(Pagamento pagamento, String descricao, TipoItemPagamento tipo, BigDecimal valor) {
         ItemPagamento item = ItemPagamento.builder()
-                .descricao(descricao)
+                .nome(descricao)
+                .descricao("Lançamento Manual")
                 .tipo(tipo)
                 .valor(valor.setScale(2, RoundingMode.HALF_UP))
                 .pagamento(pagamento)
@@ -209,102 +182,31 @@ public class FolhaPagamentoService {
         pagamento.getItens().add(item);
     }
 
-    public BigDecimal calcularSalarioBase(Funcionario funcionario) {
-        BigDecimal valorBruto = funcionario.getSalario();
+    // FLUXO DA FOLHA (ABRIR, FECHAR, REABRIR)
 
-        return valorBruto;
-    }
+    @Transactional
+    public FolhaPagamento abrirFolha(String cpfAdmin) {
 
-    public BigDecimal calcularAdicional(Funcionario funcionario) {
-        TipoAcrescimo tipo = funcionario.getTipoAcrescimo();
-        TipoInsalubridade nivel = funcionario.getTipoInsalubridade();
-        BigDecimal baseCalculo = funcionario.getSalario();
-
-        if (tipo == null || tipo == TipoAcrescimo.NENHUM) {
-            return BigDecimal.ZERO;
+        // Verifica se já existe folha aberta
+        if (folhaPagamentoRepository.existsByStatus(StatusPagamento.ABERTO)) {
+            throw new RuntimeException("Já existe uma folha de pagamento aberta.");
         }
 
-        BigDecimal percentual = BigDecimal.ZERO;
+        Administrador admin = administradorRepository.findByCpf(cpfAdmin)
+                .orElseThrow(() -> new EntityNotFoundException("Administrador não encontrado com CPF: " + cpfAdmin));
 
-       if (tipo == TipoAcrescimo.PERICULOSIDADE) {
-            percentual = new BigDecimal("30");
-        } else if (tipo == TipoAcrescimo.INSALUBRIDADE) {
-            baseCalculo = SALARIO_MINIMO; 
-            
-            if (nivel != null) {
-                switch (nivel) {
-                    case BAIXO -> percentual = new BigDecimal("10");
-                    case MEDIO -> percentual = new BigDecimal("20");
-                    case ALTO -> percentual = new BigDecimal("40");
-                    default -> percentual = BigDecimal.ZERO;
-                }
-            }
-        }
-
-        return baseCalculo.multiply(percentual).divide(new BigDecimal("100"), 2, RoundingMode.HALF_UP);
-    }
-
-    public BigDecimal calcularValeTransporte(BigDecimal salarioBase) {
-        return salarioBase.multiply(new BigDecimal("0.06")).setScale(2, RoundingMode.HALF_UP);
-    }
-
-    public BigDecimal calcularFGTS(BigDecimal salarioBruto) {
-        return salarioBruto.multiply(new BigDecimal("0.08")).setScale(2, RoundingMode.HALF_UP);
-    }
-
-    public BigDecimal calcularINSS(BigDecimal salarioDeContribuicao) {
-        
-        // Se passar do teto, cobra o teto fixo
-        if (salarioDeContribuicao.compareTo(FAIXA_4_LIMITE) > 0) {
-            return TETO_DESCONTO_INSS;
-        }
-
-        if (salarioDeContribuicao.compareTo(FAIXA_1_LIMITE) <= 0) {
-            return salarioDeContribuicao.multiply(new BigDecimal("0.075"));
-        } 
-        else if (salarioDeContribuicao.compareTo(FAIXA_2_LIMITE) <= 0) {
-            return salarioDeContribuicao.multiply(new BigDecimal("0.09")).subtract(DEDUCAO_FAIXA_2);
-        } 
-        else if (salarioDeContribuicao.compareTo(FAIXA_3_LIMITE) <= 0) {
-            return salarioDeContribuicao.multiply(new BigDecimal("0.12")).subtract(DEDUCAO_FAIXA_3);
-        } 
-        else {
-            return salarioDeContribuicao.multiply(new BigDecimal("0.14")).subtract(DEDUCAO_FAIXA_4);
-        }
-    }
-
-    public BigDecimal calcularIRRF(BigDecimal base) {
-        BigDecimal faixa1 = new BigDecimal("2259.20");
-        BigDecimal faixa2 = new BigDecimal("2826.65");
-        BigDecimal faixa3 = new BigDecimal("3751.05");
-        BigDecimal faixa4 = new BigDecimal("4664.68");
-
-        if (base.compareTo(faixa1) <= 0) {
-            return BigDecimal.ZERO;
-        }
-        if (base.compareTo(faixa2) <= 0) {
-            return base.multiply(new BigDecimal("0.075")).subtract(new BigDecimal("169.44"));
-        }
-        if (base.compareTo(faixa3) <= 0) {
-            return base.multiply(new BigDecimal("0.15")).subtract(new BigDecimal("381.44"));
-        }
-        if (base.compareTo(faixa4) <= 0) {
-            return base.multiply(new BigDecimal("0.225")).subtract(new BigDecimal("662.77"));
-        }
-        return base.multiply(new BigDecimal("0.275")).subtract(new BigDecimal("896.00"));
-    }
-
-    public FolhaPagamento abrirFolha(Administrador admin) {
         FolhaPagamento folha = new FolhaPagamento();
         folha.setStatus(StatusPagamento.ABERTO);
         folha.setAdministrador(admin);
         folha.setTotalLiquido(BigDecimal.ZERO);
+        folha.setDataEnvio(LocalDate.now());
+
         return folhaPagamentoRepository.save(folha);
     }
 
+    @Transactional
     public FolhaPagamento fecharFolha(Long idFolha) {
-        FolhaPagamento folha = folhaPagamentoRepository.findById(idFolha)
-                .orElseThrow(() -> new RuntimeException("Folha não encontrada"));
+        FolhaPagamento folha = buscarFolhaPorId(idFolha);
 
         if (folha.getStatus() != StatusPagamento.ABERTO) {
             throw new RuntimeException("Só é possível fechar uma folha ABERTA.");
@@ -321,31 +223,50 @@ public class FolhaPagamentoService {
         return folhaPagamentoRepository.save(folha);
     }
 
+    @Transactional
     public FolhaPagamento consolidarFolha(Long idFolha) {
-        FolhaPagamento folha = folhaPagamentoRepository.findById(idFolha)
-                .orElseThrow(() -> new RuntimeException("Folha não encontrada"));
+        FolhaPagamento folha = buscarFolhaPorId(idFolha);
 
         if (folha.getStatus() != StatusPagamento.FECHADA) {
             throw new RuntimeException("A folha precisa estar FECHADA para ser consolidada.");
         }
         folha.setStatus(StatusPagamento.CONSOLIDADA);
+
         return folhaPagamentoRepository.save(folha);
     }
 
+    @Transactional
     public FolhaPagamento reabrirFolha(Long idFolha) {
-        FolhaPagamento folha = folhaPagamentoRepository.findById(idFolha)
-                .orElseThrow(() -> new RuntimeException("Folha não encontrada"));
+        FolhaPagamento folha = buscarFolhaPorId(idFolha);
+        ConfiguracaoSistema config = configuracaoService.buscarConfiguracaoAtual();
 
         if (folha.getStatus() == StatusPagamento.ABERTO) {
             throw new RuntimeException("A folha já está aberta.");
         }
+
+        // Verifica prazo dinâmico do banco de dados
         if (folha.getStatus() == StatusPagamento.CONSOLIDADA) {
             long dias = ChronoUnit.DAYS.between(folha.getDataFechamento(), LocalDate.now());
-            if (dias > 5) {
-                throw new RuntimeException("Folha consolidada não pode ser reaberta após 5 dias.");
+
+            Integer prazoLimite = config.getDiasLimiteReabertura();
+
+            if (dias > prazoLimite) {
+                throw new RuntimeException("Folha consolidada há " + dias + " dias. Prazo limite para reabertura é de "
+                        + prazoLimite + " dias.");
             }
         }
+
         folha.setStatus(StatusPagamento.ABERTO);
         return folhaPagamentoRepository.save(folha);
+    }
+
+    public void enviarFolhaParaFuncionarios(Long idFolha) {
+        FolhaPagamento folha = buscarFolhaPorId(idFolha);
+
+        if (folha.getStatus() != StatusPagamento.FECHADA && folha.getStatus() != StatusPagamento.CONSOLIDADA) {
+            throw new IllegalStateException("A folha precisa estar FECHADA ou CONSOLIDADA para ser enviada.");
+        }
+        // Simulação de envio (Email/Push)
+        System.out.println("Enviando folha " + idFolha + " para " + folha.getPagamentos().size() + " funcionários...");
     }
 }

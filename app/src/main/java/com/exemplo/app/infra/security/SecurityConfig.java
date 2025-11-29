@@ -74,6 +74,9 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.DELETE, "/api/v1/candidaturas/cancelar/{vagaId}")
                         .hasAnyRole("CANDIDATO")
 
+                         // --- ROTAS DE CONFIGURAÇÃO ---
+                        .requestMatchers("/api/v1/configuracoes/**").hasRole("ADMIN")
+
                         // --- ROTAS DE ADMINISTRAÇÃO ---
                         .requestMatchers("/api/v1/dashboard/**").hasAnyRole("USER", "ADMIN")
                         .requestMatchers("/api/v1/candidaturas/**").hasAnyRole("ADMIN")

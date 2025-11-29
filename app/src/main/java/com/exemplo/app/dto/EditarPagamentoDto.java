@@ -1,10 +1,14 @@
 package com.exemplo.app.dto;
 import java.math.BigDecimal;
 
-public record EditarPagamentoDto(
-        
-    BigDecimal horasExtras,
+import jakarta.validation.constraints.PositiveOrZero;
 
+public record EditarPagamentoDto(
+    
+    @PositiveOrZero(message = "Horas extras não podem ser negativas")
+    Double quantidadeHorasExtras,
+
+    @PositiveOrZero(message = "O adicional manual não pode ser negativo")
     BigDecimal adicionalManual,
 
     String codigo) {}
