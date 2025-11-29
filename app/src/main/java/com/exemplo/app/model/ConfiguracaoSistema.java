@@ -8,9 +8,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
-import jakarta.validation.constraints.Max;
-import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -38,74 +36,113 @@ public class ConfiguracaoSistema {
 
     @NotNull(message = "O prazo de reabertura é obrigatório")
     @Min(value = 0, message = "O prazo não pode ser negativo")
+    @PositiveOrZero(message = "O prazo não pode ser negativo")
     @Column(name = "dias_limite_reabertura")
     private Integer diasLimiteReabertura;
     
     @NotNull
+    @Positive(message = "O salário mínimo deve ser maior que zero")
     @Column(name = "salario_minimo", precision = 10, scale = 2)
     private BigDecimal salarioMinimoVigente;
 
     @NotNull
+    @PositiveOrZero(message = "O valor do VA não pode ser negativo")
     @Column(name = "valor_vale_alimentacao", precision = 10, scale = 2)
     private BigDecimal valorValeAlimentacao;
 
+    @NotNull
     @Column(name = "teto_inss", precision = 10, scale = 2)
+    @Positive(message = "O teto do INSS deve ser positivo")
     private BigDecimal tetoInss;
 
     // IRRF
-
     @Column(precision = 10, scale = 2)
+    @PositiveOrZero
     private BigDecimal irrfDeducaoPorDependente; // MUITO CHATO DE IMPLEMENTAR, MAS TÁ AQUI, CASO QUEIRAM NO FUTURO, MAS FUJAM PARAS AS COLINAS IMEDIATAMENTE
 
     // Faixa 1 (Isento)
-    @Column(precision = 10, scale = 2)
+    @NotNull
+    @Column(name = "irrf_limite_isento", precision = 10, scale = 2)
+    @PositiveOrZero
     private BigDecimal irrfLimiteIsento;
 
-    @Column(precision = 10, scale = 2)
+    @NotNull
+    @PositiveOrZero
+    @Column(name = "irrf_limite_faixa_2", precision = 10, scale = 2)
     private BigDecimal irrfLimiteFaixa2;
-    @Column(precision = 5, scale = 4)
+    @NotNull
+    @PositiveOrZero
+    @Column(name = "irrf_aliquota_faixa_2", precision = 5, scale = 4)
     private BigDecimal irrfAliquotaFaixa2; 
-    @Column(precision = 10, scale = 2)
+    @NotNull
+    @PositiveOrZero
+    @Column(name = "irrf_deducao_faixa_2" , precision = 10, scale = 2)
     private BigDecimal irrfDeducaoFaixa2;
 
     // Faixa 3
-    @Column(precision = 10, scale = 2)
+    @NotNull
+    @PositiveOrZero
+    @Column(name = "irrf_limite_faixa_3", precision = 10, scale = 2)
     private BigDecimal irrfLimiteFaixa3;
-    @Column(precision = 5, scale = 4) 
+    @NotNull
+    @PositiveOrZero
+    @Column(name = "irrf_aliquota_faixa_3", precision = 5, scale = 4) 
     private BigDecimal irrfAliquotaFaixa3;
-    @Column(precision = 10, scale = 2)
+    @NotNull
+    @PositiveOrZero
+    @Column(name = "irrf_deducao_faixa_3", precision = 10, scale = 2)
     private BigDecimal irrfDeducaoFaixa3;
 
     // Faixa 4
-    @Column(precision = 10, scale = 2)
+    @NotNull
+    @PositiveOrZero
+    @Column(name = "irrf_limite_faixa_4", precision = 10, scale = 2)
     private BigDecimal irrfLimiteFaixa4;
-    @Column(precision = 5, scale = 4) 
+    @NotNull
+    @PositiveOrZero
+    @Column(name = "irrf_limite_aliquota_4", precision = 5, scale = 4) 
     private BigDecimal irrfAliquotaFaixa4;
-    @Column(precision = 10, scale = 2)
+    @NotNull
+    @PositiveOrZero
+    @Column(name = "irrf_deducao_faixa_4", precision = 10, scale = 2)
     private BigDecimal irrfDeducaoFaixa4;
 
     // Faixa 5 (27,5% ou mais)
-    @Column(precision = 5, scale = 4) 
+    @NotNull
+    @PositiveOrZero
+    @Column(name = "irrf_aliquota_faixa_5", precision = 5, scale = 4) 
     private BigDecimal irrfAliquotaFaixa5;
-    @Column(precision = 10, scale = 2)
+    @NotNull
+    @PositiveOrZero
+    @Column(name = "irrf_deducao_faixa_5", precision = 10, scale = 2)
     private BigDecimal irrfDeducaoFaixa5;
 
 
     // --- PERCENTUAIS ---
 
-    @Column(precision = 5, scale = 4)
+    @NotNull
+    @PositiveOrZero
+    @Column(name = "percentual_vale_transporte", precision = 5, scale = 4)
     private BigDecimal percentualValeTransporte; // Padrão 0.06
 
-    @Column(precision = 5, scale = 4)
+    @NotNull
+    @PositiveOrZero
+    @Column(name = "percentual_insalubridade_min", precision = 5, scale = 4)
     private BigDecimal percentualInsalubridadeMin; // 0.10
 
-    @Column(precision = 5, scale = 4)
+    @NotNull
+    @PositiveOrZero
+    @Column(name = "percentual_insalubridade_media", precision = 5, scale = 4)
     private BigDecimal percentualInsalubridadeMedia; // 0.20
 
-    @Column(precision = 5, scale = 4)
+    @NotNull
+    @PositiveOrZero
+    @Column(name = "percentual_insalubridade_max", precision = 5, scale = 4)
     private BigDecimal percentualInsalubridadeMax; // 0.40
 
-    @Column(precision = 5, scale = 4)
+    @NotNull
+    @PositiveOrZero
+    @Column(name = "percentual_periculosidade", precision = 5, scale = 4)
     private BigDecimal percentualPericulosidade; // 0.30
 
 

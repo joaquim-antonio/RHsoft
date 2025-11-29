@@ -73,7 +73,7 @@ public class FolhaPagamentoService {
             throw new RuntimeException("A folha não está aberta para geração.");
         }
 
-        // Limpeza de pagamentos antigos (Batch Delete)
+        // Limpeza de pagamentos antigos
         if (!folha.getPagamentos().isEmpty()) {
             List<Pagamento> pagamentosAntigos = new ArrayList<>(folha.getPagamentos());
             folha.getPagamentos().clear();
@@ -114,7 +114,6 @@ public class FolhaPagamentoService {
         String sufixoCpf = funcionario.getCpf().length() >= 3 ? funcionario.getCpf().substring(0, 3) : "000";
         pagamento.setCodigo("PAY-" + folha.getId() + "-" + System.currentTimeMillis() + "-" + sufixoCpf);
 
-        // Chama a calculadora (que agora suporta IRRF dinâmico e Salário Proporcional)
         calculadoraService.processarFolhaFuncionario(pagamento, funcionario, config);
 
         return pagamento;
