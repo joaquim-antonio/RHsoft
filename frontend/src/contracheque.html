@@ -1,145 +1,286 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RHsoft - Contracheque</title>
-    <link rel="stylesheet" href="./assets/css/pages/contracheuque/contracheque.css">
+    <title>RHsoft - Meus Contracheques</title>
+    
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    
+    <link rel="stylesheet" href="assets/css/global/reset.css">
+    <link rel="stylesheet" href="assets/css/global/variables.css">
+    <link rel="stylesheet" href="assets/css/global/setup.css">
+    <link rel="stylesheet" href="assets/css/pages/contracheques.css">
+    <link rel="icon" type="image/x-icon" href="./assets/images/global/logo.png" />
 </head>
 
 <body>
-    <!--cabecalho-->
-    <header class="cabecalho" id="cabecalho">
-        <h1 class="cabecalho_titulo"><a href="index.html">RHsoft</a></h1>
-        <div class="profile">
-            <a href="login.html" class="profile">
-                <span>Perfil</span>
-                <i class="profile-icon fa-solid fa-circle-user fa-2x"></i>
-            </a>
+    <header id="headerPlaceHolder"></header>
+
+    <div class="container-fluid p-0" style="height: calc(100vh - 97px); overflow: hidden;">
+        
+        <div class="row h-100 g-0">
+            
+            <div id="sidebarPlaceHolder" class="col-md-3 col-lg-2 d-none d-md-block h-100 border-end"></div>
+
+            <main class="col-md-9 col-lg-10 h-100 main-content" style="overflow-y: scroll;" id="contrachequeMain">
+                
+                <div class="p-4">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h2 class="fw-bold text-dark">Meus Contracheques</h2>
+                        
+                        <div class="d-flex gap-2">
+                            <select id="meses_contracheque" class="form-select w-auto shadow-sm">
+                                <option value="" selected disabled>Selecione o Mês</option>
+                                </select>
+                            <button id="exportar_contracheque" class="btn btn-primary d-flex align-items-center gap-2">
+                                <i class="fa-solid fa-print"></i> Imprimir
+                            </button>
+                        </div>
+                    </div>
+
+                    <div id="loading" class="text-center py-5">
+                        <div class="spinner-border text-primary" role="status">
+                            <span class="visually-hidden">Carregando...</span>
+                        </div>
+                    </div>
+
+                    <div id="holeriteArea" class="d-none animate-fade-in">
+                        
+                        <div class="row g-4 mb-4">
+                            <div class="col-lg-8">
+                                <div class="card border-0 shadow-sm h-100">
+                                    <div class="card-header bg-white border-bottom fw-bold text-uppercase small text-muted">
+                                        Dados do Colaborador
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="row g-2">
+                                            <div class="col-md-6">
+                                                <p class="mb-1"><strong class="text-muted small d-block">Nome</strong> <span id="nome">...</span></p>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <p class="mb-1"><strong class="text-muted small d-block">CPF</strong> <span id="cpf">...</span></p>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <p class="mb-1"><strong class="text-muted small d-block">Departamento</strong> <span id="departamento">...</span></p>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <p class="mb-0"><strong class="text-muted small d-block">Data de Admissão</strong> <span id="data_admissao">...</span></p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-4">
+                                <div class="card border-0 shadow-sm h-100" style="background-color: var(--cor-azul-secundaria);">
+                                    <div class="card-body">
+                                        <h6 class="text-uppercase small fw-bold mb-3" style="color: var(--cor-azul-escuro);">Referências</h6>
+                                        <div class="d-flex justify-content-between mb-2">
+                                            <span>Cód. Pagamento</span>
+                                            <strong id="codigo_contracheque" class="font-monospace">...</strong>
+                                        </div>
+                                        <div class="d-flex justify-content-between mb-2">
+                                            <span>CBO</span>
+                                            <strong id="cbo_codigo">...</strong>
+                                        </div>
+                                        <div class="d-flex justify-content-between">
+                                            <span>Vencimento</span>
+                                            <strong id="data_vencimento">...</strong>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card border-0 shadow-sm mb-4">
+                            <div class="card-header bg-white py-3">
+                                <h5 class="card-title mb-0 fs-6 fw-bold">
+                                    <i class="fa-solid fa-list-ol me-2 text-primary"></i>Detalhamento
+                                </h5>
+                            </div>
+                            <div class="card-body p-0">
+                                <div class="table-responsive">
+                                    <table class="table table-hover mb-0 align-middle">
+                                        <thead class="table-light small text-uppercase text-muted">
+                                            <tr>
+                                                <th style="width: 50%;">Descrição</th>
+                                                <th class="text-center">Ref.</th>
+                                                <th class="text-end text-success">Vencimentos</th>
+                                                <th class="text-end text-danger">Descontos</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="tabelaItens">
+                                            </tbody>
+                                        <tfoot class="table-light fw-bold">
+                                            <tr>
+                                                <td colspan="2" class="text-end text-uppercase small">Totais</td>
+                                                <td class="text-end text-success" id="total_proventos">R$ 0,00</td>
+                                                <td class="text-end text-danger" id="total_descontos">R$ 0,00</td>
+                                            </tr>
+                                        </tfoot>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row g-4">
+                            <div class="col-lg-8">
+                                <div class="card border-0 shadow-sm h-100">
+                                    <div class="card-body">
+                                        <h6 class="fw-bold mb-2 small text-uppercase text-muted">Mensagens</h6>
+                                        <p id="mensagens_contracheque" class="text-muted small fst-italic mb-0">...</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-4">
+                                <div class="card border-0 shadow h-100 bg-white">
+                                    <div class="card-body d-flex flex-column justify-content-center align-items-center text-center p-4">
+                                        <span class="text-uppercase small text-muted fw-bold mb-1">Valor Líquido a Receber</span>
+                                        <h2 id="total_liquido" class="fw-bold text-primary mb-0 display-6">R$ 0,00</h2>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div> <div id="emptyState" class="text-center py-5 d-none">
+                        <i class="fa-solid fa-file-invoice-dollar fa-4x text-muted mb-3"></i>
+                        <h5 class="text-muted">Nenhum contracheque encontrado</h5>
+                        <p class="text-muted small">Entre em contato com o RH se acredita que isso é um erro.</p>
+                    </div>
+
+                </div>
+            </main>
         </div>
-    </header>
-    <!--div pra flexbox-->
-    <div class="content">
-        <!--barra lateral-->
-        <aside class="aside">
-            <nav>
-                <h3 class="aside_titles">Geral</h3>
-                <ul>
-                    <li class="aside_items"><a href="funcionarios.html"><i
-                                class="aside_icons fa-solid fa-user-tie"></i>Funcionarios</a></li>
-                    <li class="aside_items"><a href="contracheque.html"><i
-                                class="aside_icons fa-solid fa-money-check-dollar"></i>Contracheque</a></li>
-                    <li class="aside_items"><a href="vagas.html"><i
-                                class="aside_icons fa-solid fa-receipt"></i>Vagas</a></li>
-                    <li class="aside_items"><a href="folhaPagamento.html"><i class="aside_icons fa-solid fa-suitcase"></i>Folha de
-                            Pagamento</a></li>
-                </ul>
-            </nav>
-            <section>
-                <h3>Suporte</h3>
-                <ul>
-                    <li class="aside_items"><a href="#"><i class="aside_icons fa-solid fa-circle-info"></i>Ajuda</a>
-                    </li>
-                    <li class="aside_items"><a href="#"><i class="aside_icons fa-solid fa-gear"></i>Configurações</a>
-                    </li>
+    </div>
 
 
-                </ul>
-            </section>
-            <div class="aside_themes">
-                <i class="aside_icons aside_items fa-solid fa-moon"></i>
-                <i class="aside_icons aside_items fa-solid fa-sun"></i>
-            </div>
-        </aside>
-
-        <!-- Conteudo -->
-        <main id="contracheque">
-            <h2>Contracheque</h2>
-            <div class="top">
-                <div class="select_container">
-                    <select id="meses_contracheque" class="form-select w-auto">
-                        <option>Ago, 2025</option>
-                        <option>Jul, 2025</option>
-                        <option>Jun, 2025</option>
-                    </select>
+    <!-- Modelo Impressão -->
+    <div id="modeloImpressao" class="d-none">
+        <div class="folha-pagamento-container">
+            <div class="folha-conteudo">
+                
+                <div class="header-box">
+                    <div class="empresa-info">
+                        <h3 style="color: black !important;">RHSoft Tecnologia Ltda.</h3>
+                        <p>Av. Digital, 1000 - Centro, Belo Horizonte - MG</p>
+                        <p>CNPJ: 00.000.000/0001-99</p>
+                    </div>
+                    <div class="recibo-titulo">
+                        <h2 style="color: black !important;">Recibo de Pagamento de Salário</h2>
+                        <span class="referencia-mes">Referente a: <span id="print_referencia">MM/AAAA</span></span>
+                    </div>
                 </div>
-                <button id="exportar_contracheque" class="btn">Exportar</button>
-            </div>
 
-            <!-- Dados pessoais -->
-            <div class="box info_pessoal">
-                <p id="nome"><strong>Nome:</strong> Neymar Santos Júnior</p>
-                <p id="cargo"><strong>Cargo:</strong> Gerente</p>
-                <p id="departamento"><strong>Departamento:</strong> Financeiro</p>
-                <p id="cpf"><strong>CPF:</strong> 400.288.220-17</p>
-                <p id="data_nascimento"><strong>Data de nascimento:</strong> 01/05/1999</p>
-            </div>
-
-            <!-- Salario -->
-            <div class="box salario">
-                <h3>Salário</h3>
-                <div class="row"><span>Salário base</span><span id="salario_base" class="valor_verde">R$ 1600,80</span>
+                <div class="funcionario-box">
+                    <div class="col-cod">
+                        <small>CÓDIGO</small>
+                        <span id="print_codigo">...</span>
+                    </div>
+                    <div class="col-nome">
+                        <small>NOME DO FUNCIONÁRIO</small>
+                        <span id="print_nome">...</span>
+                    </div>
+                    <div class="col-cbo">
+                        <small>CBO</small>
+                        <span id="print_cbo">...</span>
+                    </div>
+                    <div class="col-funcao">
+                        <small>FUNÇÃO</small>
+                        <span id="print_cargo">...</span>
+                    </div>
                 </div>
-                <div class="row"><span>Horas extras</span><span id="horas_extras_valor" class="valor_verde">R$
-                        250,90</span></div>
-                <div class="row"><span>Férias remunerada</span><span id="ferias_remuneradas_valor"
-                        class="valor_verde">R$ 190,45</span></div>
-                <div class="row"><span>INSS</span><span id="inss_desconto" class="valor_vermelho">R$ 190,45</span></div>
-                <div class="row"><span>IRRF</span><span id="irrf_desconto" class="valor_vermelho">R$ 190,45</span></div>
-                <div class="row"><span>FGTS</span><span id="fgts_desconto" class="valor_vermelho">R$ 190,45</span></div>
-                <div class="row"><strong>Total</strong><strong id="total_liquido" class="valor_azul">R$ 1500,50</strong>
+
+                <div class="tabela-itens-container">
+                    <table class="tabela-oficial">
+                        <thead>
+                            <tr>
+                                <th class="w-cod">Cód.</th>
+                                <th class="w-desc">Descrição</th>
+                                <th class="w-ref">Referência</th>
+                                <th class="w-valor">Proventos</th>
+                                <th class="w-valor">Descontos</th>
+                            </tr>
+                        </thead>
+                        <tbody id="print_itens_body">
+                            </tbody>
+                    </table>
+                </div>
+
+                <div class="totais-box">
+                    <div class="mensagem-area">
+                        <small>MENSAGENS</small>
+                        <p id="print_mensagem"></p>
+                    </div>
+                    <div class="valores-totais">
+                        <div class="linha-soma">
+                            <span>Total de Vencimentos</span>
+                            <span id="print_total_proventos">0,00</span>
+                        </div>
+                        <div class="linha-soma">
+                            <span>Total de Descontos</span>
+                            <span id="print_total_descontos">0,00</span>
+                        </div>
+                        <div class="linha-liquido">
+                            <span>Líquido a Receber ➔</span>
+                            <span id="print_total_liquido">0,00</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bases-box">
+                    <div>
+                        <small>Salário Base</small>
+                        <span id="print_base_salario">0,00</span>
+                    </div>
+                    <div>
+                        <small>Base Cálc. INSS</small>
+                        <span id="print_base_inss">0,00</span>
+                    </div>
+                    <div>
+                        <small>Base Cálc. FGTS</small>
+                        <span id="print_base_fgts">0,00</span>
+                    </div>
+                    <div>
+                        <small>FGTS do Mês</small>
+                        <span id="print_fgts_mes">0,00</span>
+                    </div>
+                    <div>
+                        <small>Base Cálc. IRRF</small>
+                        <span id="print_base_irrf">0,00</span>
+                    </div>
+                    <div>
+                        <small>Faixa IRRF</small>
+                        <span id="print_faixa_irrf">-</span>
+                    </div>
                 </div>
             </div>
 
-            <!-- Codigos -->
-            <div class="box codigos">
-                <h3>Código</h3>
-                <p id="codigo_contracheque" class="valor-azul">00076</p>
-                <h3>CBO</h3>
-                <p id="cbo_codigo" class="valor-azul">41105</p>
-            </div>
-
-            <!-- Calculos -->
-            <div class="box calculos">
-                <h3>Cálculos</h3>
-                <div class="row"><span>Base Calc. INSS</span><span id="base_inss" class="valor_vermelho">0,00</span>
+            <div class="folha-lateral">
+                <div class="conteudo-rotacionado">
+                    <div class="declaracao-texto">
+                        DECLARO TER RECEBIDO A IMPORTÂNCIA LÍQUIDA DISCRIMINADA NESTE RECIBO.
+                    </div>
+                    <div class="assinatura-area">
+                        <div class="area-data">
+                            <span>____/____/________</span>
+                            <small>DATA</small>
+                        </div>
+                        <div class="area-assinatura">
+                            <span>__________________________________________________</span>
+                            <small>ASSINATURA DO FUNCIONÁRIO</small>
+                        </div>
+                    </div>
                 </div>
-                <div class="row"><span>Base Calc. FGTS</span><span id="base_fgts" class="valor_vermelho">0,00</span>
-                </div>
-                <div class="row"><span>Base Calc. IRRF</span><span id="base_irrf" class="valor_vermelho">0,00</span>
-                </div>
-                <div class="row"><span>FGTS do mês</span><span id="fgts_mes" class="valor_vermelho">0,00</span></div>
-                <div class="row"><span>Faixa IRRF</span><span id="base_irrf" class="valor_vermelho">0,00</span></div>
             </div>
+        </div>
+    </div>
 
-            <!-- Beneficios -->
-            <div class="box beneficios">
-                <h3>Benefícios</h3>
-                <div class="row"><span>Vale transporte</span><span id="vale_transporte_valor" class="valor_verde">R$
-                        130</span></div>
-                <div class="row"><span>Vale alimentação</span><span id="vale_alimentacao_valor" class="valor_verde">R$
-                        130</span></div>
-                <div class="row"><span>Gym pass</span><span id="gym_pass_valor" class="valor_verde">R$ 130</span></div>
-            </div>
-
-            <!-- Mensagens -->
-            <div class="box mensagens">
-                <h3>Mensagens</h3>
-                <p id="mensagens_contracheque">(caixa de mensagens)</p>
-            </div>
-
-            <!-- Status -->
-            <div class="status_assinatura">
-                <p>Status: <span id="status_contracheque" class="valor_azul">Aguardando assinatura</span></p>
-            </div>
-
-            <!-- Ações -->
-            <div class="acoes">
-                <button id="assinar" class="btn">Assinar contracheque</button>
-                <button id="contatar_suporte" class="btn">Contatar suporte</button>
-            </div>
-        </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/js/bootstrap.bundle.min.js"></script>
+    <script src="assets/js/global/setup.js"></script>
+    <script src="assets/js/pages/contracheques.js"></script>
 </body>
-
 </html>
