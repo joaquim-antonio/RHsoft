@@ -2,7 +2,7 @@
 [![Open in Codespaces](https://classroom.github.com/assets/launch-codespace-2972f46106e565e64193e422d61a12cf1da4916b45550586e14ef0a7c637dd04.svg)](https://classroom.github.com/open-in-codespaces?assignment_repo_id=20276750)
 # RHSoft
 
-![Capa do Projeto](https://picsum.photos/850/280)
+![Capa do Projeto](docs/design/Image.avif)
 
 O RHSoft é um sistema de Recursos Humanos desenvolvido com o objetivo de apoiar a gestão de pessoas em organizações, oferecendo uma solução integrada para o cadastro e administração de funcionários, processamento da folha de pagamento e gerenciamento de vagas de emprego. O sistema centraliza informações essenciais, reduz erros operacionais e promove maior eficiência e confiabilidade nos processos de RH, disponibilizando recursos tanto para administradores quanto para funcionários de forma simples e segura.
 
@@ -31,12 +31,12 @@ Problemas que o sistema resolve:
 
 ## ⚠️ Status Atual do Projeto
 
-O projeto **RHSoft** (Sirius) encontra-se atualmente em fase de **Protótipo de Alta Fidelidade (Frontend)**.
+O **RHSoft (Sirius)** atingiu a versão **1.0 (Final)**.
 
-É fundamental notar que, para fins de demonstração da interface de usuário e da lógica de interação no lado do cliente, o sistema utiliza **dados mockados** (simulados) diretamente no código JavaScript.
-
-**Atenção:**
-> A implementação atual **não possui persistência de dados** (não salva informações em um banco de dados) e **não está integrada ao backend** (APIs em Java/Spring Boot). As ações de cadastro, edição e consulta são apenas simulações visuais no frontend.
+O sistema opera de ponta a ponta:
+- [x] **Frontend:** Interface completa.
+- [x] **Backend:** Regras de negócio implementadas.
+- [x] **Banco de Dados:** Conexão ativa e persistência de dados real.
 
 ---
 
@@ -44,9 +44,9 @@ O projeto **RHSoft** (Sirius) encontra-se atualmente em fase de **Protótipo de 
 
 - [x] **Fazer Login**
 - [x] **Gestão de funcionários**
-- [ ] Gestão da folha de pagamento
-- [X] **Publicação e gerenciamento de vagas**
-- [ ] Atualização de configurações
+- [X] **Gestão da folha de pagamento**
+- [ ] Publicação e gerenciamento de vagas
+- [X] **Atualização de configurações**
 - [ ] Consulta de contracheques
 - [ ] Atualização de dados cadastrais
 
@@ -62,8 +62,36 @@ O projeto **RHSoft** (Sirius) encontra-se atualmente em fase de **Protótipo de 
 
 ```
 repo/
-├─ backend/                  # API em Spring Boot
-├─ frontend/                 # Aplicação web (JS puro ou framework)
+├─ app/                      # API em Spring Boot
+│  ├─ .mvn/
+│  ├─ src/
+│  │  ├─ main/
+│  │  │  ├─ java/com/exemplo/app/
+│  │  │  │  ├─ config/
+│  │  │  │  ├─ controller/
+│  │  │  │  ├─ dto/
+│  │  │  │  ├─ exception/
+│  │  │  │  ├─ infra/security/
+│  │  │  │  ├─ model/
+│  │  │  │  ├─ repository/
+│  │  │  │  └─ service/
+│  │  │  └─ resources/
+│  │  └─ test/
+│  └─ target/            
+├─ frontend/                 # Aplicação web (JS Puro)
+│  └─ src/
+│     ├─ assets/          
+│     │  ├─ css/             # Estilização do Front
+│     │  │  ├─ global/ 
+│     │  │  └─ pages/
+│     │  ├─ images/          # Imagens
+│     │  │  ├─ global/ 
+│     │  │  └─ pages/
+│     │  └─ js/
+│     │     ├─ global/
+│     │     ├─ pages/
+│     │     └─ services/   
+│     └─ components/
 ├─ docs/                     # Documentação geral do projeto
 │  ├─ requisitos/            # visão conceitual e de negócio
 │  │  ├─ requisitos.md
@@ -79,7 +107,7 @@ repo/
 │  │
 │  ├─ analise/               # classes candidatas, CRC, diagrama do modelo conceitual
 │  ├─ design/                # diagramas de classe, sequência, etc.
-│  └─ prototipos/            # protótipos do Figma
+│  └─ wireframe/             # protótipos do Figma
 │
 └─ README.md                 # Este arquivo (guia do repositório)
 
@@ -98,7 +126,13 @@ Todos os commits devem seguir o padrão [Conventional Commits](https://www.conve
 
 ## Autores
 
-[Exemplo](https://github.com/testing-library/react-testing-library#contributors)
+**[Joaquim Camargos](https://github.com/joaquim-antonio)**
+
+**[Pedro Matos](https://github.com/N16Kss)**
+
+**[Pedro Rezende](https://github.com/pedrolsrt)**
+
+**[Wesley Domingos](https://github.com/WesleySDz)**
 
 ## 📜 Licença
 
