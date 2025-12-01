@@ -47,7 +47,7 @@ O sistema opera de ponta a ponta:
 - [X] **Gestão da folha de pagamento**
 - [ ] Publicação e gerenciamento de vagas
 - [X] **Atualização de configurações**
-- [ ] Consulta de contracheques
+- [X] **Consulta de contracheques**
 - [ ] Atualização de dados cadastrais
 
 ## 🏗️ Arquitetura e Tecnologias

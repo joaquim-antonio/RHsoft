@@ -1,5 +1,7 @@
 package com.exemplo.app.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.ForeignKey;
 import jakarta.persistence.GeneratedValue;
@@ -37,6 +39,7 @@ public class Usuario {
     @NotNull
     private boolean status = true;
 
+    @JsonIgnore
     @OneToOne
     @JoinColumn(name = "pessoa_cpf", foreignKey=@ForeignKey(name = "fk_usuario_pessoa"))
     private Pessoa pessoa;
