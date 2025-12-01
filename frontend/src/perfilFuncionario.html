@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RHSoft - Portal do Funcionário</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+
+    <link rel="stylesheet" href="assets/css/global/setup.css">
+    <link rel="stylesheet" href="assets/css/pages/portalFuncionario.css">
+    <link rel="icon" type="image/x-icon" href="./assets/images/global/logo.png" />
+</head>
+
+<body>
+    <header id="headerPlaceHolder"></header>
+    <div class="container-fluid p-0" style="height: calc(100vh - 97px); overflow: hidden;">
+        <div class="row h-100 g-0">
+
+            <div id="sidebarCandidatoContainer" class="col-md-3 col-lg-2 d-none d-md-block h-100 border-end"></div>
+
+            <div class="col-12 col-md-9 col-lg-10 h-100" style="overflow-y: auto; padding: 20px;">
+
+                <h2><i class="fas fa-user-edit"></i> Meu Perfil e Dados Pessoais</h2>
+                <p class="text-muted">Revise e atualize seus dados cadastrais e de endereço.</p>
+
+                <form id="formAtualizacaoPessoa">
+
+                    <div class="card shadow-sm mb-4">
+                        <div class="card-header bg-secondary text-white">
+                            Dados Pessoais
+                        </div>
+                        <div class="card-body row">
+                            <div class="col-md-4 mb-3"><label for="inputCPF" class="form-label">CPF</label><input
+                                    type="text" class="form-control" id="inputCPF" readonly></div>
+                            <div class="col-md-4 mb-3"><label for="inputNome" class="form-label">Nome</label><input
+                                    type="text" class="form-control" id="inputNome" required></div>
+                            <div class="col-md-4 mb-3"><label for="inputSobrenome"
+                                    class="form-label">Sobrenome</label><input type="text" class="form-control"
+                                    id="inputSobrenome"></div>
+                            <div class="col-md-4 mb-3"><label for="inputTelefone"
+                                    class="form-label">Telefone</label><input type="tel" class="form-control"
+                                    id="inputTelefone" required></div>
+                            <div class="col-md-4 mb-3"><label for="inputSexo" class="form-label">Gênero</label><select
+                                    class="form-select" id="inputSexo" required>
+                                    <option value="">Selecione...</option>
+                                    <option value="MASCULINO">Masculino</option>
+                                    <option value="FEMININO">Feminino</option>
+                                </select></div>
+                            <div class="col-md-4 mb-3"><label for="inputDataNascimento" class="form-label">Data de
+                                    Nascimento</label><input type="date" class="form-control" id="inputDataNascimento"
+                                    required></div>
+                        </div>
+                    </div>
+
+                    <div class="card shadow-sm mb-4">
+                        <div class="card-header bg-secondary text-white">
+                            Endereço
+                        </div>
+                        <div class="card-body row">
+                            <div class="col-md-4 mb-3"><label for="inputCEP" class="form-label">CEP</label><input
+                                    type="text" class="form-control" id="inputCEP" required></div>
+                            <div class="col-md-8 mb-3"><label for="inputRua" class="form-label">Rua</label><input
+                                    type="text" class="form-control" id="inputRua" required></div>
+                            <div class="col-md-3 mb-3"><label for="inputNumero" class="form-label">Número</label><input
+                                    type="text" class="form-control" id="inputNumero" required></div>
+                            <div class="col-md-4 mb-3"><label for="inputComplemento"
+                                    class="form-label">Complemento</label><input type="text" class="form-control"
+                                    id="inputComplemento"></div>
+                            <div class="col-md-5 mb-3"><label for="inputBairro" class="form-label">Bairro</label><input
+                                    type="text" class="form-control" id="inputBairro" required></div>
+                            <div class="col-md-6 mb-3"><label for="inputCidade" class="form-label">Cidade</label><input
+                                    type="text" class="form-control" id="inputCidade" required></div>
+                            <div class="col-md-6 mb-3"><label for="inputEstado" class="form-label">Estado</label><input
+                                    type="text" class="form-control" id="inputEstado" required></div>
+                            <input type="hidden" id="inputLogradouro">
+                        </div>
+                    </div>
+
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-success btn-lg">
+                            <i class="fas fa-save"></i> Salvar Alterações
+                        </button>
+                    </div>
+                </form>
+
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/js/bootstrap.bundle.min.js"></script>
+    <script src="assets/js/global/setup.js"></script>
+    <script src="assets/js/pages/perfilFuncionario.js"></script>
+</body>
+
+</html>

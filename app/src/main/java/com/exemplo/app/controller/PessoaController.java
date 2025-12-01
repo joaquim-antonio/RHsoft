@@ -56,6 +56,12 @@ public class PessoaController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
+    @GetMapping(path = "/{cpf}")
+    public ResponseEntity<Pessoa> findPessoaById(@PathVariable String cpf){
+        Pessoa pessoa = pessoaService.buscarPessoaCPF(cpf).get();
+        return new ResponseEntity<>(pessoa, HttpStatus.OK);
+    }
+
     @PostMapping
     public ResponseEntity<Pessoa> postPessoa(@RequestBody @Valid Pessoa pessoa){
         Pessoa pessoaEmCriacao = pessoaService.salvarPessoa(pessoa);
