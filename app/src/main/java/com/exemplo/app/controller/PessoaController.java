@@ -27,6 +27,12 @@ public class PessoaController {
         return new ResponseEntity<>(pessoas, HttpStatus.OK);
     }
 
+    @GetMapping(path = "/{cpf}")
+    public ResponseEntity<Pessoa> findPessoaById(@PathVariable String cpf){
+        Pessoa pessoa = pessoaService.buscarPessoaCPF(cpf).get();
+        return new ResponseEntity<>(pessoa, HttpStatus.OK);
+    }
+
     @PostMapping
     public ResponseEntity<Pessoa> postPessoa(@RequestBody @Valid Pessoa pessoa){
         Pessoa pessoaEmCriacao = pessoaService.salvarPessoa(pessoa);
@@ -37,6 +43,7 @@ public class PessoaController {
     public ResponseEntity<?> atualizarProduto(@PathVariable String cpf, @RequestBody Pessoa pessoaAtualizada){
         try{
             Pessoa novaPessoa = pessoaService.atualizarPessoa(cpf, pessoaAtualizada);
+            System.out.println("PESSOA ATUALIZADA" + pessoaAtualizada);
             return new ResponseEntity<>(novaPessoa, HttpStatus.OK);
 
         }catch(Exception e){

@@ -42,6 +42,11 @@ public class PessoaService {
                 ));
 
         pessoa.setNome(pessoaAtualizada.getNome());
+        pessoa.setSobrenome(pessoaAtualizada.getSobrenome());
+        pessoa.setTelefone(pessoaAtualizada.getTelefone());
+        pessoa.setSexo(pessoaAtualizada.getSexo());
+        pessoa.setDataNascimento(pessoaAtualizada.getDataNascimento());
+        pessoa.setEndereco(pessoaAtualizada.getEndereco());
 
         return pessoaRepository.save(pessoa);
 
