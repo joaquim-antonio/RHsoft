@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.exemplo.app.dto.RequestVagaDTO;
+import com.exemplo.app.dto.VagaCandidatoDTO;
 import com.exemplo.app.dto.VagaResponseDTO;
 import com.exemplo.app.model.Vaga;
 import com.exemplo.app.service.VagaService;
@@ -31,10 +32,12 @@ public class VagaController {
     private VagaService vagaService;
 
     @GetMapping("/disponiveis")
-    public ResponseEntity<List<VagaResponseDTO>> listarVagasDisponiveis() {
-        List<VagaResponseDTO> vagas = vagaService.listarVagasDisponiveis().stream()
-                .map(VagaResponseDTO::new)
+    public ResponseEntity<List<VagaCandidatoDTO>> listarVagasDisponiveis() {
+        
+        List<VagaCandidatoDTO> vagas = vagaService.listarVagasDisponiveis().stream()
+                .map(VagaCandidatoDTO::new) 
                 .collect(Collectors.toList());
+                
         return ResponseEntity.ok(vagas);
     }
 
@@ -68,9 +71,13 @@ public class VagaController {
 
     @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deletarVaga(@PathVariable Long id) {
-        vagaService.excluirVaga(id);
-        return ResponseEntity.noContent().build();
+    public ResponseEntity<?> deletarVaga(@PathVariable Long id) {
+        try {
+            vagaService.excluirVaga(id);
+            return ResponseEntity.noContent().build();
+        } catch (IllegalStateException e) {
+            // Retorna erro 409 Conflict se houver candidatos inscritos
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
+        }
     }
-
 }

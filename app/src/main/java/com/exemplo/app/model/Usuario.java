@@ -42,6 +42,5 @@ public class Usuario {
     @JsonIgnore
     @OneToOne
     @JoinColumn(name = "pessoa_cpf", foreignKey=@ForeignKey(name = "fk_usuario_pessoa"))
-    @JsonIgnore
     private Pessoa pessoa;
 }

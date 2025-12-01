@@ -13,7 +13,6 @@ document.addEventListener("DOMContentLoaded", async () => {
     async function init() {
         if (!(await validarPermissaoAdmin())) return;
         
-        carregarSidebarAdmin();
         carregarDadosConfiguracao();
         configurarEventos();
     }
@@ -40,29 +39,6 @@ document.addEventListener("DOMContentLoaded", async () => {
         }
     }
 
-    // Injeta a Sidebar
-    async function carregarSidebarAdmin() {
-        try {
-            const response = await fetch('components/sidebar-administrador.html');
-            if (response.ok) {
-                const sidebarHTML = await response.text();
-                document.getElementById("sidebarPlaceHolder").innerHTML = sidebarHTML;
-                
-                // Marca o link ativo
-                const links = document.querySelectorAll('.sidebar-item');
-                links.forEach(link => {
-                    if (link.href.includes('configuracoes-admin.html')) {
-                        link.classList.add('active');
-                    }
-                });
-
-            } else {
-                console.error('Erro ao carregar sidebar:', response.status);
-            }
-        } catch (error) {
-            console.error('Erro ao carregar sidebar:', error);
-        }
-    }
 
     // Busca os dados do backend e popula o formulário
     async function carregarDadosConfiguracao() {

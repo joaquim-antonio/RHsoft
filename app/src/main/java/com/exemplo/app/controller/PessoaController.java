@@ -56,12 +56,6 @@ public class PessoaController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    @GetMapping(path = "/{cpf}")
-    public ResponseEntity<Pessoa> findPessoaById(@PathVariable String cpf){
-        Pessoa pessoa = pessoaService.buscarPessoaCPF(cpf).get();
-        return new ResponseEntity<>(pessoa, HttpStatus.OK);
-    }
-
     @PostMapping
     public ResponseEntity<Pessoa> postPessoa(@RequestBody @Valid Pessoa pessoa){
         Pessoa pessoaEmCriacao = pessoaService.salvarPessoa(pessoa);
@@ -118,7 +112,6 @@ public class PessoaController {
                 java.lang.reflect.Field fieldId = Cargo.class.getDeclaredField("codigo");
                 fieldId.setAccessible(true);
                 fieldId.set(c, dto.cargoId());
-                f.setCargo(c);
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
@@ -131,7 +124,6 @@ public class PessoaController {
                 java.lang.reflect.Field fieldId = Departamento.class.getDeclaredField("codigo");
                 fieldId.setAccessible(true);
                 fieldId.set(d, dto.departamentoId());
-                f.setDepartamento(d);
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }

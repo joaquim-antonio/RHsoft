@@ -10,9 +10,15 @@ public record VagaResponseDTO(
         String funcao,
         String descricao,
         LocalDate dataLimite,
+    
+        Long cargoId,           
         String nomeCargo,
+        
+        Long departamentoId,    
         String nomeDepartamento,
+        
         boolean aberta) {
+            
     public VagaResponseDTO(Vaga vaga) {
         this(
             vaga.getId(),
@@ -20,8 +26,13 @@ public record VagaResponseDTO(
             vaga.getFuncao(),
             vaga.getDescricao(),
             vaga.getDataLimite(),
+            
+            vaga.getCargo().getCodigo(),
             vaga.getCargo().getNome(),
+            
+            vaga.getDepartamento().getCodigo(),
             vaga.getDepartamento().getNome(),
+            
             vaga.getDataLimite().isAfter(LocalDate.now()) || vaga.getDataLimite().isEqual(LocalDate.now())
         );
     }
