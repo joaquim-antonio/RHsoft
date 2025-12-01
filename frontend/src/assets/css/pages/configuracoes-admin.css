@@ -130,9 +130,6 @@ h2 {
 .text-primary { color: #0d6efd !important; } 
 .text-danger  { color: #dc3545 !important; } 
 
-.border-bottom {
-    border-bottom: 1px dashed var(--cor-borda) !important;
-}
 
 #btnSalvar {
     font-weight: 600;

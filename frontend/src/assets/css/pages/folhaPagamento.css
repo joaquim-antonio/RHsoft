@@ -125,8 +125,7 @@ body.dark-mode .card {
 
 body.dark-mode .text-dark,
 body.dark-mode h2, 
-body.dark-mode h5,
-body.dark-mode .fw-bold {
+body.dark-mode h5 {
     color: #f3f4f6 !important;
 }
 
