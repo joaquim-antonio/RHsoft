@@ -1,5 +1,7 @@
 package com.exemplo.app.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -78,6 +80,7 @@ public class Endereco {
     }
 
     @OneToOne (mappedBy = "endereco")
+    @JsonIgnore
     private Pessoa pessoa;
 
 }

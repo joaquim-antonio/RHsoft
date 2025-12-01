@@ -50,6 +50,7 @@ public class Funcionario extends Pessoa{
     private Cargo cargo;
 
     //@NotNull
+    @JsonIgnore
     @OneToOne(mappedBy = "funcionario", cascade = CascadeType.ALL, orphanRemoval = true)
     private ContaBancaria contaBancaria;
 
