@@ -1,8 +1,4 @@
-[![Review Assignment Due Date](https://classroom.github.com/assets/deadline-readme-button-22041afd0340ce965d47ae6ef1cefeee28c7c493a6346c4f15d667ab976d596c.svg)](https://classroom.github.com/a/rdlwBGXm)
-[![Open in Codespaces](https://classroom.github.com/assets/launch-codespace-2972f46106e565e64193e422d61a12cf1da4916b45550586e14ef0a7c637dd04.svg)](https://classroom.github.com/open-in-codespaces?assignment_repo_id=20276750)
 # RHSoft
-
-![Capa do Projeto](docs/design/Image.avif)
 
 O RHSoft é um sistema de Recursos Humanos desenvolvido com o objetivo de apoiar a gestão de pessoas em organizações, oferecendo uma solução integrada para o cadastro e administração de funcionários, processamento da folha de pagamento e gerenciamento de vagas de emprego. O sistema centraliza informações essenciais, reduz erros operacionais e promove maior eficiência e confiabilidade nos processos de RH, disponibilizando recursos tanto para administradores quanto para funcionários de forma simples e segura.
 
@@ -45,10 +41,10 @@ O sistema opera de ponta a ponta:
 - [x] **Fazer Login**
 - [x] **Gestão de funcionários**
 - [X] **Gestão da folha de pagamento**
-- [ ] Publicação e gerenciamento de vagas
+- [x] Publicação e gerenciamento de vagas
 - [X] **Atualização de configurações**
 - [X] **Consulta de contracheques**
-- [ ] Atualização de dados cadastrais
+- [x] Atualização de dados cadastrais
 
 ## 🏗️ Arquitetura e Tecnologias
 
