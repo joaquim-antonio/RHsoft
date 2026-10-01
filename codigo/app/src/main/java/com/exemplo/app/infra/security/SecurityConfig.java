@@ -50,6 +50,13 @@ public class SecurityConfig {
                 .authorizeHttpRequests(authorize -> authorize
                         // --- ROTAS PÚBLICAS ---
                         .requestMatchers("/h2-console/**").permitAll()
+
+                        // --- SWAGGER / OPENAPI ---
+                        .requestMatchers("/v3/api-docs", "/v3/api-docs/**", "/v3/api-docs.yaml").permitAll()
+                        .requestMatchers("/swagger-ui.html", "/swagger-ui/**").permitAll()
+                        .requestMatchers("/swagger-resources", "/swagger-resources/**").permitAll()
+                        .requestMatchers("/webjars/**").permitAll()
+
                         .requestMatchers(HttpMethod.POST, "/auth/login").permitAll()
                         .requestMatchers(HttpMethod.POST, "/auth/register-candidato").permitAll()
                         .requestMatchers("/user/me").authenticated()

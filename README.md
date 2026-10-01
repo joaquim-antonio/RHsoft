@@ -48,64 +48,114 @@ O sistema opera de ponta a ponta:
 
 ## 🏗️ Arquitetura e Tecnologias
 
-- **Back-end**: Java + Spring Boot (camadas controller, service, repository).
-- **Front-end**: aplicação web em JavaScript puro.
-- **Comunicação**: APIs REST + JSON.
-- **Banco de dados**: relacional (Microsoft Azure).
+- **Back-end**: Java 21 + Spring Boot 3.5 (camadas controller, service, repository), JWT stateless.
+- **Front-end**: aplicação web em JavaScript puro, servida por nginx.
+- **Comunicação**: APIs REST + JSON (documentadas em OpenAPI/Swagger).
+- **Banco de dados**: MySQL 8 no ambiente Docker; H2 em arquivo no desenvolvimento local.
+- **Orquestração**: Docker Compose (MySQL + backend + frontend).
+- **Documentação da API**: springdoc-openapi, integrated ao backend (Swagger UI).
 - **Disponibilidade**: acesso via navegador moderno.
+
+## 🚀 Como Executar
+
+### Via Docker Compose (ambiente completo: banco + backend + frontend)
+
+Pré-requisito: Docker com Compose v2.
+
+```bash
+cd codigo
+cp .env.example .env      # ajuste as senhas e gere um JWT_SECRET:
+                          #   openssl rand -base64 48
+docker compose up --build
+```
+
+| Serviço | Endereço | Observação |
+|---|---|---|
+| Frontend | http://127.0.0.1:5500 | Porta fixa: o CORS do backend só aceita esta origem |
+| Backend | http://localhost:8080 | API REST |
+| MySQL | `localhost:3307` | Mapeado de 3306 para não conflitar com MySQL local |
+
+Comandos úteis:
+
+```bash
+docker compose ps                    # estado e health dos containers
+docker compose logs -f backend       # log do backend
+docker compose down                  # derruba, preserva os dados no volume
+docker compose down -v               # derruba e APAGA o banco (volume removido)
+```
+
+O Swagger UI fica **desligado** no perfil `docker` (`application-docker.properties`),
+para não expor o discovery da API publicamente. Para consultá-lo, suba o backend localmente.
+
+### Desenvolvimento local (sem Docker, banco H2 em arquivo consumido localmente.)
+
+```bash
+# Backend — H2 em ./data/testdb, Swagger em http://localhost:8080/swagger-ui/index.html
+cd codigo/app && ./mvnw spring-boot:run
+
+# Frontend — precisa ser servido em http://127.0.0.1:5500 (exigência de CORS do backend)
+cd codigo/frontend/src && python3 -m http.server 5500 --bind 127.0.0.1
+```
+
+Execute **um por vez**: o H2 em arquivo trava com `Database may be already in use`
+se o app estiver de pé na mesma pasta durante os testes Maven.
+
+Testes: `cd codigo/app && ./mvnw test`
 
 ## 📂 Estrutura do Repositório
 
 ```
 repo/
-├─ app/                      # API em Spring Boot
-│  ├─ .mvn/
-│  ├─ src/
-│  │  ├─ main/
-│  │  │  ├─ java/com/exemplo/app/
-│  │  │  │  ├─ config/
-│  │  │  │  ├─ controller/
-│  │  │  │  ├─ dto/
-│  │  │  │  ├─ exception/
-│  │  │  │  ├─ infra/security/
-│  │  │  │  ├─ model/
-│  │  │  │  ├─ repository/
-│  │  │  │  └─ service/
-│  │  │  └─ resources/
-│  │  └─ test/
-│  └─ target/            
-├─ frontend/                 # Aplicação web (JS Puro)
-│  └─ src/
-│     ├─ assets/          
-│     │  ├─ css/             # Estilização do Front
-│     │  │  ├─ global/ 
-│     │  │  └─ pages/
-│     │  ├─ images/          # Imagens
-│     │  │  ├─ global/ 
-│     │  │  └─ pages/
-│     │  └─ js/
-│     │     ├─ global/
-│     │     ├─ pages/
-│     │     └─ services/   
-│     └─ components/
-├─ docs/                     # Documentação geral do projeto
-│  ├─ requisitos/            # visão conceitual e de negócio
-│  │  ├─ requisitos.md
-│  │  └─ requisitos-rhsoft.pdf
+├─ codigo/                    # Todo o código executável vive aqui
+│  ├─ docker-compose.yml      # Orquestra: MySQL + backend + frontend
+│  ├─ .env.example            # Credenciais do Compose (copie para .env; não versionar)
 │  │
-│  ├─ api/                   # documentação da API
-│  │  ├─ api.md              # visão geral da API
-│  │  ├─ openapi.yaml        # especificação formal (se usarem Swagger/OpenAPI)
-│  │  └─ exemplos/           # exemplos de requests/responses
-│  │     ├─ cadastro-funcionario.json
-│  │     ├─ folha-pagamento.json
-│  │     └─ ...
+│  ├─ app/                    # API em Spring Boot (Java 21 / Spring Boot 3.5)
+│  │  ├─ Dockerfile           # Build multi-stage: Maven -> JRE Alpine, usuário não-root
+│  │  ├─ .dockerignore
+│  │  ├─ .mvn/
+│  │  ├─ pom.xml
+│  │  ├─ src/
+│  │  │  ├─ main/
+│  │  │  │  ├─ java/com/exemplo/app/
+│  │  │  │  │  ├─ config/          # OpenApiConfig, DatabaseLoader (seed CBO 2002)
+│  │  │  │  │  ├─ controller/     # Endpoints REST (anotados para o Swagger)
+│  │  │  │  │  ├─ dto/             # Records de entrada/saída (documentados com @Schema)
+│  │  │  │  │  ├─ exception/       # GlobalExceptionHandler e exceções de domínio
+│  │  │  │  │  ├─ infra/security/  # SecurityConfig, SecurityFilter, TokenService
+│  │  │  │  │  ├─ model/           # Entidades JPA
+│  │  │  │  │  ├─ repository/
+│  │  │  │  │  └─ service/         # Regras de negócio (folha, INSS/IRRF, candidaturas)
+│  │  │  │  └─ resources/          # application.properties, application-docker.properties
+│  │  │  └─ test/
+│  │  └─ target/                # Artefatos de build (gerado, fora do versionamento)
 │  │
-│  ├─ analise/               # classes candidatas, CRC, diagrama do modelo conceitual
-│  ├─ design/                # diagramas de classe, sequência, etc.
-│  └─ wireframe/             # protótipos do Figma
+│  └─ frontend/               # Aplicação web (JS puro, sem etapa de build)
+│     ├─ Dockerfile           # nginx servindo src/ como estático
+│     ├─ nginx.conf
+│     ├─ .dockerignore
+│     └─ src/
+│        ├─ *.html            # Uma página por funcionalidade
+│        └─ assets/
+│           ├─ css/           # Estilização do front
+│           │  ├─ global/
+│           │  └─ pages/
+│           ├─ images/        # Imagens
+│           │  ├─ global/
+│           │  └─ pages/
+│           └─ js/
+│              ├─ global/
+│              ├─ pages/
+│              └─ services/   # Cliente HTTP (axios/fetch) do backend
 │
-└─ README.md                 # Este arquivo (guia do repositório)
+├─ docs/                      # Documentação geral do projeto
+│  ├─ requisitos/             # Visão conceitual e de negócio
+│  ├─ api/                    # Documentação da API
+│  ├─ analise/                # Classes candidatas, CRC, diagrama do modelo conceitual
+│  ├─ design/                 # Diagramas de classe, sequência, etc.
+│  └─ wireframe/              # Protótipos do Figma
+│
+└─ README.md                  # Este arquivo (guia do repositório)
 
 ```
 
