@@ -29,16 +29,31 @@ import com.exemplo.app.model.Funcionario;
 import com.exemplo.app.model.Pessoa;
 import com.exemplo.app.service.PessoaService;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 
 @RequestMapping("/api/v1/pessoa")
 @RestController
+@Tag(name = "Funcionários", description = "Gestão de funcionários (dados cadastrais, contratuais, endereço e conta bancária)")
+@SecurityRequirement(name = "bearerAuth")
 public class PessoaController {
 
     @Autowired
     private PessoaService pessoaService;
 
 
+    @Operation(
+        summary = "Listar funcionários",
+        description = "Retorna todas as pessoas cadastradas, excluindo os candidatos."
+    )
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Lista de funcionários retornada com sucesso."),
+        @ApiResponse(responseCode = "401", description = "Usuário não autenticado.")
+    })
     @GetMapping
     public ResponseEntity<List<FuncionarioResponseDTO>> listarPessoas() {
         List<Pessoa> pessoas = pessoaService.listarTodasPessoas();
@@ -49,6 +64,15 @@ public class PessoaController {
         return new ResponseEntity<>(dtos, HttpStatus.OK);
     }
 
+    @Operation(
+        summary = "Buscar pessoa por CPF",
+        description = "Retorna os dados da pessoa identificada pelo CPF."
+    )
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Pessoa encontrada."),
+        @ApiResponse(responseCode = "401", description = "Usuário não autenticado."),
+        @ApiResponse(responseCode = "404", description = "Pessoa não encontrada.")
+    })
     @GetMapping("/{cpf}")
     public ResponseEntity<FuncionarioResponseDTO> buscarPorCpf(@PathVariable String cpf) {
         return pessoaService.buscarPessoaCPF(cpf)
@@ -56,12 +80,30 @@ public class PessoaController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
+    @Operation(
+        summary = "Cadastrar pessoa",
+        description = "Cadastra uma nova pessoa (funcionário)."
+    )
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "201", description = "Pessoa criada com sucesso."),
+        @ApiResponse(responseCode = "400", description = "Dados inválidos ou CPF já cadastrado."),
+        @ApiResponse(responseCode = "401", description = "Usuário não autenticado.")
+    })
     @PostMapping
     public ResponseEntity<Pessoa> postPessoa(@RequestBody @Valid Pessoa pessoa){
         Pessoa pessoaEmCriacao = pessoaService.salvarPessoa(pessoa);
         return new ResponseEntity<>(pessoaEmCriacao, HttpStatus.CREATED);
     }
 
+    @Operation(
+        summary = "Atualizar dados do funcionário",
+        description = "Atualiza os dados cadastrais, contratuais, endereço e conta bancária do funcionário identificado pelo CPF."
+    )
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Funcionário atualizado com sucesso."),
+        @ApiResponse(responseCode = "400", description = "Valor inválido em um dos campos ou erro na atualização."),
+        @ApiResponse(responseCode = "401", description = "Usuário não autenticado.")
+    })
     @PutMapping(path = "/{cpf}")
     public ResponseEntity<?> atualizarPessoa(@PathVariable String cpf, @RequestBody UpdateFuncionarioDTO dto) {
         try {
@@ -79,6 +121,15 @@ public class PessoaController {
         }
     }
 
+    @Operation(
+        summary = "Excluir pessoa",
+        description = "Exclui a pessoa identificada pelo CPF."
+    )
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "204", description = "Pessoa excluída com sucesso."),
+        @ApiResponse(responseCode = "401", description = "Usuário não autenticado."),
+        @ApiResponse(responseCode = "404", description = "Pessoa não encontrada.")
+    })
     @DeleteMapping(path = "/{cpf}")
     public ResponseEntity<Void> excluir(@PathVariable("cpf") String cpf){
         pessoaService.excluirPessoa(cpf);
