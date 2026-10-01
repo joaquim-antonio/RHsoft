@@ -25,16 +25,6 @@ Problemas que o sistema resolve:
 - **Funcionário**: consulta contracheques, atualiza dados.
 - **Candidato**: acessa e se inscreve nas vagas publicadas.
 
-## ⚠️ Status Atual do Projeto
-
-O **RHSoft (Sirius)** atingiu a versão **1.0 (Final)**.
-
-O sistema opera de ponta a ponta:
-- [x] **Frontend:** Interface completa.
-- [x] **Backend:** Regras de negócio implementadas.
-- [x] **Banco de Dados:** Conexão ativa e persistência de dados real.
-
----
 
 ## ⚙️ Funcionalidades Principais
 
@@ -158,13 +148,6 @@ repo/
 └─ README.md                  # Este arquivo (guia do repositório)
 
 ```
-
-## 📑 Documentação
-
-- [Requisitos do Sistema](docs/requisitos.md)
-- [Descrição da API](docs/api.md)
-- [Protótipos](docs/arquitetura.md)
-
 ## Contribuição
 
 Leia o arquivo [CONTRIBUTING.md](CONTRIBUTING.md) para saber detalhes sobre o nosso código de conduta e o processo de envio de solicitações _pull_ (_Pull Request_) para nós.
