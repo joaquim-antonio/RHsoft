@@ -1,0 +1,91 @@
+# ---------------------------------------------------------------------------
+# RHSoft - ambiente completo (frontend + backend + banco)
+#
+# Sobe tudo de uma vez:
+#   docker compose up --build
+#
+# Acesso apos subir:
+#   Frontend  http://127.0.0.1:5500
+#   Backend   http://localhost:8080
+#   MySQL     localhost:3307 (mapeado para 3306, evita conflito com MySQL local)
+#
+# O Swagger e desativado no perfil docker. Para ver a documentacao da API,
+# suba o backend localmente (veja README.md na raiz).
+#
+# Credenciais vem de .env (copie de .env.example). O .env nao e versionado.
+# ---------------------------------------------------------------------------
+
+services:
+
+  db:
+    image: mysql:8.4
+    container_name: rhsoft-db
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: ${DB_NAME:-rhsoft}
+      MYSQL_USER: ${DB_USER:-rhsoft}
+      MYSQL_PASSWORD: ${DB_PASSWORD:?defina DB_PASSWORD no arquivo .env}
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD:?defina DB_ROOT_PASSWORD no arquivo .env}
+    ports:
+      # Porta 3307 no host: evita ocupar a 3306 caso ja exista um MySQL local.
+      - "3307:3306"
+    volumes:
+      - db_data:/var/lib/mysql
+    healthcheck:
+      # O backend so sobe depois que o MySQL aceitaQueries de verdade.
+      # O --silent evita stderrenchendo o log de healthcheck.
+      test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1", "-u", "root", "--silent"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 40s
+    networks:
+      - rhsoft
+
+  backend:
+    build:
+      context: ./app
+      dockerfile: Dockerfile
+    container_name: rhsoft-backend
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+      DB_HOST: db
+      DB_PORT: 3306
+      DB_NAME: ${DB_NAME:-rhsoft}
+      DB_USER: ${DB_USER:-rhsoft}
+      DB_PASSWORD: ${DB_PASSWORD:?defina DB_PASSWORD no arquivo .env}
+      JWT_SECRET: ${JWT_SECRET:?defina JWT_SECRET no arquivo .env}
+      # Desliga o devtools: hot reload nao faz sentido dentro do container.
+      SPRING_DEVTOOLS_RESTART_ENABLED: "false"
+    ports:
+      - "8080:8080"
+    networks:
+      - rhsoft
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: rhsoft-frontend
+    restart: unless-stopped
+    depends_on:
+      - backend
+    ports:
+      # A porta 5500 e obrigatoria: o SecurityConfig so aceita a origem
+      # http://127.0.0.1:5500 no CORS. Se mudar a porta, atualize tambem
+      # corsConfigurationSource() em SecurityConfig.java.
+      - "5500:80"
+    networks:
+      - rhsoft
+
+volumes:
+  db_data:
+    driver: local
+
+networks:
+  rhsoft:
+    driver: bridge

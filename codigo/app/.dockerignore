@@ -1,0 +1,30 @@
+# Artefatos de build: reconstruidos dentro da imagem, nao precisam ser enviados.
+target/
+
+# Banco H2 local: causa lock file e nao deve vazar para a imagem.
+data/
+
+# O caminho "C:/caminho" veio de um dump de banco rodando no Windows e nao
+# tem relacao com o build Linux.
+C:/
+
+# IDEs e ferramentas
+.idea/
+.vscode/
+*.iml
+.settings/
+.classpath
+.project
+
+# Controle de versao
+.git/
+.gitignore
+.gitattributes
+
+# Documentacao (nao afeta o runtime)
+*.md
+esquema.sql
+
+# Sistema
+*.log
+.DS_Store

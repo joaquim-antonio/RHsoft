@@ -1,0 +1,19 @@
+# O frontend e servido como esta: nao ha etapa de build.
+# Excluir apenas o que nao deve entrar na imagem.
+
+# Documentacao
+*.md
+
+# Controle de versao e IDEs
+.git/
+.gitignore
+.idea/
+.vscode/
+*.iml
+.DS_Store
+
+# O proprio Dockerfile e a conf do nginx ja sao usados no build.
+# (Nao sao excluidos aqui de proposito.)
+
+# Sistema
+*.log

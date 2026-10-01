@@ -1,0 +1,6 @@
+# Credenciais do ambiente Docker. Nao versionar.
+.env
+
+# Build do frontend/backend
+**/target/
+**/node_modules/
