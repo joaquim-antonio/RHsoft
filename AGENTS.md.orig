@@ -16,7 +16,7 @@ This file gives OpenCode (and similar agents) the minimal repo-specific context 
 - Run dev server: `./mvnw spring-boot:run` (Maven wrapper; Linux/macOS). On Windows use `mvnw.cmd`.
 - Compile only: `./mvnw compile`
 - Package: `./mvnw package` (produces JAR in `target/`)
-- Tests: `./mvnw test` (runs JUnit; also `./mvnw -Dtest=ClassName test` for a single class). Full check with coverage gate: `./mvnw clean verify` (uses JaCoCo with 80% instruction coverage requirement on selected packages).
+- Tests: `./mvnw test` (runs JUnit; also `./mvnw -Dtest=ClassName test` for a single class)
 
 **Tech/runtime facts (verify from config):**
 - Java 21 (see `pom.xml`). Maven wrapper present (`.mvn/wrapper/maven-wrapper.properties`).
@@ -24,7 +24,6 @@ This file gives OpenCode (and similar agents) the minimal repo-specific context 
 - DB defaults to H2 file: `jdbc:h2:file:./data/testdb` (see `application.properties`). MySQL/SQL Server deps exist but commented. H2 console enabled (per SecurityConfig) at `/h2-console/**` (permitAll in dev config). 
 - DDL: `spring.jpa.hibernate.ddl-auto=update` (auto-migrates schema). Format SQL on.
 - JWT secret from env `JWT_SECRET` with fallback `my-secret-key` (do not rely on fallback in non-local contexts).
-- OpenAPI/Swagger UI available via SpringDoc (see `config/OpenApiConfig`). Access at `/swagger-ui.html` (or `/swagger-ui/index.html`) and `/v3/api-docs`.
 - CORS allows only `http://127.0.0.1:5500` (explicit in `SecurityConfig`). Frontend must run on that origin when calling API.
 - On startup, `DatabaseLoader` (CommandLineRunner) seeds CBO occupations from `src/main/resources/CBO2002 - Ocupacao.json` if `cargo` table is empty. If cargos exist, it logs and skips.
 
@@ -44,8 +43,6 @@ This file gives OpenCode (and similar agents) the minimal repo-specific context 
 ## Testing
 
 - Backend tests under `codigo/app/src/test/java/com/exemplo/app/`. Current: `AppApplicationTests.java` (context load), `DepartamentoServiceTest.java`.
-- JaCoCo is configured (see `pom.xml`) with coverage gate at **80% instruction coverage**. Excluded from gate: `config/**`, `dto/**`, `model/**`, `exception/**`, `com/exemplo/app/AppApplication.java`. `infra/security/TokenService` is included.
-- Run coverage check: `cd codigo/app && ./mvnw clean verify`. Report generated at `codigo/app/target/site/jacoco/index.html`.
 - Run all: `cd codigo/app && ./mvnw test`. Run single test class: `./mvnw -Dtest=DepartamentoServiceTest test`. H2 file DB is used in tests unless overridden.
 - No obvious frontend test suite visible; changes to frontend are typically verified manually via browser.
 
@@ -54,8 +51,6 @@ This file gives OpenCode (and similar agents) the minimal repo-specific context 
 | Action | Command | Notes |
 |---|---|---|
 | Start backend | `cd codigo/app && ./mvnw spring-boot:run` | Uses H2 file DB at `./data/testdb`. |
-| Run all backend tests | `cd codigo/app && ./mvnw test` | Fast unit/integration tests with H2 in-memory for tests. |
-| Coverage gate (verify) | `cd codigo/app && ./mvnw clean verify` | Runs tests + JaCoCo report + enforces 80% instruction coverage on non-excluded packages. |
 | Run all backend tests | `cd codigo/app && ./mvnw test` | Fast, no external services required by default. |
 | Run single backend test | `cd codigo/app && ./mvnw -Dtest=ClassName test` | e.g. `AppApplicationTests` or `DepartamentoServiceTest`. |
 | Compile backend | `cd codigo/app && ./mvnw compile` | Useful quick check. |
